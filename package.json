@@ -8,7 +8,7 @@
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "git config user.name 'solivaquaant' && git config user.email 'thaitrinh12100@gmail.com' && gh-pages -d build",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
