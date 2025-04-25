@@ -9,6 +9,8 @@ import {themes as prismThemes} from 'prism-react-renderer';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
+/** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
+
 const config = {
   title: 'Thái Ngọc Diễm Trinh',
   tagline: 'Cybersecurity Student | University of Information Technology - VietNam National University, Ho Chi Minh City',
@@ -65,6 +67,7 @@ const config = {
           onUntruncatedBlogPosts: 'warn',
         },
         theme: {
+          
           customCss: './src/css/custom.css',
         },
       }),
@@ -151,6 +154,16 @@ const config = {
         darkTheme: prismThemes.dracula,
       },
     }),
+    themes: [
+      [
+        require.resolve("@easyops-cn/docusaurus-search-local"),
+        ({
+
+          hashed: true,
+
+        }),
+      ],
+    ]
 };
 
 export default config;
