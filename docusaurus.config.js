@@ -15,7 +15,7 @@ const config = {
   title: 'Thái Ngọc Diễm Trinh',
   tagline: 'Cybersecurity Student | University of Information Technology - VietNam National University, Ho Chi Minh City',
 
-  favicon: 'img/favicon.ico',
+  favicon: 'img/avt-trans.png',
 
   // Set the production url of your site here
   url: 'https://solivaquaant.github.io/',
@@ -48,8 +48,8 @@ const config = {
           sidebarPath: './sidebars.js',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          // editUrl:
+          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: {
           showReadingTime: true,
@@ -83,7 +83,7 @@ const config = {
         title: 'Welcome',
         logo: {
           alt: 'My Site Logo',
-          src: 'img/logo.svg',
+          src: 'img/avt-trans.png',
         },
         items: [
           {

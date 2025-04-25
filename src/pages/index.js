@@ -16,7 +16,7 @@ function HomepageHeader() {
           {/* Left Column: Avatar */}
           <div style={{ flex: '1 1 300px', textAlign: 'center' }}>
             <img 
-              src={require('@site/static/img/avatar.jpg').default} 
+              src={require('@site/static/img/real-avt.jpg').default} 
               alt="Avatar" 
               style={{ maxWidth: '250px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }} 
             />
