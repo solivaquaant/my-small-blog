@@ -2,34 +2,21 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://solivaquaant.github.io/my-small-blog/blog</id>
     <title>Thái Ngọc Diễm Trinh Blog</title>
-    <updated>2025-04-25T10:36:50.000Z</updated>
+    <updated>2025-04-25T11:46:08.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://solivaquaant.github.io/my-small-blog/blog"/>
     <subtitle>Thái Ngọc Diễm Trinh Blog</subtitle>
     <icon>https://solivaquaant.github.io/my-small-blog/img/avt-trans.png</icon>
     <entry>
-        <title type="html"><![CDATA[Create a CTF challenge]]></title>
-        <id>https://solivaquaant.github.io/my-small-blog/blog/ctf-challenge</id>
-        <link href="https://solivaquaant.github.io/my-small-blog/blog/ctf-challenge"/>
-        <updated>2025-04-25T10:36:50.000Z</updated>
-        <summary type="html"><![CDATA[Today i show you how to do DLL Side Loading attack to bypass Windows Defender]]></summary>
-        <content type="html"><![CDATA[<p>Today i show you how to do DLL Side Loading attack to bypass Windows Defender</p>
-<p>...consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet</p>]]></content>
-        <author>
-            <name>Thai Trinh</name>
-            <uri>https://github.com/solivaquaant</uri>
-        </author>
-        <category label="CTF" term="CTF"/>
-        <category label="Forensics" term="Forensics"/>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[DLL Side Loading bypass Defender]]></title>
-        <id>https://solivaquaant.github.io/my-small-blog/blog/2025/04/25/dll-side-loading</id>
-        <link href="https://solivaquaant.github.io/my-small-blog/blog/2025/04/25/dll-side-loading"/>
-        <updated>2025-04-25T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Today i show you how to do DLL Side Loading attack to bypass Windows Defender]]></summary>
-        <content type="html"><![CDATA[<p>Today i show you how to do DLL Side Loading attack to bypass Windows Defender</p>
-<p>...consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet</p>]]></content>
+        <title type="html"><![CDATA[DLL Side Loading + DLL Proxying]]></title>
+        <id>https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading</id>
+        <link href="https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading"/>
+        <updated>2025-04-25T11:46:08.000Z</updated>
+        <summary type="html"><![CDATA[Blog about DLL Side Loading + DLL Proxying, bypass Windows Defender]]></summary>
+        <content type="html"><![CDATA[<p>In this post, I will show you about DLL Side Loading technique to bypass Windows Defender using Notepad++ and Sliver C2</p>
+<p>This is content of the blog</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="tools">Tools<a href="https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading#tools" class="hash-link" aria-label="Direct link to Tools" title="Direct link to Tools">​</a></h2>
+<p>This is about tools</p>]]></content>
         <author>
             <name>Thai Trinh</name>
             <uri>https://github.com/solivaquaant</uri>
