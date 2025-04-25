@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmy_own_blog=self.webpackChunkmy_own_blog||[]).push([[692],{7278:e=>{e.exports=JSON.parse('{"authors":[{"name":"Thai Trinh","title":"Cybersecurity Student @ UIT","page":{"permalink":"/my-small-blog/blog/authors/tndt"},"key":"tndt","count":2}]}')}}]);
