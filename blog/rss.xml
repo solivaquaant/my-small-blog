@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="rss.xsl"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Thái Ngọc Diễm Trinh Blog</title>
+        <link>https://solivaquaant.github.io/my-small-blog/blog</link>
+        <description>Thái Ngọc Diễm Trinh Blog</description>
+        <lastBuildDate>Fri, 25 Apr 2025 06:56:01 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <item>
+            <title><![CDATA[Create a CTF challenge]]></title>
+            <link>https://solivaquaant.github.io/my-small-blog/blog/ctf-challenge</link>
+            <guid>https://solivaquaant.github.io/my-small-blog/blog/ctf-challenge</guid>
+            <pubDate>Fri, 25 Apr 2025 06:56:01 GMT</pubDate>
+            <description><![CDATA[Today i show you how to do DLL Side Loading attack to bypass Windows Defender]]></description>
+            <content:encoded><![CDATA[<p>Today i show you how to do DLL Side Loading attack to bypass Windows Defender</p>
+<p>...consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet</p>]]></content:encoded>
+            <category>CTF</category>
+            <category>Forensics</category>
+        </item>
+        <item>
+            <title><![CDATA[DLL Side Loading bypass Defender]]></title>
+            <link>https://solivaquaant.github.io/my-small-blog/blog/2025/04/25/dll-side-loading</link>
+            <guid>https://solivaquaant.github.io/my-small-blog/blog/2025/04/25/dll-side-loading</guid>
+            <pubDate>Fri, 25 Apr 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Today i show you how to do DLL Side Loading attack to bypass Windows Defender]]></description>
+            <content:encoded><![CDATA[<p>Today i show you how to do DLL Side Loading attack to bypass Windows Defender</p>
+<p>...consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet</p>]]></content:encoded>
+            <category>Malware</category>
+        </item>
+    </channel>
+</rss>
