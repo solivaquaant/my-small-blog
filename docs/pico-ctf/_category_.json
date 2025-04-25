@@ -1,0 +1,9 @@
+{
+  "label": "Pico CTF",
+  "position": 3,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "description": "Writeups for Pico CTF challenges"
+  }
+}

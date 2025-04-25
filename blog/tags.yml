@@ -1,0 +1,15 @@
+malware:
+  label: Malware
+  permalink: /malware
+  description: Malware tag description
+
+forensics:
+  label: Forensics
+  permalink: /forensics
+  description: Forensics tag description
+
+ctf:
+  label: CTF
+  permalink: /ctf
+  description: CTF tag description
+
