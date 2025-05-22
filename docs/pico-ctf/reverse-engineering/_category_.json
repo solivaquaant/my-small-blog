@@ -1,0 +1,8 @@
+{
+  "label": "Reverse Engineering",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Some picoCTF write-ups in Reverse Engineering category."
+  }
+}

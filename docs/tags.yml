@@ -1,0 +1,29 @@
+web:
+  label: Web
+  permalink: /web
+  description: Web tag description
+
+android:
+  label: Android
+  permalink: /android
+  description: Android tag description
+
+reverse-engineer:
+  label: Reverse Engineer
+  permalink: /reverse-engineer
+  description: Reverse engineering tag description
+
+cryptography:
+  label: Cryptography
+  permalink: /cryptography
+  description: Cryptography tag description
+
+forensics:
+  label: Forensics
+  permalink: /forensics
+  description: Forensics tag description
+
+binary-exploitation:
+  label: Binary Exploitation
+  permalink: /binary-exploitation
+  description: Binary exploitation tag description

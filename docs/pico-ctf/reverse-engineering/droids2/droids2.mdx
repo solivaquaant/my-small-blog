@@ -1,0 +1,52 @@
+---
+tags: [android, reverse-engineer]
+---
+# droids2
+
+- **Description:** Find the pass, get the flag. Check out this file.
+
+---
+
+## 🔎 Solution
+After decompiling the APK using Bytecode Viewer, I inspected the `FlagstaffHill.class` file. 
+```
+ String[] var6 = new String[]{"weatherwax", "ogg", "garlick", "nitt", "aching", "dismass"};
+      int var5 = 3 - 3;
+      int var3 = 3 / 3 + var5;
+      int var2 = var3 + var3 - var5;
+      int var4 = 3 + var2;
+      return var0.equals("".concat(var6[var4]).concat(".").concat(var6[var3]).concat(".").concat(var6[var5]).concat(".").concat(var6[var4 + var5 - var3]).concat(".").concat(var6[3]).concat(".").concat(var6[var2])) ? sesame(var0) : "NOPE";
+   }
+```
+Several variables are defined early in the function:
+- var5 = 0
+- var3 = 1
+- var2 = 2
+- var4 = 5
+
+The flag validation is performed through the following return statement:
+```
+return var0.equals("".concat(var6[var4]).concat(".").concat(var6[var3]).concat(".").concat(var6[var5]).concat(".").concat(var6[var4 + var5 - var3]).concat(".").concat(var6[3]).concat(".").concat(var6[var2])) ? sesame(var0) : "NOPE";
+```
+We can resolve the indices step-by-step to reconstruct the target input string. Given the array var6, we find:
+
+- var6[5] = "dismass"
+- var6[1] = "ogg"
+- var6[0] = "weatherwax"
+- var6[4] = "aching" (since var5 + var2 - var3 = 5 + 0 - 1 = 4)
+- var6[3] = "nitt"
+- var6[2] = "garlick"
+
+
+Putting it all together: `garlick.ogg.dismass.aching.nitt.weatherwax`
+
+
+Enter the following input into the app and here is the flag~
+
+<div style={{ width: '50%', margin: '0 auto' }}>
+  <img src={require("./image.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{what.is.your.favourite.colour}`
+

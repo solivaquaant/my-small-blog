@@ -1,0 +1,38 @@
+---
+tags: [android, reverse-engineer]
+---
+# droids1
+
+- **Description:** Find the pass, get the flag. Check out this file.
+
+---
+
+## 🔎 Solution
+The app’s interface remains minimal - just a text input and a single button.
+To understand what the app is doing behind the scenes, I opened the APK in [Bytecode Viewer](https://github.com/Konloch/bytecode-viewer) (run with java). 
+Inside the decompiled classes, I located the `FlagstaffHill.class`, which contains a method named `getFlag`.
+```
+   public static String getFlag(String var0, Context var1) {
+      return var0.equals(var1.getString(2131427375)) ? fenugreek(var0) : "NOPE";
+   }
+```
+This method is straightforward: it checks whether the input string matches a specific value. 
+If it does, the flag is returned. Otherwise, the app simply logs **"NOPE"**.
+
+
+Rather than reverse-engineering the method logic directly, a faster approach is to inspect the app’s resources. 
+Using apktool, I decompiled the APK: `apktool d one.apk`, then navigated to `two/res/values/strings.xml`
+This file typically holds static strings used throughout the app. 
+
+
+There, I found a suspicious value that looked like the expected input.
+```
+<string name="password">opossum</string>
+```
+I entered `opossum` into the input field, clicked the button, and... the flag was revealed.
+<div style={{ width: '50%', margin: '0 auto' }}>
+  <img src={require("./image.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{pining.for.the.fjords}`

@@ -1,0 +1,26 @@
+---
+tags: [android, reverse-engineer]
+---
+# droids0
+
+- **Description:** Where do droid logs go. Check out this file.
+
+---
+
+## 🔎 Solution
+The application presents a very simple interface: a single text input field and a button. At first glance, clicking the button doesn’t seem to trigger any visible action or response.
+<div style={{ width: '50%', margin: '0 auto' }}>
+  <img src={require("./image.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+In simple Android challenges, it's not uncommon for the flag to be hidden in the app logs—especially during early-stage or beginner-level tasks. To investigate, run `adb logcat`. 
+
+Then I click the button again in the app. This time, something interesting appeared in the logs - our flag.
+```
+05-21 04:54:28.194   230   230 I rild    : type=1400 audit(0.0:1296): avc: denied { sendto } for path="/dev/socket/logdw" scontext=u:r:rild:s0 tcontext=u:r:init:s0 tclass=unix_dgram_socket permissive=1
+05-21 04:54:32.453  2361  2361 I PICO    : picoCTF{a.moose.once.bit.my.sister}
+05-21 04:54:32.465   215   252 W genymotion_audio: Not supplying enough data to HAL, expected position 958544 , only wrote 958320
+```
+
+## 🚩Flag
+`picoCTF{a.moose.once.bit.my.sister}`
