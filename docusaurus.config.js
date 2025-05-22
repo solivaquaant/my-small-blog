@@ -15,7 +15,7 @@ const config = {
   title: 'Thái Ngọc Diễm Trinh',
   tagline: 'Cybersecurity Student | University of Information Technology - VietNam National University, Ho Chi Minh City',
 
-  favicon: 'img/avt-trans.png',
+  favicon: 'img/jumping_avt.gif',
 
   // Set the production url of your site here
   url: 'https://solivaquaant.github.io/',
@@ -75,14 +75,14 @@ const config = {
         title: 'Welcome',
         logo: {
           alt: 'My Site Logo',
-          src: 'img/avt-trans.png',
+          src: 'img/jumping-avt.gif',
         },
         items: [
           {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'CTF Write-ups',
+            label: '  Write-ups',
           },
           
           {
