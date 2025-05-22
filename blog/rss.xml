@@ -4,7 +4,7 @@
         <title>Thái Ngọc Diễm Trinh Blog</title>
         <link>https://solivaquaant.github.io/my-small-blog/blog</link>
         <description>Thái Ngọc Diễm Trinh Blog</description>
-        <lastBuildDate>Thu, 22 May 2025 02:41:10 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 22 May 2025 02:41:53 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[DLL Side Loading + DLL Proxying]]></title>
             <link>https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading</link>
             <guid>https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading</guid>
-            <pubDate>Thu, 22 May 2025 02:41:10 GMT</pubDate>
+            <pubDate>Thu, 22 May 2025 02:41:53 GMT</pubDate>
             <description><![CDATA[Blog about DLL Side Loading + DLL Proxying, bypass Windows Defender]]></description>
             <content:encoded><![CDATA[<p>In this post, I will show you about DLL Side Loading technique to bypass Windows Defender using Notepad++ and Sliver C2</p>
 <p>This is content of the blog</p>
