@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_own_blog=self.webpackChunkmy_own_blog||[]).push([[8160],{5927:a=>{a.exports=JSON.parse('{"tags":[{"label":"Malware","permalink":"/my-small-blog/blog/tags/malware","description":"Malware tag description","count":1}]}')}}]);

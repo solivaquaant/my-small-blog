@@ -1,0 +1,1 @@
+(self.webpackChunkmy_own_blog=self.webpackChunkmy_own_blog||[]).push([[5741],{5741:()=>{}}]);
