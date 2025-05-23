@@ -1,0 +1,55 @@
+---
+tags: []
+---
+# Blame Game
+
+- **Description:** Someone's commits seems to be preventing the program from working. Who is it?
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+While reviewing the commit history using `git log`, we notice a large number of entries with the same message: **important business work**. 
+This repetition makes it difficult to identify meaningful changes.
+```bash
+┌──(kali㉿kali)-[~/Desktop/drop-in]
+└─$ git log 
+commit ee09a4c4c11ecef32e6030630ef426d946ab46a4 (HEAD -> master)
+Author: picoCTF <ops@picoctf.com>
+Date:   Sat Mar 9 21:09:19 2024 +0000
+
+    important business work
+
+commit 7d196f481dcc75a7f7aa334d2a7d92c8cb491dc7
+Author: picoCTF <ops@picoctf.com>
+Date:   Sat Mar 9 21:09:19 2024 +0000
+
+    important business work
+
+commit 4d6ef5684fe83034532073c52014f67ec9820f9b
+Author: picoCTF <ops@picoctf.com>
+Date:   Sat Mar 9 21:09:19 2024 +0000
+
+    important business work
+```
+Fortunately, the directory contains only a single file - **message.py**. To narrow the scope, we use `git log message.py`.
+This command filters the log to only show commits that modified the specific file, making it easier to trace relevant activity.
+Among the results, one commit stands out with the message: **optimize file size of prod code**. The author of that commit is the flag we’re looking for.
+```bash
+┌──(kali㉿kali)-[~/Desktop/drop-in]
+└─$ git log message.py 
+commit fadeca9476b6713ec8cdda633aca9e9aebffc698
+Author: picoCTF{@sk_th3_1nt3rn_e9957ce1} <ops@picoctf.com>
+Date:   Sat Mar 9 21:09:11 2024 +0000
+
+    optimize file size of prod code
+
+commit 2dd46769e2d65656bb14aed0ff5d3237daaa7d9d
+Author: picoCTF <ops@picoctf.com>
+Date:   Sat Mar 9 21:09:11 2024 +0000
+
+    create top secret project
+```
+
+## 🚩Flag
+> `picoCTF{@sk_th3_1nt3rn_e9957ce1}`

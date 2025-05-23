@@ -1,0 +1,34 @@
+---
+tags: []
+---
+# Super SSH
+
+- **Description:** Using a Secure Shell (SSH) is going to be pretty important.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+The goal of this challenge is to demonstrate how to establish an SSH connection to a remote machine. 
+To do this, you can use the following command syntax:
+```bash
+ssh -p <port-number> <username>@<host-address>
+```
+When prompted with a fingerprint verification (host authenticity), type **yes** to continue the connection. 
+Then, enter the correct password when asked. If everything is done correctly, you will successfully establish an SSH session with the target machine - and the flag will be waiting for you upon login.     
+For example:
+```
+┌──(kali㉿kali)-[~/Desktop/drop-in]
+└─$ ssh -p 63903 ctf-player@titan.picoctf.net
+The authenticity of host '[titan.picoctf.net]:63903 ([3.139.174.234]:63903)' can't be established.
+ED25519 key fingerprint is SHA256:4S9EbTSSRZm32I+cdM5TyzthpQryv5kudRP9PIKT7XQ.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '[titan.picoctf.net]:63903' (ED25519) to the list of known hosts.
+ctf-player@titan.picoctf.net's password: 
+Welcome ctf-player, here's your flag: picoCTF{s3cur3_c0nn3ct10n_45a48857}
+Connection to titan.picoctf.net closed.
+```
+
+## 🚩Flag
+> `picoCTF{s3cur3_c0nn3ct10n_45a48857}`

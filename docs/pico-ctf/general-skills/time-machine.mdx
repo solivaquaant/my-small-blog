@@ -1,0 +1,27 @@
+---
+tags: []
+---
+# Time Machine
+
+- **Description:** What was I last working on? I remember writing a note to help me remember...
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+After extracting the archive, we obtain a directory named `drop-in`. 
+Inside this folder, there is a `.txt` file and a hidden `.git` directory - indicating that this is the working directory of a Git repository, most likely cloned or initialized from GitHub.  
+Next, we run the command `git log`. This command displays the commit history of the repository, showing detailed information such as the author, timestamp, and commit messages. 
+And of course we have the flag~
+```bash
+┌──(kali㉿kali)-[~/Desktop/drop-in]
+└─$ git log                                     
+commit 705ff639b7846418603a3272ab54536e01e3dc43 (HEAD -> master)
+Author: picoCTF <ops@picoctf.com>
+Date:   Sat Mar 9 21:10:36 2024 +0000
+
+    picoCTF{t1m3m@ch1n3_b476ca06}
+```
+
+## 🚩Flag
+> `picoCTF{t1m3m@ch1n3_b476ca06}`

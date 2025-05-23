@@ -1,0 +1,99 @@
+---
+tags: []
+---
+# Rust fixme 1
+
+- **Description:** Have you heard of Rust? Fix the syntax errors in this Rust file to print the flag!
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+Begin by extracting the provided archive using `tar -xzf fixme1.tar.gz`.
+This will unpack the project directory, revealing the following files: `Cargo.lock`, `Cargo.toml`, `src/main.rs`
+
+To compile and run the project, execute `cargo run`.
+At this stage, the program will fail to compile, throwing three errors. Let's walk through and resolve them one by one:
+
+1. **Line 5** - A semicolon `;` is missing at the end of the statement.
+```
+error: expected `;`, found keyword `let`
+ --> src/main.rs:5:37
+  |
+5 |     let key = String::from("CSUCKS") // How do we end statements in Rust?
+  |  
+```
+Fixing by adding a semicolon at the end of the line:
+```rust
+let key = String::from("CSUCKS"); // How do we end statements in Rust?
+```
+
+2. **Line 18** - In Rust, to return a value from a function, use the `return` keyword.
+```
+error[E0425]: cannot find value `ret` in this scope
+  --> src/main.rs:18:9
+   |
+18 |         ret; // How do we return in rust?
+   |         ^^^ help: a local variable with a similar name exists: `res`
+```
+Change the line to:
+```rust
+// Create decrpytion object
+let res = XORCryptor::new(&key);
+if res.is_err() {
+    return ; // How do we return in rust?
+}
+```
+
+3. **Line 25** - When printing a variable using println!, use {} as a placeholder.
+```
+error: argument never used
+  --> src/main.rs:26:9
+   |
+25 |         ":?", // How do we print out a variable in the println function? 
+```
+Change `":?"` to `"{}"`
+```rust
+    println!(
+        "{}", // How do we print out a variable in the println function? 
+        String::from_utf8_lossy(&decrypted_buffer)
+    );
+```
+After fixing these issues, run the program again. If all corrections are applied correctly, the flag will be displayed.
+```bash
+┌──(kali㉿kali)-[~/Desktop/fixme1]
+└─$ cargo run            
+   Compiling rust_proj v0.1.0 (/home/kali/Desktop/fixme1)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.74s
+     Running `target/debug/rust_proj`
+picoCTF{4r3_y0u_4_ru$t4c30n_n0w?}
+```
+
+## Installing Rust
+If your system doesn't have Rust installed or cannot build the project, you can set it up with the following commands:
+```bash
+sudo apt update
+sudo apt install curl build-essential
+curl https://sh.rustup.rs -sSf | sh
+```
+Once installation is complete, initialize the Rust environment by running:
+```bash
+source $HOME/.cargo/env
+```
+
+You can verify the installation with:
+```
+cargo --version
+rustc --version
+```
+
+## 🚩Flag
+> `picoCTF{4r3_y0u_4_ru$t4c30n_n0w?}`
+
+
+
+
+
+
+
+

@@ -1,0 +1,87 @@
+---
+tags: []
+---
+# Collaborative Development
+
+- **Description:** My team has been working very hard on new features for our flag printing program! I wonder how they'll work together?
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+When working collaboratively on a Git repository, it's common practice for each team member to create and push code to their own dedicated branch.
+To list all available branches in the repository, we use the `git branch` command. In this project, in addition to the main branch (`main`), there are three feature branches: `feature/part-1`, `feature/part-2`, and `feature/part-3`.
+```bash
+┌──(kali㉿kali)-[~/Desktop/drop-in]
+└─$ git branch
+  feature/part-1
+  feature/part-2
+  feature/part-3
+* main
+```
+By checking out each branch using `git checkout <branch-name>` and inspecting it with `git show`, we find that each branch contains a distinct segment of the flag.
+- Branch `feature/part-1` contains the first part of the flag: `picoCTF{t3@mw0rk_`.
+```bash
+┌──(kali㉿kali)-[~/Desktop/drop-in]
+└─$ git show                   
+commit b2e05429742e8784eee7dc83b6a9d1fb904988c0 (HEAD -> feature/part-1)
+Author: picoCTF <ops@picoctf.com>
+Date:   Tue Mar 12 00:07:52 2024 +0000
+
+    add part 1
+
+diff --git a/flag.py b/flag.py
+index 77d6cec..6e17fb3 100644
+--- a/flag.py
++++ b/flag.py
+@@ -1 +1,2 @@
+ print("Printing the flag...")
++print("picoCTF{t3@mw0rk_", end='')
+\ No newline at end of file
+```
+
+- Branch `feature/part-2` contains the second part of the flag: `m@k3s_th3_dr3@m_`.
+```bash                                                                                                                    
+┌──(kali㉿kali)-[~/Desktop/drop-in]
+└─$ git show                   
+commit e1629c73b55d8831cfa3cda13a74c3e8f7c9e2f1 (HEAD -> feature/part-2)
+Author: picoCTF <ops@picoctf.com>
+Date:   Tue Mar 12 00:07:52 2024 +0000
+
+    add part 2
+
+diff --git a/flag.py b/flag.py
+index 77d6cec..7ab4e25 100644
+--- a/flag.py
++++ b/flag.py
+@@ -1 +1,3 @@
+ print("Printing the flag...")
++
++print("m@k3s_th3_dr3@m_", end='')
+\ No newline at end of file
+```
+
+- Branch `feature/part-3` contains the third part of the flag: `development_`.
+```bash                                                                                                                     
+┌──(kali㉿kali)-[~/Desktop/drop-in]
+└─$ git show                   
+commit 8fccfcdaeeb259a51b642ba76ec2e5feb086c057 (HEAD -> feature/part-3)
+Author: picoCTF <ops@picoctf.com>
+Date:   Tue Mar 12 00:07:52 2024 +0000
+
+    add part 3
+
+diff --git a/flag.py b/flag.py
+index 77d6cec..dfee641 100644
+--- a/flag.py
++++ b/flag.py
+@@ -1 +1,3 @@
+ print("Printing the flag...")
++
++print("w0rk_7ae8dd33}")
+```
+Combining the pieces from all three branches reveals the complete flag.
+
+
+## 🚩Flag
+> `picoCTF{t3@mw0rk_m@k3s_th3_dr3@m_w0rk_7ae8dd33}`

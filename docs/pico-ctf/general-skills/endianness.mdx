@@ -1,0 +1,33 @@
+---
+tags: []
+---
+# endianness
+
+- **Description:** Know of little and big endian?
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+This challenge provides a random string, and your task is to determine its representation in both **Little Endian** and **Big Endian** formats.
+Start by encoding the string into its **hexadecimal** representation. For example, the string `qlqvt` becomes: `71 6c 71 76 74`.  
+In Little Endian, the least significant byte is stored first (at the lowest memory address), so the byte order is reversed. 
+The resulting representation would be: `74 76 71 6c 71`.  
+```bash
+Word: qlqvt
+Enter the Little Endian representation: 7476716c71
+Correct Little Endian representation!
+```
+In Big Endian, the most significant byte is stored first (at the lowest memory address), so the byte order remains as-is: `71 6c 71 76 74`.
+```bash
+Enter the Big Endian representation: 716c717674
+Correct Big Endian representation!
+``` 
+Successfully deriving both formats will bring you one step closer to solving the challenge.
+```bash
+Congratulations! You found both endian representations correctly!
+Your Flag is: picoCTF{3ndi4n_sw4p_su33ess_d58517b6}
+```
+
+## 🚩Flag
+> `picoCTF{3ndi4n_sw4p_su33ess_d58517b6}`

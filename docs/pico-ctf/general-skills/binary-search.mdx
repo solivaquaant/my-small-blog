@@ -1,0 +1,54 @@
+---
+---
+# Binary Search
+
+- **Description:** Want to play a game? As you use more of the shell, you might be interested in how they work! Binary search is a classic algorithm used to quickly find an item in a sorted list. Can you find the flag? You'll have 1000 possibilities and only 10 guesses.
+Cyber security often has a huge amount of data to look through - from logs, vulnerability reports, and forensics. Practicing the fundamentals manually might help you in the future when you have to write your own tools!
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+The challenge presents a simple yet classic game: guess the correct number between 1 and 1000. 
+However, there's a catch - we only have **10** attempts to find the answer.
+```
+Welcome to the Binary Search Game!
+I'm thinking of a number between 1 and 1000.
+```
+
+To efficiently solve this, we can apply the [binary search algorithm](https://www.geeksforgeeks.org/binary-search/), a fundamental technique for quickly narrowing down a sorted range.
+We start by guessing **500** - the midpoint of the initial range. 
+If the correct number is lower than 500, we adjust our range to **[1, 499]** and guess the midpoint of that range next. 
+Conversely, if the number is higher than 500, we shift our focus to **[501, 1000]** and continue in the same fashion.  
+By repeatedly halving the search space based on whether the target number is higher or lower than our current guess, we converge on the correct number within 10 steps.
+For example:
+```
+Enter your guess: 500
+Higher! Try again.
+Enter your guess: 750
+Higher! Try again.
+Enter your guess: 875
+Higher! Try again.
+Enter your guess: 937
+Higher! Try again.
+Enter your guess: 969
+Higher! Try again.
+Enter your guess: 984
+Lower! Try again.
+Enter your guess: 976   
+Lower! Try again.
+Enter your guess: 972
+Higher! Try again.
+Enter your guess: 974
+Lower! Try again.
+Enter your guess: 973
+Congratulations! You guessed the correct number: 973
+```
+
+Once the number is correctly identified, the challenge rewards us with the flag.
+```
+Here's your flag: picoCTF{g00d_gu355_1597707f}
+``` 
+
+## 🚩Flag
+> `picoCTF{g00d_gu355_1597707f}`

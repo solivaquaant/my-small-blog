@@ -1,0 +1,69 @@
+---
+---
+# FANTASY CTF
+
+- **Description:** Play this short game to get familiar with terminal applications and some of the most important rules in scope for picoCTF.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+After running the provided command in the terminal, the output unfolds like a narrative - almost like reading the beginning of a story.
+```
+                                                                                                                       
+┌──(kali㉿kali)-[~/Desktop]
+└─$ nc verbal-sleep.picoctf.net 52486
+FANTASY CTF SIMULATION
+
+The simulation begins in the private room of Eibhilin, a bright, young student.
+The room is dimly lit, with the glow of her multiple monitors casting an
+electric blue hue on the walls. Around the room are posters of vintage movies
+from the MCU — ancient guardians from another age staring down like digital
+sentinels.
+
+---
+(Press Enter to continue...)
+```
+
+I pressed Enter repeatedly until a set of choices appeared on the screen.
+```
+Options:
+A) *Register multiple accounts*
+B) *Share an account with a friend*
+C) *Register a single, private account*
+[a/b/c] > 
+```
+
+Choosing option a, I continued navigating forward with more presses of the Enter key.
+```
+Nyx chimes in, "Eibhilin, don't do that! That's been grounds for
+disqualification for the past 1,000 years!"
+---
+(Press Enter to continue...)
+---
+"Oh, thanks Nyx, that was close!"
+---
+(Press Enter to continue...)
+---
+"Ok," Nyx says, "Registering you for the competition... There's an introductory
+audio message, piping to your speakers."
+---
+(Press Enter to continue...)
+```
+
+Soon, another decision point came up, offering a new set of options. I made a choice and went with the first one.
+```
+Options:
+A) *Play the game*
+B) *Search the Ether for the flag*
+[a/b] > a
+```
+
+To my surprise, after what felt like playing an interactive story game, the character managed to discover the flag.
+```
+"Thanks, Nyx! Here's the flag I found: picoCTF{m1113n1um_3d1710n_dc6af91c}"
+```
+And just like that, we had the flag we were looking for.
+
+## 🚩Flag
+> `picoCTF{m1113n1um_3d1710n_dc6af91c}`
