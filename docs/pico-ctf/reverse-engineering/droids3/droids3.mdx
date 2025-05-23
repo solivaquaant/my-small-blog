@@ -1,0 +1,71 @@
+---
+tags: [android, reverse-engineer]
+---
+# droids3
+
+- **Description:** Find the pass, get the flag. Check out this file.
+- **Difficulty:** Hard
+
+---
+
+## 🔎 Solution
+Open apk file in ByteCode Viewer. Upon examining the getFlag method within `FlagstaffHill.class`, we noticed that it currently returns the string **"don't wanna"**. 
+This suggests that in order to reveal the correct flag, we must modify the logic behind this method.
+```
+public class FlagstaffHill {
+   public static native String cilantro(String var0);
+
+   public static String getFlag(String var0, Context var1) {
+      return nope(var0);
+   }
+
+   public static String nope(String var0) {
+      return "don't wanna";
+   }
+
+   public static String yep(String var0) {
+      return cilantro(var0);
+   }
+```
+
+
+After decompiling `four.apk`, we identified the relevant smali code and found that the return function is **"nope"**. 
+To alter the app's behavior and reveal the flag, we need to change this return function to **"yep"** in the `getFlag` method.
+Decompile the apk file, then navigate to the appropriate smali file, locate the `getFlag` method (around line 25)
+```smali
+.method public static getFlag(Ljava/lang/String;Landroid/content/Context;)Ljava/lang/String;
+    .locals 1
+    .param p0, "input"    # Ljava/lang/String;
+    .param p1, "ctx"    # Landroid/content/Context;
+
+    .line 19
+    // highlight-start
+    invoke-static {p0}, Lcom/hellocmu/picoctf/FlagstaffHill;->yep(Ljava/lang/String;)Ljava/lang/String;
+    // highlight-end
+    move-result-object v0
+
+    .line 20
+    .local v0, "flag":Ljava/lang/String;
+    return-object v0
+.end method
+```
+
+Recompile the modified source using `apktool b three -o threev2.apk`.
+Create a new keystore for signing the APK:
+```
+keytool -genkey -v -keystore three.keystore -alias threev2 -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Sign the rebuilt APK with the generated keystore. `apksigner.bat` is often found in `C:\Users\[user-name]\AppData\Local\Android\Sdk\build-tools\[version]\`
+```
+apksigner.bat sign -ks .\three.keystore .\threev2.apk
+```
+
+Install the patched APK on emulator. Upon launching the app and pressing the designated button, the correct flag should now be displayed.
+<div style={{ width: '50%', margin: '0 auto' }}>
+  <img src={require("./image.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{tis.but.a.scratch}`
+

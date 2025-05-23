@@ -1,0 +1,96 @@
+---
+tags: []
+---
+# droids4
+
+- **Description:** Reverse the pass, patch the file, get the flag. Check out this file.
+- **Difficulty:** Hard
+
+---
+
+## 🔎 Solution
+Open the APK file using Bytecode Viewer. 
+Inside the `FlagstaffHill.class`, we observe several variables being initialized and manipulated. 
+The program prints **"call it"** when the correct input string is entered. To extract the flag, we need to:
+1. Identify the correct input string.
+2. Modify the code to replace the **"call it"** response with a call to the `cardamom()` method, which reveals the flag.
+
+```
+public static native String cardamom(String var0);
+
+public static String getFlag(String var0, Context var1) {
+  StringBuilder var2 = new StringBuilder("aaa");
+  StringBuilder var5 = new StringBuilder("aaa");
+  StringBuilder var3 = new StringBuilder("aaa");
+  StringBuilder var4 = new StringBuilder("aaa");
+  var2.setCharAt(0, (char)(var2.charAt(0) + 4));
+  var2.setCharAt(1, (char)(var2.charAt(1) + 19));
+  var2.setCharAt(2, (char)(var2.charAt(2) + 18));
+  var5.setCharAt(0, (char)(var5.charAt(0) + 7));
+  var5.setCharAt(1, (char)(var5.charAt(1) + 0));
+  var5.setCharAt(2, (char)(var5.charAt(2) + 1));
+  var3.setCharAt(0, (char)(var3.charAt(0) + 0));
+  var3.setCharAt(1, (char)(var3.charAt(1) + 11));
+  var3.setCharAt(2, (char)(var3.charAt(2) + 15));
+  var4.setCharAt(0, (char)(var4.charAt(0) + 14));
+  var4.setCharAt(1, (char)(var4.charAt(1) + 20));
+  var4.setCharAt(2, (char)(var4.charAt(2) + 15));
+  return var0.equals("".concat(var3.toString()).concat(var5.toString()).concat(var2.toString()).concat(var4.toString())) ? "call it" : "NOPE";
+}
+```
+Several variables are initialized with "aaa" and then transformed:
+1. var2:
+- 'a' + 4 = 'e'
+- 'a' + 19 = 't'
+- 'a' + 18 = 's'  
+→ var2 = "ets"
+2. var3:
+- 'a' + 7 = 'h'
+- 'a' + 0 = 'a'
+- 'a' + 1 = 'b'  
+→ var3 = "hab"
+3. var5:
+- 'a' + 0 = 'a'
+- 'a' + 11 = 'l'
+- 'a' + 15 = 'p'  
+→ var5 = "alp"
+4. var4:
+- 'a' + 14 = 'o'
+- 'a' + 20 = 'u'
+- 'a' + 15 = 'p'   
+→   var4 = "oup"
+
+
+Combining the variables: "alp" + "hab" + "ets" + "oup" → `alphabetsoup`
+<div style={{ width: '50%', margin: '0 auto' }}>
+  <img src={require("./image.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Edit smali code by locating the line that returns `"call it"` and replace it with a call to the `cardamom()` function.
+
+Replace the following code:
+
+```
+if-eqz v5, :cond_0
+
+const-string v5, "call it"
+
+return-object v5
+```
+with  
+```
+if-eqz v5, :cond_0
+
+invoke-static {p0}, Lcom/hellocmu/picoctf/FlagstaffHill;->cardamom(Ljava/lang/String;)Ljava/lang/String;
+move-result-object v5
+
+return-object v5
+```
+Recompile the APK, generate a keystore and sign the APK, and reinstall the modified app (you can see details how to do this in the [previous droids](https://solivaquaant.github.io/my-small-blog/docs/pico-ctf/reverse-engineering/droids3/) writeup).
+Now, when `alphabetsoup` is entered, the app executes the patched logic and reveals the flag.
+<div style={{ width: '50%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{not.particularly.silly}`
