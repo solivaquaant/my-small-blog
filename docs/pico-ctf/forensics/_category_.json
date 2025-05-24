@@ -1,0 +1,8 @@
+{
+  "label": "Forensics",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Some picoCTF write-ups in Forensics category."
+  }
+}

@@ -1,0 +1,35 @@
+---
+tags: []
+---
+# Big Zip
+
+- **Description:** Unzip this archive and find the flag.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+After extracting the zip archive, we discover a massive collection of files and directories - a total of 3076 items.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ ls -la big-zip-files    
+total 3076
+drwxrwxr-x 121 kali kali 36864 May  3  2020 .
+drwxr-xr-x   7 kali kali  4096 May 24 10:15 ..
+-rw-rw-r--   1 kali kali    88 May  3  2020 acurqdgqyoi.txt
+-rw-rw-r--   1 kali kali    87 May  3  2020 aecwqhyouxkugpjtn.txt
+-rw-rw-r--   1 kali kali    88 May  3  2020 agkahcbvobe.txt
+```
+
+To locate the flag string that follows the **picoCTF** format, we use the grep command with the `-r` option.
+The `-r` flag (short for `--recursive`) tells grep to search through all files and directories recursively, making it ideal for scanning through large nested structures like this one.
+```bash
+grep -r "picoCTF"
+```
+The result points us to the file containing the flag:
+```bash  
+big-zip-files/folder_pmbymkjcya/folder_cawigcwvgv/folder_ltdayfmktr/folder_fnpfclfyee/whzxrpivpqld.txt:information on the record will last a billion years. Genes and brains and books encode picoCTF{gr3p_15_m4g1c_ef8790dc}
+```
+
+## 🚩Flag
+> `picoCTF{gr3p_15_m4g1c_ef8790dc}`

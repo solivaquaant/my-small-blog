@@ -1,0 +1,21 @@
+---
+tags: []
+---
+# First Grep
+
+- **Description:** Can you find the flag in file? This would be really tedious to look through manually, something tells me there is a better way.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+This challenge introduces the basics of the `grep` command - a powerful tool used to search for specific strings or patterns within files on Unix-based systems.  
+You're given a text file, and your task is to search through it for a line containing the keyword **picoCTF**. If done correctly, the output will reveal the flag.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ cat file | grep "picoCTF"
+picoCTF{grep_is_good_to_find_things_5af9d829}
+```
+
+## 🚩Flag
+> `picoCTF{grep_is_good_to_find_things_5af9d829}`

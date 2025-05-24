@@ -1,0 +1,28 @@
+---
+tags: []
+---
+# what's a net cat?
+
+- **Description:** Using netcat (nc) is going to be pretty important. Can you connect to jupiter.challenges.picoctf.org at port 41120 to get the flag?
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+This challenge introduces **Netcat**, a powerful command-line utility often referred to as the "Swiss army knife" of networking. 
+It allows users to read and write data across network connections using TCP or UDP.  
+To connect to a remote service using Netcat, use the following syntax:
+```
+nc <address> <port>
+```
+
+Once connected successfully, the server will return the flag.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ nc jupiter.challenges.picoctf.org 41120
+You're on your way to becoming the net cat master
+picoCTF{nEtCat_Mast3ry_3214be47}
+```
+
+## 🚩Flag
+> `picoCTF{nEtCat_Mast3ry_3214be47}`

@@ -1,0 +1,21 @@
+---
+tags: []
+---
+# 13    
+
+- **Description:** Cryptography can be easy, do you know what ROT13 is? `cvpbPGS{abg_gbb_onq_bs_n_ceboyrz}` 
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+This challenge introduces **ROT13**, a simple substitution cipher where each letter is replaced by the letter 13 positions ahead in the alphabet.  
+To decrypt the provided ciphertext, we can utilize [CyberChef](https://cyberchef.io/), a powerful online tool that supports a wide range of decoding techniques.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./image.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+By applying ROT13 decryption using CyberChef, the flag is revealed.
+
+## 🚩Flag
+> `picoCTF{not_too_bad_of_a_problem}`

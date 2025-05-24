@@ -1,0 +1,24 @@
+---
+tags: []
+---
+# Bases
+
+- **Description:** What does this `bDNhcm5fdGgzX3IwcDM1` mean? I think it has something to do with bases.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+In data encoding, we often encounter formats that begin with the prefix "base", such as **Base64**, **Base32**, or **Base16**. 
+These are encoding schemes that convert binary data into ASCII text to ensure safe transmission and storage in text-only environments.  
+**Base64** is one of the most widely used encodings, commonly found in emails, HTTP headers, and data serialization. 
+It allows binary data (like images or files) to be represented in a readable and transferable format.  
+In this challenge, you're given a string encoded in **Base64**. Your task is simply to decode it to retrieve the flag.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ echo "bDNhcm5fdGgzX3IwcDM1" | base64 -d                                                    
+l3arn_th3_r0p35 
+```
+Make sure to submit the answer in the correct format: `picoCTF{resut}`
+## 🚩Flag
+> `picoCTF{l3arn_th3_r0p35}`
