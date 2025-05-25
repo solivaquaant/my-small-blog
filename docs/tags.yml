@@ -27,3 +27,13 @@ binary-exploitation:
   label: Binary Exploitation
   permalink: /binary-exploitation
   description: Binary exploitation tag description
+
+steganography:
+  label: Steganography
+  permalink: /steganography
+  description: Steganography tag description
+
+network:
+  label: Network
+  permalink: /network
+  description: Network tag description

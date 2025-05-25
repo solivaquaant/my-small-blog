@@ -1,0 +1,38 @@
+---
+tags: []
+---
+# Verify
+
+- **Description:** People keep trying to trick my players with imitation flags. I want to make sure they get the real thing! I'm going to provide the SHA-256 hash and a decrypt script to help you know that my flags are legitimate.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+After establishing an SSH connection, we obtain 3 key items: a `.txt` file containing a **SHA-256** hash string, a `decrypt.sh` script used for decryption, and a `files` directory filled with numerous files of various kinds.
+```bash
+ctf-player@pico-chall$ ls
+checksum.txt  decrypt.sh  files
+```
+
+Our objective is to identify which file within the `files` directory matches the SHA-256 checksum provided in the `.txt` file.
+```bash
+ctf-player@pico-chall$ cat checksum.txt 
+b09c99c555e2b39a7e97849181e8996bc6a62501f0149c32447d8e65e205d6d2
+```
+
+To do this, we run the following command to compute the SHA-256 hash for every file in the `files` directory and search for the matching hash:
+```bash
+ctf-player@pico-chall$ sha256sum files/* | grep "b09c99c555e2b39a7e97849181e8996bc6a62501f0149c32447d8e65e205d6d2"
+b09c99c555e2b39a7e97849181e8996bc6a62501f0149c32447d8e65e205d6d2  files/451fd69b
+```
+
+The result reveals that `files/451fd69b` has a checksum identical to the one in the `.txt` file.  
+Finally, we use the `decrypt.sh` script to decrypt the identified file and successfully retrieve the flag.
+```bash
+ctf-player@pico-chall$ decrypt.sh files/451fd69b
+picoCTF{trust_but_verify_451fd69b}
+```
+
+## 🚩Flag
+> `picoCTF{trust_but_verify_451fd69b}`

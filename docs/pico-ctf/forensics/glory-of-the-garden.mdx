@@ -1,0 +1,20 @@
+---
+tags: [steganography, forensics]
+---
+# Glory of the Garden
+
+- **Description:** This garden contains more than it seems.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+In steganography challenges involving image files, it's quite common for data to be hidden at the end of the file. 
+By using the `strings` command along with `grep` to search for the keyword **picoCTF**, the hidden flag can often be uncovered.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ strings garden.jpg | grep "picoCTF" 
+Here is a flag "picoCTF{more_than_m33ts_the_3y33dd2eEF5}"
+```
+## 🚩Flag
+> `picoCTF{more_than_m33ts_the_3y33dd2eEF5}`
