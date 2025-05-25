@@ -1,0 +1,36 @@
+---
+tags: []
+---
+# PW Crack 1
+
+- **Description:** Can you crack the password to get the flag?
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+Examining the contents of `level1.py`, we find that in the `level_1_pw_check()` function, \
+the script checks whether the user-provided password matches the string `691d`. 
+If it does, the decryption process is triggered.
+```python
+def level_1_pw_check():
+    user_pw = input("Please enter correct password for flag: ")
+    if( user_pw == "691d"):
+        print("Welcome back... your flag, user:")
+        decryption = str_xor(flag_enc.decode(), user_pw)
+        print(decryption)
+        return
+    print("That password is incorrect")
+```
+
+Rerunning the script and entering `691d` as the password successfully decrypts the file, revealing the flag.                                                                                                   
+```bash                                                                                                                      
+┌──(kali㉿kali)-[~/Desktop]
+└─$ python level1.py 
+Please enter correct password for flag: 691d
+Welcome back... your flag, user:
+picoCTF{545h_r1ng1ng_56891419}
+```
+
+## 🚩Flag
+> `picoCTF{545h_r1ng1ng_56891419}`

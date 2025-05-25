@@ -1,41 +1,65 @@
-# Website
+# My little site
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+Welcome to **my little site**, a personal website built with [Docusaurus](https://docusaurus.io/) - a modern static site generator.  
+This site is where I share a bit about myself, write technical blog posts, CTF write-ups, and anything else I find interesting.
 
-### Installation
+## 🌐 Website features
 
+- 🧑‍💻 **About Me** – Learn more about who I am and what I do
+- 🔐 **CTF Write-ups** – Walkthroughs of Capture The Flag challenges I've solved
+- 🧠 **Blog** – Articles and thoughts on tech, cybersecurity, programming, and more
+
+- 🛠️ Built with **Docusaurus 3** – Fast, responsive, and easy to maintain.
+
+## 🚀 Getting Started
+
+To run this project locally:
+
+1. **Clone the repository:**
+```bash
+git clone https://github.com/solivaquaant/my-small-blog.git
+cd my-small-blog
 ```
-$ yarn
+2. **Install dependencies:**
+```bash
+npm install
+```
+3. **Start the development server:**
+```bash
+npm run start
+```
+Your site will be available at `http://localhost:3000/my-small-blog`.
+
+## 📦 Build
+To create an optimized production build:
+```bash
+npm run build
+```
+Then, to preview the site:
+```bash
+npm run serve
 ```
 
-### Local Development
-
-```
-$ yarn start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
-
-```
-$ yarn build
+## 📁 Project Structure
+```perl
+my-own-blog/
+├── blog/                # Blog posts in Markdown
+├── docs/                # Documentation or write-ups
+├── src/                 # Custom React components and pages
+├── static/              # Static assets like images and files
+├── docusaurus.config.js # Main configuration file
+└── ...
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+## 🧩 Technologies Used
+- Docusaurus 3
+- React
+- Markdown, MDX
 
-### Deployment
+## 🙌 Contributing
+This is a personal project, but feel free to fork or suggest improvements by opening issues or pull requests!
 
-Using SSH:
+## 📄 License
+This project is licensed under the MIT License.
 
-```
-$ USE_SSH=true yarn deploy
-```
-
-Not using SSH:
-
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+> Thanks for stopping by! 👋Feel free to explore, learn, and connect.

@@ -1,0 +1,45 @@
+---
+tags: []
+---
+# PW Crack 2
+
+- **Description:** Can you crack the password to get the flag?
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+The challenge provides two files: a Python script and an encrypted file. Our objective is to decrypt the encrypted file.  
+Upon running `level2.py`, the script prompts for a password. If the input is incorrect, decryption fails.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ python level2.py
+Please enter correct password for flag: 
+That password is incorrect
+```
+
+Inspecting the source code reveals a function named `level_2_pw_check()`, 
+which verifies the input against a hardcoded password constructed as `chr(0x33) + chr(0x39) + chr(0x63) + chr(0x65)`. 
+This translates to the string `39ce`.  
+```python
+def level_2_pw_check():
+    user_pw = input("Please enter correct password for flag: ")
+    if( user_pw == chr(0x33) + chr(0x39) + chr(0x63) + chr(0x65) ):
+        print("Welcome back... your flag, user:")
+        decryption = str_xor(flag_enc.decode(), user_pw)
+        print(decryption)
+        return
+    print("That password is incorrect")
+```
+
+Rerunning the script and entering `39ce` as the password successfully triggers the decryption process - and the flag is revealed.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ python level2.py 
+Please enter correct password for flag: 39ce
+Welcome back... your flag, user:
+picoCTF{tr45h_51ng1ng_502ec42e}
+```                                                                                                                 
+
+## 🚩Flag
+> `picoCTF{tr45h_51ng1ng_502ec42e}`

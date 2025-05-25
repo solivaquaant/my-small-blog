@@ -1,0 +1,33 @@
+---
+tags: []
+---
+# Wave a flag
+
+- **Description:** Can you invoke help flags for a tool or binary? This program has extraordinarily helpful information...
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+Grant **execute** permission to the program.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ chmod +x ./warm 
+```
+
+Upon running it, the program suggests using the `-h` flag for more information.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ ./warm         
+Hello user! Pass me a -h to learn what I can do!
+```
+
+Executing it again with the `-h` parameter reveals the flag.
+```bash                                                                              
+┌──(kali㉿kali)-[~/Desktop]
+└─$ ./warm -h
+Oh, help? I actually don't do much, but I do have this flag here: picoCTF{b1scu1ts_4nd_gr4vy_d6969390}
+```
+
+## 🚩Flag
+> `picoCTF{b1scu1ts_4nd_gr4vy_d6969390} `
