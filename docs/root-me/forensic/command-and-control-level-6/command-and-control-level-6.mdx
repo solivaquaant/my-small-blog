@@ -1,0 +1,36 @@
+---
+tags: []
+---
+# Command & Control - level 6
+
+- **Description:** Berthier, before blocking any of the malware's traffic on our firewalls, we need to make sure we found all its C&C. 
+This will let us know if there are other infected hosts on our network and be certain we've locked the attackers out. 
+That's it Berthier, we're almost there, reverse this malware!
+The validation password is a fully qualified domain name : hote.domaine.tld
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+From the **Command & Control - Level 3** challenge, we identified the **iexplore.exe** process as a strong candidate for containing malicious code.
+To analyze it further, we used `procdump` plugin to extract the process into an executable file sample. 
+This gave us a standalone .exe file for deeper inspection.
+```bash                                                                                                                              
+┌──(kali㉿kali)-[~/Desktop]
+└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 procdump -p 2772 --dump-dir=./root-me           
+Volatility Foundation Volatility Framework 2.6
+Process(V) ImageBase  Name                 Result
+---------- ---------- -------------------- ------
+0x87b6b030 0x00400000 iexplore.exe         OK: executable.2772.exe
+```
+
+Next, we uploaded this file to **[VirusTotal](https://www.virustotal.com/gui/home/upload)**, a trusted platform for malware scanning and threat intelligence. 
+The results were conclusive: 58 out of 72 antivirus engines flagged the file as malicious. You can view details [here](https://www.virustotal.com/gui/file/13170ec31cf0920ad871b0d0603b6f575f847e523ac977e5177adaf62d569853)  
+In the **Behaviors** tab, VirusTotal provided valuable behavioral data, including DNS resolution activity. 
+These domain names are likely associated with Command and Control (C2) servers, suggesting that the malware attempts to establish outbound connections to communicate with an external attacker-controlled infrastructure.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./dns.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `th1sis.l1k3aK3y.org`

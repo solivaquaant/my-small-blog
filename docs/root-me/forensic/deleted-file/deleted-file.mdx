@@ -1,0 +1,29 @@
+---
+tags: [forensics]
+---
+# Deleted file
+
+- **Description:** Your cousin found a USB drive in the library this morning. 
+He's not very good with computers, so he's hoping you can find the owner of this stick!
+The flag is the owner's identity in the form `firstname_lastname`
+- **Difficulty:** Very Easy
+
+---
+
+## 🔎 Solution
+The provided file is a USB image. 
+To analyze it, we can use **[FTK Imager](https://www.exterro.com/ftk-product-downloads/ftk-imager-4-7-3-81)**. 
+Start by selecting **Image File** under the **Select Source** option to load the image.  
+Once loaded, navigate to the `/root` directory, where an image file is located. 
+Right-click on the image and choose **Export Files** to extract it.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./ftk.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+After exporting, view the file's Properties. From the metadata, we can identify the owner of the image as **Javier Turcot**.
+<div style={{ width: '50%', margin: '0 auto' }}>
+  <img src={require("./author.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `javier_turcot`

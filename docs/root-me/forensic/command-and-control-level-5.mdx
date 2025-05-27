@@ -1,0 +1,69 @@
+---
+tags: []
+---
+# Command & Control - level 5
+
+- **Description:** Berthier, the malware seems to be manually maintened on the workstations. 
+Therefore it's likely that the hackers have found all of the computers' passwords.
+Since ACME's computer fleet seems to be up to date, it's probably only due to password weakness. 
+John, the system administrator doesn't believe you. Prove him wrong!
+Find john password.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+To identify user accounts present on the system, the first step involves retrieving the **hivelist**. 
+Simply put, the hivelist reveals the starting memory addresses of Windows registry hives - data structures that store configuration settings and user account information.
+```js
+┌──(kali㉿kali)-[~/Desktop]
+└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 hivelist 
+Volatility Foundation Volatility Framework 2.6
+Virtual    Physical   Name
+---------- ---------- ----
+0x8ee66740 0x141c0740 \SystemRoot\System32\Config\SOFTWARE
+0x90cab9d0 0x172ab9d0 \SystemRoot\System32\Config\DEFAULT
+0x9670e9d0 0x1ae709d0 \??\C:\Users\John Doe\ntuser.dat
+0x9670f9d0 0x04a719d0 \??\C:\Users\John Doe\AppData\Local\Microsoft\Windows\UsrClass.dat
+//highlight-next-line
+0x9aad6148 0x131af148 \SystemRoot\System32\Config\SAM
+0x9ab25008 0x14a61008 \SystemRoot\System32\Config\SECURITY
+0x9aba79d0 0x11a259d0 \??\C:\Windows\ServiceProfiles\LocalService\NTUSER.DAT
+0x9abb1720 0x0a7d4720 \??\C:\Windows\ServiceProfiles\NetworkService\NTUSER.DAT
+0x8b20c008 0x039e1008 [no name]
+//highlight-next-line
+0x8b21c008 0x039ef008 \REGISTRY\MACHINE\SYSTEM
+0x8b23c008 0x02ccf008 \REGISTRY\MACHINE\HARDWARE
+0x8ee66008 0x141c0008 \Device\HarddiskVolume1\Boot\BCD
+```
+
+From the hivelist output, we obtain a list of registry keys related to Windows user account management that are currently loaded into RAM. 
+The next step is to locate the password hashes by referencing two specific keys: the **SYSTEM** key and the **SAM** key.
+In the results, each entry typically includes three columns: **Virtual**, **Physical**, **Name**. 
+By inspecting the **Name** column, we can identify:
+- The SYSTEM key: `\REGISTRY\MACHINE\SYSTEM`
+- The SAM key: `\SystemRoot\System32\Config\SAM`  
+
+We then extract the corresponding **Virtual** addresses of these 2 entries and insert them into the following command to extract the password hashes:
+```bash
+./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 hashdump -y 0x8b21c008 -s 0x9aad6148 > hash.txt
+```
+
+This command outputs the hash data into a text file for easier analysis. 
+```bash
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+John Doe:1000:aad3b435b51404eeaad3b435b51404ee:b9f917853e3dbf6e6831ecce60725930:::
+```
+
+Each record in the file is structured using the following colon-separated format:
+
+```bash
+<Username>:<User ID>:<LM hash>:<NT hash>:<Comment>:<Home Dir>:
+```
+
+For example, for the user **John Doe**, we obtain the NT hash (`b9f917853e3dbf6e6831ecce60725930`) in MD5 format. 
+Use [this tool](https://md5decrypt.net/) to decrypt the hash, which reveals the password as `passw0rd`.
+
+## 🚩Flag
+> `passw0rd`

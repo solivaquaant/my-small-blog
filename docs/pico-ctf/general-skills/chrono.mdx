@@ -1,0 +1,25 @@
+---
+tags: []
+---
+# chrono
+
+- **Description:** How to automate tasks to run at intervals on linux servers?
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+After establishing an SSH connection to the target system, we examined the contents of `/etc/crontab` - the configuration file used by the cron daemon to schedule automated tasks in Linux. 
+This file revealed the scheduled jobs running on the system. 
+Upon inspection, we discovered the flag hidden within the cron configuration itself.
+```bash
+picoplayer@challenge:~$ cat /etc/crontab
+# picoCTF{Sch3DUL7NG_T45K3_L1NUX_7754e199}
+```
+
+## 🚩Flag
+> `picoCTF{Sch3DUL7NG_T45K3_L1NUX_7754e199}`
+
+
+
+
