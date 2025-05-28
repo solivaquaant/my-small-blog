@@ -1,0 +1,23 @@
+---
+tags: [steganography]
+---
+# EXIF - Metadata
+
+- **Description:** Our sad friend pepo got lost! Can you find where he is ?
+The password is the city where pepo is located.
+- **Difficulty:** Very Easy
+
+---
+
+## 🔎 Solution
+Using `exiftool`, we examined the metadata of the image file and discovered embedded GPS information:
+```bash
+GPS Latitude                    : 43 deg 17' 56.27" N
+GPS Longitude                   : 5 deg 22' 49.38" E
+GPS Position                    : 43 deg 17' 56.27" N, 5 deg 22' 49.38" E
+```
+The coordinates `43°17'56.27" N, 5°22'49.38" E` point to a specific location. 
+After plugging them into [Google Maps](https://www.google.com/maps/place/43%C2%B017'56.3%22N+5%C2%B022'49.4%22E/@43.2989722,5.3803889,17z/data=!3m1!4b1!4m4!3m3!8m2!3d43.2989722!4d5.3803889?entry=ttu&g_ep=EgoyMDI1MDUyMS4wIKXMDSoASAFQAw%3D%3D), the result reveals that the image was taken in **Marseille**, a major city in southern France, located on the Mediterranean coast.
+
+## 🚩Flag
+> `Marseille`

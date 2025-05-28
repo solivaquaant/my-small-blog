@@ -1,0 +1,42 @@
+---
+tags: [network]
+---
+# Eavesdrop
+
+- **Description:** Download this packet capture and find the flag.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+After opening the pcap file in Wireshark and following the first TCP stream, a conversation between two parties is revealed
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./talk.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+Key points from the exchange include:
+1. Instructions for decrypting a file: `openssl des3 -d -salt -in file.des3 -out file.txt -k supersecretpassword123`
+2. The file was transferred over port **9002**.  
+
+By applying the filter `tcp.port == 9002` and following the corresponding TCP stream, I extracted what appears to be the contents of the transferred file
+```
+Salted__...<.P...O.r..E~cbk.......p&.}.......
+.F
+```
+Switching the display to **raw** format and saving the output as `file.des3`, I then used the provided command to decrypt it. 
+```
+53616c7465645f5fd30c863ca650da1fff4fbe72a086457e63626beda615c692cdd27026ae7deea6d1e918b3d40a7f46
+```
+Running the command successfully revealed the flag within the decrypted file.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ openssl des3 -d -salt -in file.des3 -out file.txt -k supersecretpassword123
+*** WARNING : deprecated key derivation used.
+Using -iter or -pbkdf2 would be better.
+                                                                                        
+┌──(kali㉿kali)-[~/Desktop]
+└─$ cat file.txt
+picoCTF{nc_73115_411_5786acc3}  
+```
+
+## 🚩Flag
+> `picoCTF{nc_73115_411_5786acc3}`

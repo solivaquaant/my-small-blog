@@ -1,0 +1,34 @@
+---
+tags: [steganography, forensics]    
+---
+# hideme
+
+- **Description:** Every file gets a flag.
+The SOC analyst saw one image been sent back and forth between two people. They decided to investigate and found out that there was more than what meets the eye here.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+With the provided image file, we utilized `binwalk` to extract embedded data. The analysis revealed a hidden file located at `secret/flag.png`.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ binwalk -e flag.png                       
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+41            0x29            Zlib compressed data, compressed
+39739         0x9B3B          Zip archive data, at least v1.0 to extract, name: secret/
+39804         0x9B7C          Zip archive data, at least v2.0 to extract, compressed size: 2884, uncompressed size: 3038, name: secret/flag.png
+
+WARNING: One or more files failed to extract: either no utility was found or it's unimplemented
+```
+
+Upon opening `flag.png`, we successfully retrieved the flag content.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+ 
+
+## 🚩Flag
+> `picoCTF{Hiddinng_An_imag3_within_@n_ima9e_82101824}`

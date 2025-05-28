@@ -1,0 +1,29 @@
+---
+tags: [steganography]
+---
+# Dot and next line
+
+- **Description:** "Rien de trop est un point dont on parle sans cesse et qu'on n'observe point.""
+- **Difficulty:** Very Easy
+
+---
+
+## 🔎 Solution
+Although this challenge is labeled as *very easy* and doesn't require any advanced technical skills to solve, it can still be quite tricky and misleading for players.  
+
+The challenge statement is written in French, and the provided image is also in French. 
+However, the language itself turns out to be largely irrelevant to solving the puzzle.  
+
+Based on the challenge title, **Dot and next line**, the key idea is to locate all the dots (periods) in the image.
+<div style={{ width: '80%', margin: '0 auto' }}>
+  <img src={require("./dot1.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+For each dot, we look at the character directly above it on the previous line.
+<div style={{ width: '80%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+By collecting those characters in order, we reconstruct the string `chatelet15h`, and that is the correct flag for the challenge.
+
+## 🚩Flag
+> `chatelet15h`

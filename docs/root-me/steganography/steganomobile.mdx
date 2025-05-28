@@ -1,0 +1,23 @@
+---
+tags: [steganography]
+---
+# Steganomobile
+
+- **Description:** After extraction of mobile data, the searcher, investigator have got this sequence of numbers. Maybe a phone number ?
+- **Difficulty:** Very Easy
+
+---
+
+## 🔎 Solution
+The content of the provided .txt file consists of a sequence of numbers, formatted as shown below.
+```
+222-33-555-555-7-44-666-66-33
+```
+To identify the encoding format, I used a [text identifier tool](https://www.dcode.fr/cipher-identifier), 
+which recognized the sequence as **Multi-tap Phone (SMS)** input - the type used on old mobile keypads where each number corresponds to multiple letters.  
+
+Using a [Multi-tap decoder](https://www.dcode.fr/multitap-abc-cipher), I entered the numeric sequence, and the output revealed the word `cellphone`.
+This turned out to be the correct solution for the challenge.
+
+## 🚩Flag
+> `cellphone`

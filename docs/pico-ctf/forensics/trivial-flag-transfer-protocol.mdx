@@ -1,0 +1,105 @@
+---
+tags: [network, steganography]
+---
+# Trivial Flag Transfer Protocol
+
+- **Description:** Figure out how they moved the flag.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+After opening the pcap file in Wireshark, numerous packets using the TFTP protocol - a UDP-based file transfer protocol typically used in LAN environments-were observed.
+To examine the transferred files, I navigated to **File → Export Objects → TFTP** and selected **Save All** to download all associated files.  
+
+One of the exported files, `instructions.txt`, contained a string that appeared encoded. Using [this tool](https://www.dcode.fr/cipher-identifier), I identified the encoding as **ROT-13**. 
+```
+GSGCQBRFAGRAPELCGBHEGENSSVPFBJRZHFGQVFTHVFRBHESYNTGENAFSRE.SVTHERBHGNJNLGBUVQRGURSYNTNAQVJVYYPURPXONPXSBEGURCYNA
+```
+Decoding it via [this](https://www.dcode.fr/rot-13-cipher) yielded the following message:
+> "TFTP doesn't encrypt our traffic so we must disguise our flag transfer. Figure out a way to hide the flag and I will check back for the plan."
+
+Another file, `plan`, also contained a ROT-13 encoded message. 
+```
+VHFRQGURCEBTENZNAQUVQVGJVGU-QHRQVYVTRAPR.PURPXBHGGURCUBGBF
+```
+Decoding it revealed:
+> "I used the program and hid it with - duediligence. Check out the photos."
+
+Besides `instructions.txt` and `plan`, the TFTP dump included 3 BMP image files and one `.deb` file. 
+Based on the hint, the `.deb` file appeared to contain the tool used to hide the data.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ file program.deb
+program.deb: Debian binary package (format 2.0), with control.tar.gz , data compression xz
+```
+
+Extracting the `.deb` file produced `control.tar.gz` and `data.tar.xz`.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ ar x program.deb 
+```
+From `control.tar.gz`, I extracted `md5sum` and `control`, both of which mentioned **steghide**, a tool for hiding and extracting data from images.
+```bash                                                                                                                   
+┌──(kali㉿kali)-[~/Desktop]
+└─$ tar -xvf control.tar.gz 
+./
+./md5sums
+./control
+
+┌──(kali㉿kali)-[~/Desktop]
+└─$ cat md5sums 
+71bdab1263ab4b8d28f34afa5f0ab121  usr/bin/steghide
+11db80c2a5dbb9c6107853b08aeacc49  usr/share/doc/steghide/ABOUT-NLS.gz
+...
+                                                                                                                      
+┌──(kali㉿kali)-[~/Desktop]
+└─$ tar -xvf data.tar.xz   
+./
+./usr/
+./usr/share/
+./usr/share/doc/
+./usr/share/doc/steghide/
+./usr/share/doc/steghide/ABOUT-NLS.gz
+...
+```
+
+Similarly, `data.tar.xz` also included references to steghide, reinforcing this clue.  
+
+To retrieve the hidden data, I used **steghide**. 
+According to the decoded plan message, the passphrase was likely **duediligence**.
+`picture1.bmp` and `picture2.bmp` yielded no results. 
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ steghide extract -sf picture1.bmp -p DUEDILIGENCE
+steghide: could not extract any data with that passphrase!
+                                                                                                                      
+┌──(kali㉿kali)-[~/Desktop]
+└─$ steghide extract -sf picture2.bmp -p DUEDILIGENCE
+steghide: could not extract any data with that passphrase!
+```
+
+However, `picture3.bmp` successfully revealed a hidden file: **flag.txt**, which contained the challenge flag.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ steghide extract -sf picture3.bmp -p DUEDILIGENCE
+wrote extracted data to "flag.txt".
+                                                                                                                      
+┌──(kali㉿kali)-[~/Desktop]
+└─$ cat flag.txt 
+picoCTF{h1dd3n_1n_pLa1n_51GHT_18375919}
+```
+
+## 🚩Flag
+> `picoCTF{h1dd3n_1n_pLa1n_51GHT_18375919}`
+
+                                                                                                                      
+
+                                                                                                                      
+
+                                                                                                                      
+
+                                                                                                                      
+
+                                                                                                                      
+

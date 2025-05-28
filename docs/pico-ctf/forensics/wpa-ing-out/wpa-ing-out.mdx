@@ -1,0 +1,51 @@
+---
+tags: [network]
+---
+# WPA-ing Out
+
+- **Description:** I thought that my password was super-secret, but it turns out that passwords passed over the AIR can be CRACKED, especially if I used the same wireless network password as one in the rockyou.txt credential dump.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+After opening the pcap file in Wireshark, it's clear that the captured data comes from an **IEEE 802.11** wireless network with the SSID **Gone_Surfing**. The capture contains various packets, including EAPOL packets, which are used in the WPA/WPA2 authentication process.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./frame1.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Using `aircrack-ng`, I analyzed the capture to determine whether the traffic was encrypted. 
+The result showed that the network with SSID "Gone_Surfing" used WPA encryption and contained one handshake.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ aircrack-ng wpa-ing_out.pcap 
+Reading packets, please wait...
+Opening wpa-ing_out.pcap
+Resetting EAPOL Handshake decoder state.
+Resetting EAPOL Handshake decoder state.
+Read 23523 packets.
+
+   #  BSSID              ESSID                     Encryption
+
+   1  00:5F:67:4F:6A:1A  Gone_Surfing              WPA (1 handshake)
+
+Choosing first network as target.
+
+Reading packets, please wait...
+Opening wpa-ing_out.pcap
+Resetting EAPOL Handshake decoder state.
+Resetting EAPOL Handshake decoder state.
+Read 23523 packets.
+
+1 potential targets
+```
+
+To attempt password cracking, I ran the command:
+```bash
+aircrack-ng wpa-ing_out.pcap -w /usr/share/wordlists/rockyou.txt
+```
+Using the RockYou wordlist, the correct password was successfully recovered: **mickeymouse**.
+The flag for this challenge is the password itself: **mickeymouse**.
+
+## 🚩Flag
+> `picoCTF{mickeymouse}`

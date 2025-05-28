@@ -1,0 +1,41 @@
+---
+tags: [forensics]
+---
+# like1000
+
+- **Description:** This .tar file got tarred a lot.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+When extracting the provided file `1000.tar`, it yields `999.tar`, and extracting that in turn produces `998.tar`. 
+It appears that in this challenge, we must unpack all the nested archives to obtain the flag. 
+```bash
+┌──(kali㉿kali)-[~/Desktop/untar-here]
+└─$ tar -xvf 1000.tar                                    
+999.tar
+filler.txt
+                                                                                        
+┌──(kali㉿kali)-[~/Desktop/untar-here]
+└─$ tar -xvf 999.tar
+998.tar
+filler.txt
+```
+To automate this process, I wrote a Python script that sequentially extracts each file
+```python
+import tarfile  
+for i in range(1000, 0, -1):  
+        filename = str(i) + '.tar'  
+        tar = tarfile.open(filename)  
+        tar.extractall() 
+        tar.close() 
+```
+
+After running the script, all files are fully unpacked, revealing the final file `flag.png`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>                                                                                      
+
+## 🚩Flag
+> `picoCTF{l0t5_0f_TAR5}`

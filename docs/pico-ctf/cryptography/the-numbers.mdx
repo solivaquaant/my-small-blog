@@ -1,0 +1,26 @@
+---
+tags: [cryptography
+---
+# The Numbers
+
+- **Description:** The numbers... what do they mean?
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+In this challenge, we are provided with an image containing a sequence of numbers.
+```
+16 9 3 15 3 20 6 {20 8 5 14 21 13 2 5 18 19 13 1 19 15 14}
+```
+At first, I attempted to interpret these numbers as ASCII codes by converting them using different bases (decimal, hexadecimal, binary,...), but none of the conversions produced meaningful output. 
+So, I started to consider alternative possibilities. 
+
+Notably, all the numbers in the image are relatively small-each less than 20. 
+This led me to suspect that they might represent positions of letters in the English alphabet, where A = 1, B = 2, ..., Z = 26.  
+
+To speed things up, I used [this tool](https://numletter.com/) that maps numerical positions to letters. 
+Upon entering the sequence, the output revealed the correct flag.
+
+## 🚩Flag
+> `picoCTF{THENUMBERSMASON}`

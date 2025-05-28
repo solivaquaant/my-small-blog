@@ -1,0 +1,97 @@
+---
+tags: [forensics]
+---
+# Bitlocker-1
+
+- **Description:** Jacky is not very knowledgable about the best security passwords and used a simple password to encrypt their BitLocker drive. See if you can break through the encryption!
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+Upon analyzing the provided `bitlocker-1.dd` disk image, we identified the presence of the string **FVE-FS**, which signifies a BitLocker-encrypted volume (Full Volume Encryption File System). 
+This confirms that the partition has been secured using BitLocker.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ file bitlocker-1.dd 
+bitlocker-1.dd: DOS/MBR boot sector, code offset 0x58+2, OEM-ID "-FVE-FS-", sectors/cluster 8, reserved sectors 0, Media descriptor 0xf8, sectors/track 63, heads 255, hidden sectors 124499968, FAT (32 bit), sectors/FAT 8160, serial number 0, unlabeled; NTFS, sectors/track 63, physical drive 0x1fe0, $MFT start cluster 393217, serial number 02020454d414e204f, checksum 0x41462020
+```
+
+To proceed, we used the `bitlocker2john` tool to extract a hash from the encrypted volume. 
+```bash
+bitlocker2john -i bitlocker-1.dd > bitlocker_hash.txt 
+```
+
+From the tool's output, we isolated only the relevant portion of the hash:
+```bash
+$bitlocker$0$16$cb4809fe9628471a411f8380e0f668db$1048576$12$d04d9c58eed6da010a000000$60$68156e51e53f0a01c076a32ba2b2999afffce8530fbe5d84b4c19ac71f6c79375b87d40c2d871ed2b7b5559d71ba31b6779c6f41412fd6869442d66d
+```
+Next, we launched a brute-force attack using John the Ripper along with the well-known `rockyou.txt` wordlist. 
+The correct password was successfully recovered as **jacqueline**.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+Note: This format may emit false positives, so it will keep trying even after finding a possible candidate.
+Using default input encoding: UTF-8
+Loaded 1 password hash (BitLocker, BitLocker [SHA-256 AES 32/64])
+Cost 1 (iteration count) is 1048576 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+jacqueline       (?)     
+1g 0:00:04:33 0.02% (ETA: 2025-06-13 14:38) 0.003662g/s 11.99p/s 11.99c/s 11.99C/s sylvia..lololo
+1g 0:00:06:32 0.03% (ETA: 2025-06-14 14:00) 0.002546g/s 11.58p/s 11.58c/s 11.58C/s 1q2w3e4r5t..metalica
+Session aborted
+```
+
+We then set up 2 directories to assist with the decryption and mounting process:
+- `/media/bit`: to store the decrypted BitLocker data.
+- `/media/win`: to serve as the mount point for accessing the file system.
+
+Using the password retrieved earlier, we decrypted the volume with `dislocker`:
+```bash
+sudo mkdir -p /media/bit
+sudo chmod 777 /media/bit
+sudo dislocker -V bitlocker-1.dd -ujacqueline -- /media/bit
+```
+
+After successful decryption, a virtual file named `dislocker-file` was created in `/media/bit`. This file represents the unlocked volume.
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ sudo ls /media/bit                 
+dislocker-file
+```
+
+Next, we mounted the decrypted volume:
+```bash
+┌──(kali㉿kali)-[~/Desktop]
+└─$ sudo mkdir -p /media/win                                  
+                                                                                                                                                                                                                                                                     
+┌──(kali㉿kali)-[~/Desktop]
+└─$ sudo mount -o loop /media/bit/dislocker-file /media/win
+The disk contains an unclean file system (0, 0).
+Metadata kept in Windows cache, refused to mount.
+Falling back to read-only mount because the NTFS partition is in an
+unsafe state. Please resume and shutdown Windows fully (no hibernation
+or fast restarting.)
+Could not mount read-write, trying read-only
+```
+
+During mounting, the system detected an unclean file system state (likely due to hibernation or improper shutdown in Windows). 
+As a result, the volume was mounted in **read-only** mode for safety.  
+Finally, we navigated to the mounted directory and retrieved the flag.
+```bash
+┌──(kali㉿kali)-[/media/win]
+└─$ cat flag.txt 
+picoCTF{us3_b3tt3r_p4ssw0rd5_pl5!_3242adb1} 
+```
+
+## 🚩Flag
+> `picoCTF{us3_b3tt3r_p4ssw0rd5_pl5!_3242adb1}`
+
+                                                                                                                                   
+
+                                                                                                                                     
+
+                                                                                                                                     
+
+                                                                                                                                     
