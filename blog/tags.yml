@@ -13,3 +13,7 @@ ctf:
   permalink: /ctf
   description: CTF tag description
 
+steganography:
+  label: Steganography
+  permalink: /steganography
+  description: Steganography tag description

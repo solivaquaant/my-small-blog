@@ -1,0 +1,51 @@
+---
+tags: [forensic]
+---
+# Capture this
+
+- **Description:** An employee has lost his Keepass password. 
+He couldn't remember it, and couldn't find his password file. 
+After hours of searching, it turns out that he has sent a screen of his passwords to one of his colleagues, but it's still nowhere to be found.
+He's asking for your help to find him.
+It's up to you
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+The challenge provides 2 files: a screenshot of an Excel spreadsheet containing passwords and a `.kdbx` file.  
+
+The `.kdbx` file is a KeePass database file, which is commonly used to securely store and manage passwords. 
+These files are encrypted and can only be opened with the correct master password.  
+
+Upon inspecting the screenshot, we see an image of an Excel file containing several passwords. 
+However, there's no visible password for the KeePass database. 
+A closer look at the screenshot reveals two critical observations:
+1. There appears to be partial information related to KeePass on the right side of the image, but it has been cropped.
+2. The user captured the screenshot using two applications: Excel and the Windows Snipping Tool.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./capture1.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+These clues, combined with the fact that the challenge was created in 2023, point us to a known vulnerability disclosed that year: **[CVE-2023-28303](https://nvd.nist.gov/vuln/detail/CVE-2023-28303) - Windows Snipping Tool Information Disclosure Vulnerability**.
+This vulnerability affects the Snipping Tool on Windows 11 and 10. 
+When a user takes a screenshot and then crops it, the cropped data may still remain in the file. 
+This means sensitive information, thought to be removed, could potentially be recovered.  
+
+To exploit this vulnerability, we use this [tool](https://github.com/frankthetank-music/Acropalypse-Multi-Tool.git).
+After cloning and installing the tool, we run it in **“Restoring Tool”** mode, select the screenshot, and choose the **“Windows 11 Snipping Tool”** format. 
+The tool then reconstructs the original, untrimmed image.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./capture2.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+Opening the recovered image reveals the KeePass password: ```-=b9w9h^+j%\x-rMPUqv9Vv`@X%*=a```  
+
+We install **KeePassXC**, open the `.kdbx` file, and input the recovered password. 
+The database unlocks successfully.
+Finally, by navigating to the **Internet** tab within the KeePass database, we obtain the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `@cropalypse_vuln_is_impressive`

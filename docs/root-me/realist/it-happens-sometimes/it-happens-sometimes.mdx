@@ -1,0 +1,31 @@
+---
+tags: [web]
+---
+# It happens, sometimes
+
+- **Description:** Access the administration section of the website.
+- **Difficulty:** Very Easy
+
+---
+
+## 🔎 Solution
+The challenge provides a web page and asks the player to locate the **admin** panel. 
+To discover it, we can use directory brute-forcing tools like `gobuster`. 
+However, since the challenge is relatively simple, manual guessing with common paths such as `/admin`, `/admin.php`,... is also effective. 
+In this case, the correct path is `/admin`.
+```
+http://challenge01.root-me.org/realiste/ch3/admin/
+```
+Upon visiting this endpoint, a pop-up prompt appears asking for a username and password. 
+Submitting random credentials and inspecting the traffic in **Burp Suite** reveals that the server uses a **GET** request for authentication instead of the more typical **POST** or **PUT** methods.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./burp.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+By forwarding the **GET** request from `/admin` to Repeater and manually changing the HTTP method to **PUT**, the server responds with the flag - indicating that this was the expected solution path.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `0010110111101001`

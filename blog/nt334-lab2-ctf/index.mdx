@@ -1,0 +1,47 @@
+--- 
+authors: tndt
+tags: [steganography, ctf]
+description: Blog 
+---
+# Stego secrets: Extracting embedded files using HxD and dd
+During Lab 2 of Digital Forensics course, we explored the topic of **Steganography**. 
+As part of the session, our instructor introduced a CTF-style challenge and offered bonus points to anyone who could successfully retrieve the flag.
+{/* truncate */}
+
+## Solution
+We were provided with a video file and a hint: *"Look for the hex signature of a file that might be hidden inside."*  
+
+To begin, I opened the video file using **HxD**, a hex editor. 
+Upon inspection, I noticed that the file header identified it as an `ftypisom` format, which is a common container signature for MP4 videos.  
+
+To search for embedded file signatures, I used the **Search** function (`Ctrl + F`) in HxD. 
+Under **Text-string**, I looked for typical MP4 box types like:
+```
+"ftyp", "mdat", "moov", "pnot", "udta", "uuid", "moof", "free", ...
+```
+Alternatively, I could switch to **Hex-values** mode and search for hex representations of known file headers.  
+
+After some scanning, I found the following hex sequence:
+```
+66 74 79 70 6D 70 34 32
+```
+This corresponds to the ASCII string `ftypmp42`, indicating the header of an **MP4 (version 2)** file. 
+This signature was located at **offset `0x1D62C78`**.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./offset.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+To extract the embedded MP4 file, I first converted the offset to decimal: 0x1D62C78 = 30813300.  
+
+Then, using the `dd` command in a Unix-like environment, I extracted the hidden file:
+```bash
+dd if=video-challenge.mp4 of=output.mp4 bs=1 skip=30813300
+```
+Opening the extracted `output.mp4` revealed the flag for the challenge.
+<div style={{ width: '80%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+This exercise demonstrated how steganographic techniques can be used to conceal full files within other media, and how basic hex analysis combined with known file signatures can help uncover them.
+
+# Flag
+> `inseclab{b3h1nd_th3_sc3n3}`
