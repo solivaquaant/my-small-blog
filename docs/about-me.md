@@ -9,5 +9,5 @@ sidebar_position: 1
 | Project | Description | Type | Role | Link |
 |---------|-------------|------|------|------|
 | Personal Website | Developed a simple blog website using Docusaurus | Personal project | Lead contributor | [GitHub](https://solivaquaant.github.io/my-small-blog/) |
-| @fluei.xia's Certificate of Adoption | Created a personalized Certificate of Adoption for my crochet project | Personal project | Lead contributor | [GitHub](https://solivaquaant.github.io/fluei.xia-certificate/) |
 | Minigame Đường lên đỉnh Olympia | Recreated two rounds of the "Đường lên đỉnh Olympia" TV quiz show using WinForms | Coursework project | Contributor | [GitHub](https://github.com/ShadowK2494/MinigameOlympia) |
+| DLL Side Loading attack & Detection tool | Researched and implemented DLL Side Loading techniques to bypass Windows Defender. Developed a monitoring and detection tool to identify such attacks. | Coursework project | Lead contributor | [GitHub](https://github.com/solivaquaant/DLL-Side-Loading) |

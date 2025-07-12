@@ -1,0 +1,156 @@
+--- 
+authors: tndt
+tags: [malware]
+description: Blog 
+---
+# Exploring DLL Side Loading: A practical walkthrough using Notepad++
+In today's blog post, we're diving into DLL Side Loading - a technique often exploited by attackers to execute malicious code by abusing the way Windows searches for and loads dynamic link libraries.
+We'll break down how DLL Side Loading works, how the Windows DLL search order contributes to the vulnerability, and walk through a practical example using Notepad++ as our target application.
+{/* truncate */}
+> ⚠️ Disclaimer  
+> This article is for **educational** and **ethical** purposes only. 
+
+## Understanding DLLs and DLL Side Loading
+**Dynamic link libraries (DLLs)** are modular components that contain code and data used by multiple programs simultaneously. 
+DLLs help reduce redundancy and optimize memory usage across Windows systems.
+
+**DLL Side Loading** is a technique where an attacker places a malicious DLL in a location where a legitimate application may inadvertently load it instead of the intended one. 
+This often happens due to the **Windows DLL Search Order**, which prioritizes certain directories (like the application's folder) over system directories when loading libraries.
+By exploiting this search behavior, attackers can trick applications into executing their malicious payloads without modifying the target application itself.
+
+## Tools & setup
+For this walkthrough, we'll be using the following tools and setup:
+- Target: Notepad++ v8.7.7
+- ProcMon (Sysinternals): Monitor DLL loading and process activity
+- x64dbg: Reverse-engineering and binary analysis
+- Visual Studio: Compile our custom DLLs
+- Sliver C2: Open-source C2 framework
+
+Environment:
+- Victim: Windows 10/11
+- Attacker: Kali Linux
+- Network: NAT (VMware)
+
+## Case study: GUP.exe in Notepad++
+Notepad++ ships with an updater utility called **GUP.exe (Generic Updater)**. 
+It typically resides in `C:\Program Files\Notepad++\updater\GUP.exe`.
+This executable checks for and installs updates for Notepad++ or its plugins. 
+When run, it prompts a software update popup and loads several files from its directory, including:
+- `GUP.exe`
+- `libcurl.dll` -a dynamic library from the cURL project for network communication
+- `gup.xml` - configuration file for update behavior
+
+By using **ProcMon**, we observe that `GUP.exe` loads `libcurl.dll` from the local directory, making it an *ideal* candidate for DLL Side Loading.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./procmon.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## Crafting the first malicious DLL
+To test the loading behavior, we create a simple malicious `libcurl.dll` with a MessageBox payload:
+```cpp
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
+    switch (ul_reason_for_call) {
+    case DLL_PROCESS_ATTACH:
+        MessageBoxA(NULL, "Group-CK13", "Simple DLL", MB_OK | MB_ICONEXCLAMATION);
+        break;
+    }
+    return TRUE;
+}
+```
+Replace the original `libcurl.dll` with our malicious version and execute `GUP.exe`. 
+We notice 2 things in **ProcMon**:
+- Our malicious DLL was successfully loaded
+- GUP.exe crashes due to missing exported functions like `curl_easy_setopt`
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./error.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## Identifying and exporting required functions
+The crash occurs because `GUP.exe` expects `libcurl.dll` to expose certain functions, which our malicious DLL lacks.
+To identify them, use `dumpbin /IMPORTS GUP.exe` in the Visual Studio command prompt to inspect the **Import Address Table (IAT)**:
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./dumpbin.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+You'll find it imports these 4 functions: `curl_easy_init`, `curl_easy_setopt`, `curl_easy_cleanup`, `curl_easy_perform`
+
+We modify our DLL to export these functions, with `curl_easy_init` triggering our MessageBox:
+```cpp
+extern "C" __declspec(dllexport) PVOID curl_easy_init() {
+    MessageBoxA(NULL, "Group-CK13", "Simple DLL", MB_OK | MB_ICONEXCLAMATION);
+    return NULL;
+}
+extern "C" __declspec(dllexport) PVOID curl_easy_setopt() { return NULL; }
+extern "C" __declspec(dllexport) PVOID curl_easy_cleanup() { return NULL; }
+extern "C" __declspec(dllexport) PVOID curl_easy_perform() { return NULL; }
+```
+
+Now, when running `GUP.exe`, we see the MessageBox as intended.
+<div style={{ width: '60%', margin: '0 auto' }}>
+  <img src={require("./init.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## Combining with DLL proxying for stealth and functionality
+However, if we proceed as described above, when the user runs GUP.exe (or updates Notepad++), 
+they will not see the original Message Box of the application and will not be able to perform the original functionality.
+
+Therefore, we combine this with the **DLL proxying** technique — a method used to intercept function calls that are originally directed to a legitimate DLL file. 
+This is done by creating an intermediary DLL, called a Proxy DLL, which exports the same functions as the original DLL.
+
+Steps:
+1. Rename the original DLL file to `gup.dll`
+2. Add the following `#pragma` comment directives:
+- These are linker directives used to export functions just like the original DLL, but in fact, they forward the calls to the real DLL, which is now `gup.dll`
+- Syntax: `/export:function_name=originalDLL.function_name,@ordinal`
+```cpp
+#pragma comment(linker, "/export:curl_easy_cleanup=gup.curl_easy_cleanup,@1")
+#pragma comment(linker, "/export:curl_easy_init=gup.curl_easy_init,@6")
+#pragma comment(linker, "/export:curl_easy_perform=gup.curl_easy_perform,@12")
+#pragma comment(linker, "/export:curl_easy_setopt=gup.curl_easy_setopt,@16")
+```
+- Ordinal values: These are the index numbers of the exported functions, which can be viewed in tools like `x64dbg`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./x64.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Write a `DoMagic()` function to display a MessageBox. 
+This should run in a separate thread to avoid blocking the main process:
+```cpp
+DWORD WINAPI DoMagic(LPVOID lpParameter)
+{
+    MessageBoxA(NULL, "Group-CK13", "Simple DLL", MB_OK | MB_ICONEXCLAMATION);
+    return 0;
+}
+```
+When the DLL is loaded (`DLL_PROCESS_ATTACH`), it creates a new thread to run `DoMagic()`:
+```cpp
+case DLL_PROCESS_ATTACH:
+    threadHandle = CreateThread(NULL, 0, DoMagic, NULL, 0, NULL);
+    CloseHandle(threadHandle);
+    break;
+```
+At this point, when `GUP.exe` is run again, both the original Message Box from the application and the injected (malicious) Message Box will appear.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./proxy.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## Establishing remote control with Sliver C2
+To escalate the attack, we can modify the `DoMagic()` function to establish a reverse shell or C2 session. 
+In this case, we used Sliver C2 on a Linux machine. 
+Once the user launches GUP.exe (e.g., by checking for updates), a session is established on the attacker's C2 interface.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./c2.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+For persistence and stealth, additional techniques like process injection, registry persistence (run keys), shellcode obfuscation can be employed - though we won't detail them here due to ethical concerns.
+
+## Conclusion
+DLL Side Loading is a powerful and commonly abused technique in the wild. By understanding how it works, defenders can:
+- Audit how applications load DLLs
+- Harden directory permissions
+- Implement application whitelisting
+- Monitor abnormal DLL load behavior with tools like ProcMon
+
+From a red team or educational perspective, this hands-on walkthrough using Notepad++ shows just how easy it can be to hijack execution flow when the right conditions align.
+
+*Stay safe. Stay informed.*
