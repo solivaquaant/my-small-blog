@@ -1,0 +1,39 @@
+---
+tags: [forensics]
+---
+# DISKO 2
+
+- **Description:** Can you find the flag in this disk image? The right one is Linux! One wrong step and its all gone!
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+Unlike the previous challenge (DISKO 1), attempting to locate the flag using a simple `strings` + `grep` approach proves ineffective here - 
+the result is cluttered with numerous false flags and noise, making it difficult to isolate the correct one.
+
+After extracting the provided archive, we obtain a disk image file (`disko-2.dd`) formatted with an MBR (Master Boot Record) and containing 2 partitions:
+- Partition 1: ID 0x83 (**Linux**), starts at sector 2048, spans 51200 sectors.
+- Partition 2: ID 0x0b (FAT32), starts at sector 53248, spans 65536 sectors.
+```
+disko-2.dd: DOS/MBR boot sector; partition 1 : ID=0x83, start-CHS (0x0,32,33), end-CHS (0x3,80,13), startsector 2048, 51200 sectors;
+partition 2 : ID=0xb, start-CHS (0x3,80,14), end-CHS (0x7,100,29), startsector 53248, 65536 sectors
+```
+
+According to the challenge description, the actual flag resides in the first partition. 
+Using `dd`, we can extract this partition into a separate file. 
+Given that each sector is 512 bytes (standard MBR sector size), the command is:
+```
+dd if=disko-2.dd of=partition1.img bs=512 skip=2048 count=51200
+```
+
+Once extracted, we search for the keyword **picoCTF** inside the image. 
+This yields the correct flag among the results.
+```
+┌──(kali㉿kali)-[~/Desktop/pico-ctf]
+└─$ sudo strings partition1.img | grep -i picoCTF
+picoCTF{4_P4Rt_1t_i5_055dd175}
+```
+
+## 🚩Flag
+> `picoCTF{4_P4Rt_1t_i5_055dd175}`

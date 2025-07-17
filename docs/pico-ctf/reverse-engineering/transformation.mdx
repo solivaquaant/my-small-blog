@@ -1,0 +1,53 @@
+---
+tags: [reverse-engineer]
+---
+# Transformation
+
+- **Description:** I wonder what this really is...
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+The challenge provides an encoded file and a short snippet of Python code:
+```python
+''.join([chr((ord(flag[i]) << 8) + ord(flag[i + 1])) for i in range(0, len(flag), 2)])
+```
+This code is used to encode the original flag using the following logic:
+- The input string flag is split into pairs of characters (2 characters at a time).
+- For each pair `flag[i]` and `flag[i+1]`, the code:
+- Converts both characters to their ASCII values using `ord()`.
+- Shifts the first character's ASCII value 8 bits to the left (`ord(flag[i]) << 8`), which is equivalent to multiplying it by 256.
+- Adds the second character's ASCII value to it.
+- The sum is passed to `chr()`, converting it into a single Unicode character.
+- Finally, all Unicode characters are concatenated to form the encoded output.
+
+Once the encoding logic is understood, decoding becomes a straightforward process - we simply reverse each step.
+
+Each character in the encoded string represents a pair of original characters. To decode:
+- Convert the character back to its code point using ord().
+- Extract the high byte by shifting right 8 bits (>> 8).
+- Extract the low byte using a bitwise AND with 0xFF.
+- Convert both back to characters and concatenate.
+
+Here's the Python script used for decryption:
+```python
+def decrypt(encoded_str):
+    decoded = ''
+    for c in encoded_str:
+        code_point = ord(c)
+        high = code_point >> 8
+        low = code_point & 0xFF
+        decoded += chr(high) + chr(low)
+    return decoded
+
+with open('enc', 'r', encoding='utf-8') as f:
+    encoded_data = f.read().strip()
+
+decoded_flag = decrypt(encoded_data)
+print(decoded_flag)
+```
+Running the script reveals the original flag.
+
+## 🚩Flag
+> `picoCTF{16_bits_inst34d_of_8_e703b486}`

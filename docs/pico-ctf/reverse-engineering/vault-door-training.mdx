@@ -1,0 +1,40 @@
+---
+tags: [reverse-engineer]
+---
+# vault-door-training
+
+- **Description:** Your mission is to enter Dr. Evil's laboratory and retrieve the blueprints for his Doomsday Project. 
+The laboratory is protected by a series of locked vault doors. 
+Each door is controlled by a computer and requires a password to open. Unfortunately, our undercover agents have not been able to obtain the secret passwords for the vault doors, but one of our junior agents obtained the source code for each vault's computer! You will need to read the source code for each level to figure out what the password is for that vault door. 
+As a warmup, we have created a replica vault in our training facility.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+This challenge is relatively straightforward - simply inspecting the source code reveals the flag. 
+Still, let's briefly walk through what the code does.
+
+The input is expected in the format `picoCTF{<password>}`. 
+The program extracts the content within `{}` using the following line:
+```java
+String input = userInput.substring("picoCTF{".length(), userInput.length() - 1);
+```
+This isolates the password portion and passes it to the `checkPassword` function to verify if it matches the correct hardcoded password:
+```java
+if (vaultDoor.checkPassword(input)) {
+    System.out.println("Access granted.");
+} else {
+    System.out.println("Access denied!");
+}
+```
+The `checkPassword` method performs a simple string comparison against a hardcoded value:
+```java
+public boolean checkPassword(String password) {
+    return password.equals("w4rm1ng_Up_w1tH_jAv4_be8d9806f18");
+}
+```
+Since the correct password is clearly visible in the code, the full flag is `picoCTF{w4rm1ng_Up_w1tH_jAv4_be8d9806f18}`
+
+## 🚩Flag
+> `picoCTF{w4rm1ng_Up_w1tH_jAv4_be8d9806f18}`
