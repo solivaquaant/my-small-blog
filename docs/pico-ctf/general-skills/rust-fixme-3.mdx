@@ -1,0 +1,48 @@
+---
+tags: []
+---
+# Rust fixme 3
+
+- **Description:** Have you heard of Rust? Fix the syntax errors in this Rust file to print the flag!
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+After extracting the archive with `tar -xvf fixme3.tar.gz`, we obtain the following files: Cargo.toml, Cargo.lock, and src/main.rs.
+
+Attempting to compile and run the project with `cargo run` results in the following error:
+```
+error[E0133]: call to unsafe function `std::slice::from_raw_parts` is unsafe and requires unsafe function or block
+```
+In Rust, certain operations are marked as **unsafe** because they have the potential to cause undefined behavior if not handled carefully. 
+One such function is `std::slice::from_raw_parts(ptr, len)`, which creates a slice from a raw pointer. 
+This is inherently dangerous if:
+- The pointer ptr is invalid or null,
+- The length len is incorrect,
+- The memory region is not valid or accessible for the given range.
+
+To ensure safety, Rust requires this function to be enclosed within an unsafe block. 
+This signals to the compiler - and to the developer - that the caller takes full responsibility for ensuring memory safety.
+
+To fix the issue, we modify line 31 of main.rs from:
+```rust
+let decrypted_slice = std::slice::from_raw_parts(decrypted_ptr, decrypted_len);
+```
+to:
+```rust
+let decrypted_slice = unsafe {
+    std::slice::from_raw_parts(decrypted_ptr, decrypted_len)
+};
+```
+Rebuilding and running the project again successfully yields the flag.
+```
+┌──(kali㉿kali)-[~/Desktop/pico-ctf/fixme3]
+└─$ cargo run           
+   Compiling rust_proj v0.1.0 (/home/kali/Desktop/pico-ctf/fixme3)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.35s
+     Running `target/debug/rust_proj`
+Using memory unsafe languages is a: PARTY FOUL! Here is your flag: picoCTF{n0w_y0uv3_f1x3d_1h3m_411}
+```
+## 🚩Flag
+> `picoCTF{n0w_y0uv3_f1x3d_1h3m_411}`

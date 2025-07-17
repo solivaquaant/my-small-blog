@@ -1,0 +1,39 @@
+---
+tags: [forensics]
+---
+# flags are stepic
+
+- **Description:** A group of underground hackers might be using this legit site to communicate. Use your forensic techniques to uncover their message
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+The challenge provides a website displaying flags from various countries.
+Upon inspecting the page source, we find a JavaScript snippet that declares a flags array containing objects with country names and the corresponding paths to their flag images.
+
+Among them, one entry stands out: **"Upanzi, Republic The"**. 
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+Unlike the others, this entry includes an additional style attribute alongside the image path:
+```
+{ name: "Upanzi, Republic The", img: "flags/upz.png", style: "width: 120px!important; height: 90px!important;" }
+```
+Downloading the `upz.png` image and analyzing it with common forensic tools such as `exiftool` and `binwalk` yields no useful results.
+
+Revisiting the name of the challenge, the term **stepic** appears to be a portmanteau of "steganography" and "picture". 
+Following this clue, and with some help from ChatGPT, we discover a Python library called stepic that can encode and decode hidden data within PNG images using LSB steganography.
+```python
+import stepic
+from PIL import Image
+
+image_path = 'upz.png'
+image = Image.open(image_path)
+hidden_message = stepic.decode(image)
+print(hidden_message)
+```
+A short Python script using stepic was written to decode the image, and as expected - the flag was successfully revealed.
+
+## 🚩Flag
+> `picoCTF{fl4g_h45_fl4g9a81822b}`

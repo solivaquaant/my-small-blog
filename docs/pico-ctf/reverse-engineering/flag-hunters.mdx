@@ -1,0 +1,90 @@
+---
+tags: [reverse-engineering]
+---
+# Flag Hunters
+
+- **Description:** Lyrics jump from verses to the refrain kind of like a subroutine call. 
+There's a hidden refrain this program doesn't print by default. 
+Can you get it to print it? There might be something in it for you.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+By analyzing the source code, we can see that the flag is embedded in the `secret_intro` variable, which is then prepended to the beginning of the full lyrics stored in `song_flag_hunters`.
+```python
+secret_intro = \
+'''...'''\
++ flag + '\n'
+
+song_flag_hunters = secret_intro +\
+'''...'''
+```
+However, in line 132, the program begins execution from the label `[VERSE1]`, skipping over the introductory lines - meaning the flag isn't shown by default.
+```python
+reader(song_flag_hunters, '[VERSE1]')
+```
+
+The song is structured into verses (`[VERSE]`) and repeated choruses (`[REFRAIN]`), and the code also interprets a few special commands embedded in the lyrics:
+- **REFRAIN:** jump to the chorus section
+- **RETURN:** marks the end of the chorus, and jumps back to the line after the original call
+- **CROWD:** prompts the user to input a custom line
+- **END:** stops the song
+
+The key lies in the `CROWD` instruction, which allows the user to input arbitrary text without any validation:
+```python
+elif re.match(r"CROWD.*", line):
+    crowd = input('Crowd: ')
+    song_lines[lip] = 'Crowd: ' + crowd
+    lip += 1
+```
+In addition, there's the `RETURN [line_number]` command, which allows a jump to a specific line number:
+```python
+elif re.match(r"RETURN [0-9]+", line):
+    lip = int(line.split()[1])
+```
+
+At first glance, it seems we could try injecting something like **RETURN 0** through the CROWD input to jump to the very start of the song - where the flag is embedded. 
+However, this doesn't work as expected. The program treats the entire user input as a single literal string, not an actual command.
+
+But upon inspecting this part of this code `for line in song_lines[lip].split(';')`,
+we realize something clever: each line can be split into multiple sub - commands using the semicolon **;** delimiter.
+
+So, if we craft our input as **;RETURN 0**, the RETURN 0 becomes a standalone command during parsing.
+This allows us to inject a valid jump command through the CROWD prompt, redirecting execution to the very top of the lyrics where the flag resides - effectively bypassing the normal flow and revealing the hidden flag.
+```js
+tndt@tndt:~/Desktop$ nc verbal-sleep.picoctf.net 50812
+Command line wizards, we're starting it right,
+Spawning shells in the terminal, hacking all night.
+Scripts and searches, grep through the void,
+Every keystroke, we're a cypher's envoy.
+Brute force the lock or craft that regex,
+Flag on the horizon, what challenge is next?
+
+We're flag hunters in the ether, lighting up the grid,
+No puzzle too dark, no challenge too hid.
+With every exploit we trigger, every byte we decrypt,
+We're chasing that victory, and we'll never quit.
+//highlight-next-line
+Crowd: ;RETURN 0
+
+Echoes in memory, packets in trace,
+Digging through the remnants to uncover with haste.
+Hex and headers, carving out clues,
+Resurrect the hidden, it's forensics we choose.
+Disk dumps and packet dumps, follow the trail,
+Buried deep in the noise, but we will prevail.
+
+We're flag hunters in the ether, lighting up the grid,
+No puzzle too dark, no challenge too hid.
+With every exploit we trigger, every byte we decrypt,
+We're chasing that victory, and we'll never quit.
+Crowd: 
+Pico warriors rising, puzzles laid bare,
+Solving each challenge with precision and flair.
+With unity and skill, flags we deliver,
+//highlight-next-line
+The ether's ours to conquer, picoCTF{70637h3r_f0r3v3r_62666df2}
+```
+## 🚩Flag
+> `picoCTF{70637h3r_f0r3v3r_62666df2}`

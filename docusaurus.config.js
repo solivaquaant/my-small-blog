@@ -87,7 +87,7 @@ const config = {
           
           {
             to: '/blog', 
-            label: 'Blog', 
+            label: 'Blogs', 
             position: 'left'
           },
           {
