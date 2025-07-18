@@ -1,0 +1,103 @@
+---
+tags: []
+---
+# useless
+
+- **Description:** There's an interesting script in the user's home directory
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+After gaining SSH access to the target machine, we noticed a file named `useless` located in the user's directory. 
+```
+useless: Bourne-Again shell script, ASCII text executable
+```
+
+Viewing the file's content, we found that it was a simple Bash script designed to perform basic arithmetic operations - 
+addition, subtraction, multiplication, and division - based on command-line arguments.
+```
+picoplayer@challenge:~$ cat useless 
+#!/bin/bash
+# Basic mathematical operations via command-line arguments
+
+if [ $# != 3 ]
+then
+  echo "Read the code first"
+else
+        if [[ "$1" == "add" ]]
+        then 
+          sum=$(( $2 + $3 ))
+          echo "The Sum is: $sum"  
+
+        elif [[ "$1" == "sub" ]]
+        then 
+          sub=$(( $2 - $3 ))
+          echo "The Substract is: $sub" 
+
+        elif [[ "$1" == "div" ]]
+        then 
+          div=$(( $2 / $3 ))
+          echo "The quotient is: $div" 
+
+        elif [[ "$1" == "mul" ]]
+        then
+          mul=$(( $2 * $3 ))
+          echo "The product is: $mul" 
+
+        else
+          echo "Read the manual"
+         
+        fi
+fi
+```
+
+Running the script with appropriate parameters yields the expected results of the corresponding arithmetic operation. For instance:
+```
+picoplayer@challenge:~$ bash useless add 2 3
+The Sum is: 5
+picoplayer@challenge:~$ bash useless mul 2 4
+The product is: 8
+```
+
+At first glance, the script appears straightforward, with no obvious vulnerabilities or backdoors. 
+However, upon closer inspection, we noticed that when the script is executed without exactly 3 arguments or with an unsupported operation, 
+it returns a curious message: **"Read the manual"**.
+This is a subtle but interesting hint. 
+In Unix-like systems, the `man` (manual) command is commonly used to display documentation about commands, including usage, options, and examples. 
+Developers often include a manual page for custom tools or scripts, especially if they want to hide information in plain sight.
+
+So, following the clue, we tried `man useless`, and that's when we found the flag cleverly hidden in the manual page.
+```
+picoplayer@challenge:~$ man useless 
+
+useless
+     useless, — This is a simple calculator script
+
+SYNOPSIS
+     useless, [add sub mul div] number1 number2
+
+DESCRIPTION
+     Use the useless, macro to make simple calulations like addition,subtraction, multiplication and division.
+
+Examples
+     ./useless add 1 2
+       This will add 1 and 2 and return 3
+
+     ./useless mul 2 3
+       This will return 6 as a product of 2 and 3
+
+     ./useless div 6 3
+       This will return 2 as a quotient of 6 and 3
+
+     ./useless sub 6 5
+       This will return 1 as a remainder of substraction of 5 from 6
+
+Authors
+     This script was designed and developed by Cylab Africa
+
+     picoCTF{us3l3ss_ch4ll3ng3_3xpl0it3d_6140}
+```
+
+## 🚩Flag
+> `picoCTF{us3l3ss_ch4ll3ng3_3xpl0it3d_6140}`
