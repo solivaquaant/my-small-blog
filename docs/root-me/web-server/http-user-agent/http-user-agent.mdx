@@ -1,0 +1,29 @@
+---
+tags: [web]
+---
+# HTTP - User-agent
+
+- **Description:** Admin is really dumb...
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+When accessing the website, the server responds with the message: **"Wrong user-agent: you are not the 'admin' browser!"**
+
+This clearly indicates that the server is validating the **User-Agent** header - a string typically used to identify the client application making the request (browser type and version, operating system,...).
+
+By default, my browser sends the following User-Agent string:
+```
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
+```
+
+To bypass this restriction, I intercepted the request using **Burp Suite**, sent it to the **Repeater** tab, and modified the User-Agent header to simply be: `User-Agent: admin`.
+After making this change and forwarding the request, the server responded successfully - with the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `rr$Li9%L34qd1AAe27`
+

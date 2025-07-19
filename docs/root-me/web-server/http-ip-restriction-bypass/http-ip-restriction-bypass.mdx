@@ -1,0 +1,33 @@
+---
+tags: [web]
+---
+# HTTP - IP restriction bypass
+
+- **Description:** Dear colleagues,  
+We're now managing connections to the intranet using private IP addresses, so it's no longer necessary to login with a username / password when you are already connected to the internal company network.  
+Regards,  
+The network admin
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The challenge provides a login page, but attempting to access it returns a message stating that access is denied because the user is not connected to the LAN.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./ban.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+From the challenge description, it's clear that only users with *a private IP address* are allowed to access the page. 
+This means we need to spoof our IP to appear as if we're coming from a private network.
+
+While we can't actually change our client's IP address in a standard HTTP request, many web applications rely on headers like `X-Forwarded-For` to determine the client's IP - especially when the application is behind a proxy or reverse proxy. 
+In such setups, the backend often trusts these headers.
+
+Using **Burp Suite**, we intercept the POST request and send it to the Repeater. We then add `X-Forwarded-For: 192.168.1.1` to the header.
+After resending the request with this header, access is granted - and the flag is revealed.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `Ip_$po0Fing`

@@ -1,0 +1,40 @@
+---
+tags: [web]
+---
+# PHP - Command injection
+
+- **Description:** Find a vulnerabilty in this service and exploit it.
+You must manage to read index.php
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The challenge presents a website offering a ping service. When a user inputs an address, the site returns the result of executing a ping to that address.
+<div style={{ width: '75%', margin: '0 auto' }}>
+  <img src={require("./ping.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+This implies that the backend is likely running a command similar to `ping <address>` upon submission. 
+With this assumption, I tested whether arbitrary commands could be injected.
+
+By submitting `8.8.8.8; ls`, the response revealed the presence of a file named `index.php`, indicating that command injection is possible.
+<div style={{ width: '75%', margin: '0 auto' }}>
+  <img src={require("./ls.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+To investigate further, I used `8.8.8.8; cat index.php` to read the content of the file. 
+The output included the same input field and button seen on the webpage, along with a commented-out PHP code block.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./cat.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Reviewing the commented PHP code, it became clear that a file named `.passwd` contains the flag. 
+Using the payload `8.8.8.8; cat .passwd`, I was able to retrieve the flag successfully.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `S3rv1ceP1n9Sup3rS3cure`
+

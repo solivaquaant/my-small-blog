@@ -1,0 +1,27 @@
+---
+tags: [forensics]
+---
+# Mob psycho
+
+- **Description:** Can you handle APKs?
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+The challenge provides us with an APK file. 
+When dealing with APK challenges, I typically start by extracting the contents as if it were a regular ZIP archive.
+
+After inspecting the extracted files, I discovered a file located at `res/color/flag.txt`, which contains the following string:
+``` 
+7069636f4354467b6178386d433052553676655f4e5838356c346178386d436c5f61336562356163327d
+```
+Using a [text identification tool](https://www.dcode.fr/cipher-identifier), I determined that the string is encoded in **ASCII code**.
+
+By decoding the string using [this tool](https://www.dcode.fr/ascii-code), I was able to retrieve the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./res.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{ax8mC0RU6ve_NX85l4ax8mCl_a3eb5ac2}`

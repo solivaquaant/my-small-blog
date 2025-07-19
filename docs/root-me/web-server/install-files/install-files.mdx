@@ -1,0 +1,38 @@
+---
+tags: [web]
+---
+# Install files
+
+- **Description:** You know phpBB ?
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+Upon accessing the challenge's main webpage, nothing appeared on the screen. 
+However, inspecting the page's source code revealed a comment pointing to `<!-- /web-serveur/ch6/phpbb -->`.
+
+Navigating to that directory displayed the header of the Root Me website, though no significant content was present.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./bb.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+The challenge references **phpBB**, an open-source forum software written in PHP. 
+It is one of the most widely used free forum platforms globally.
+
+A quick search for common *phpBB directory structures* led to the discovery that the `/install` directory often contains installation-related files. 
+This information was confirmed by documentation on the [official phpBB website](https://www.phpbb.com/community/docs/INSTALL.html).
+
+Following that lead, we navigated to `/web-serveur/ch6/phpbb/install/`, where we found an `index.php` file.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./install.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Examining its contents ultimately revealed the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `karambar`
+

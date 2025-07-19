@@ -1,0 +1,30 @@
+---
+tags: [network]
+---
+# DNS - zone transfert
+
+- **Description:** A not really dutiful administrator has set up a DNS service for the "ch11.challenge01.root-me.org" domain...
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+The challenge provides details about a DNS service running on a non-standard port, including the host, protocol, and port number. 
+The objective is to interact with a misconfigured DNS server to retrieve the flag.
+
+To begin, I used the `dig` command to manually query the DNS server and request all available record types (A, TXT, MX, NS,...):
+```
+dig @challenge01.root-me.org -p 54011 ch11.challenge01.root-me.org ANY
+```
+
+The response returned a set of DNS records, and in the **ANSWER SECTION**, the flag was clearly revealed.
+```
+;; ANSWER SECTION:
+ch11.challenge01.root-me.org. 604800 IN TXT     "DNS transfer secret key : CBkFRwfNMMtRjHY"
+ch11.challenge01.root-me.org. 604800 IN SOA     ch11.challenge01.root-me.org. root.ch11.challenge01.root-me.org. 2 604800 86400 2419200 604800
+ch11.challenge01.root-me.org. 604800 IN NS      ch11.challenge01.root-me.org.
+ch11.challenge01.root-me.org. 604800 IN A       127.0.0.1
+```
+
+## 🚩Flag
+> `CBkFRwfNMMtRjHY`

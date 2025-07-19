@@ -1,0 +1,27 @@
+---
+tags: [cryptanalysis]
+---
+# Encoding - UU
+
+- **Description:** Very used by the HTTP protocol
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The challenge presents a rather unusual string. 
+Using [a text identification tool](https://www.dcode.fr/cipher-identifier), I determined that the encoding format is **UUencode**.
+
+I then used [UUencode](https://www.dcode.fr/uu-encoding) to decode the following string:
+```
+B5F5R>2!S:6UP;&4@.RD*4$%34R`](%5,5%)!4TE-4$Q%"@``
+`
+```
+The decoded output revealed the flag:
+```
+Very simple ;)
+PASS = ULTRASIMPLE
+```
+
+## 🚩Flag
+> `ULTRASIMPLE`

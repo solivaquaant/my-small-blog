@@ -1,0 +1,49 @@
+---
+tags: [web]
+---
+# HTTP - Open redirect
+
+- **Description:** Find a way to make a redirection to a domain other than those showed on the web page.
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The challenge website provides 3 buttons that redirect users to different external websites. \
+Upon inspecting the source code, the following snippet is revealed:
+```html
+<a href='?url=https://facebook.com&h=a023cfbf5f1c39bdf8407f28b60cd134'>facebook</a>
+<a href='?url=https://twitter.com&h=be8b09f7f1f66235a9c91986952483f0'>twitter</a>
+<a href='?url=https://slack.com&h=e52dc719664ead63be3d5066c135b6da'>slack</a>
+```
+Each link consists of 2 query parameters:
+- `url` - the destination to redirect to
+- `h` - a hash value used for verification
+
+By analyzing the pattern, it becomes clear that the value of `h` is simply the **MD5 hash** of the URL. 
+This can be easily verified using an online tool such as [this](https://md5.gromweb.com/).
+
+We can reasonably assume that on the server side, the redirection logic works something like this:
+```
+expected_hash = md5(url).hexdigest()
+if h == expected_hash:
+    redirect(url)
+```
+
+Based on this behavior, we can attempt to redirect to an arbitrary domain by generating a valid MD5 hash for our custom URL. 
+In this case, I chose https://www.google.com/. 
+The MD5 hash of this URL is `d75277cdffef995a46ae59bdaef1db86`.
+
+Using **Burp Suite**, I intercepted the request and modified the URL as 
+```
+?url=https://www.google.com/&h=d75277cdffef995a46ae59bdaef1db86
+```
+As expected, the server accepted the hash and successfully redirected to Google. 
+This confirmed the vulnerability, and I was able to obtain the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `e6f8a530811d5a479812d7b82fc1a5c5`
+
