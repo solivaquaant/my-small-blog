@@ -4,7 +4,7 @@
         <title>Thái Ngọc Diễm Trinh Blog</title>
         <link>https://solivaquaant.github.io/my-small-blog/blog</link>
         <description>Thái Ngọc Diễm Trinh Blog</description>
-        <lastBuildDate>Thu, 17 Jul 2025 16:43:20 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 19 Jul 2025 16:32:55 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[Exploring DLL Side Loading: A practical walkthrough using Notepad++]]></title>
             <link>https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading-notepadpp</link>
             <guid>https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading-notepadpp</guid>
-            <pubDate>Thu, 17 Jul 2025 16:43:20 GMT</pubDate>
+            <pubDate>Sat, 19 Jul 2025 16:32:55 GMT</pubDate>
             <description><![CDATA[Blog]]></description>
             <content:encoded><![CDATA[<p>In today's blog post, we're diving into DLL Side Loading - a technique often exploited by attackers to execute malicious code by abusing the way Windows searches for and loads dynamic link libraries.
 We'll break down how DLL Side Loading works, how the Windows DLL search order contributes to the vulnerability, and walk through a practical example using Notepad++ as our target application.</p>
@@ -121,7 +121,7 @@ Once the user launches GUP.exe (e.g., by checking for updates), a session is est
             <title><![CDATA[Stego secrets: Extracting embedded files using HxD and dd]]></title>
             <link>https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf</link>
             <guid>https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf</guid>
-            <pubDate>Thu, 17 Jul 2025 16:43:20 GMT</pubDate>
+            <pubDate>Sat, 19 Jul 2025 16:32:55 GMT</pubDate>
             <description><![CDATA[Write-up of a CTF challenge from Digital Forensics course, focusing on steganography techniques to extract hidden files.]]></description>
             <content:encoded><![CDATA[<p>During Lab 2 of Digital Forensics course, we explored the topic of <strong>Steganography</strong>.
 As part of the session, our instructor introduced a CTF-style challenge and offered bonus points to anyone who could successfully retrieve the flag.</p>
