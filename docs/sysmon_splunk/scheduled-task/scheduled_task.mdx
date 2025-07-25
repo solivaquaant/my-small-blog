@@ -1,0 +1,196 @@
+# Dectecting suspicious scheduled tasks
+## Overview
+*Scheduled tasks* are a legitimate feature in Windows, widely used for automating system operations. 
+However, attackers often exploit this capability to maintain persistence, delay execution of malicious payloads, or perform stealthy actions post-compromise.
+
+In this guide, we'll walk through how to detect the creation, modification, execution, and deletion of scheduled tasks using Sysmon logs ingested into Splunk. 
+We'll also demonstrate how to analyze these events to uncover potentially malicious behavior, empowering defenders with practical detection techniques.
+
+---
+
+## Execution steps
+### Create a suspicious scheduled task:
+```
+schtasks /create /tn "MaliciousTask" /tr "C:\malware.exe" /sc once /st 12:00
+```
+This command creates a scheduled task named *MaliciousTask* that will execute a suspicious binary `malware.exe` once at `12:00 PM`.
+
+### Modify an existing task:
+```
+schtasks /change /tn "MaliciousTask" /tr "C:\evil_script.ps1"
+```
+This modifies the task to execute a different payload, indicating possible tampering or redirection to a more stealthy script.
+
+### Execute the task:
+```
+schtasks /run /tn "MaliciousTask"
+```
+This command immediately runs the scheduled task, which can be a red flag for adversary-initiated execution.
+
+### Delete the task:
+```
+schtasks /delete /tn "MaliciousTask" /f
+```
+Cleaning up by deleting the task may signal an attempt to cover tracks after malicious use.
+
+## Log analysis in Splunk
+### Detect task creation
+Use the following SPL query to identify new process creation events where schtasks.exe is involved:
+```
+index=sysmon_logs EventCode=1 Image="*schtasks.exe"
+```
+This search filters Sysmon *Event ID 1 (Process Create)* for the `schtasks.exe` binary, which is used to create or manage scheduled tasks.
+
+Logs from Splunk:
+```
+07/24/2025 11:56:59 PM
+LogName=Microsoft-Windows-Sysmon/Operational
+EventCode=1
+EventType=4
+ComputerName=DESKTOP-R6K3C8S
+User=NOT_TRANSLATED
+Sid=S-1-5-18
+SidType=0
+SourceName=Microsoft-Windows-Sysmon
+Type=Information
+RecordNumber=3176
+Keywords=None
+TaskCategory=Process Create (rule: ProcessCreate)
+OpCode=Info
+Message=Process Create:
+RuleName: -
+UtcTime: 2025-07-25 06:56:59.914
+ProcessGuid: {d6c4500c-2abb-6883-0108-000000000500}
+ProcessId: 1444
+Image: C:\Windows\System32\schtasks.exe
+FileVersion: 10.0.19041.1503 (WinBuild.160101.0800)
+Description: Task Scheduler Configuration Tool
+Product: Microsoft® Windows® Operating System
+Company: Microsoft Corporation
+OriginalFileName: schtasks.exe
+CommandLine: schtasks  /create /tn "MaliciousTask" /tr "C:\malware.exe" /sc once /st 12:00
+CurrentDirectory: C:\Program Files\SplunkUniversalForwarder\bin\
+User: DESKTOP-R6K3C8S\thait
+LogonGuid: {d6c4500c-068d-6883-dda2-070000000000}
+LogonId: 0x7A2DD
+TerminalSessionId: 1
+IntegrityLevel: High
+Hashes: MD5=76CD6626DD8834BD4A42E6A565104DC2,SHA256=013C013E0EFD13C9380FAD58418B7ACA8356E591A5CCEFFDB910F7D8B0AD28EF,IMPHASH=ECCE05491F2E8F279F4790BCB1318C05
+ParentProcessGuid: {d6c4500c-1437-6883-6206-000000000500}
+ParentProcessId: 1876
+ParentImage: C:\Windows\System32\cmd.exe
+ParentCommandLine: "C:\Windows\system32\cmd.exe" 
+ParentUser: DESKTOP-R6K3C8S\thait
+```
+**Event description:** A scheduled task named **MaliciousTask** was created to run `malware.exe`. 
+This is often an early-stage action by an attacker to ensure persistent access or deferred execution.
+
+### Detect task modification
+To identify suspicious task updates:
+```
+index=sysmon_logs EventCode=1 CommandLine="*change*" Image="*schtasks.exe"
+```
+Filters for process creation events where the command line includes **change**, indicating modification of existing tasks.
+
+**Log from Splunk:**
+```
+07/25/2025 12:00:15 AM
+LogName=Microsoft-Windows-Sysmon/Operational
+EventCode=1
+EventType=4
+ComputerName=DESKTOP-R6K3C8S
+User=NOT_TRANSLATED
+Sid=S-1-5-18
+SidType=0
+SourceName=Microsoft-Windows-Sysmon
+Type=Information
+RecordNumber=3199
+Keywords=None
+TaskCategory=Process Create (rule: ProcessCreate)
+OpCode=Info
+Message=Process Create:
+RuleName: -
+UtcTime: 2025-07-25 07:00:15.263
+ProcessGuid: {d6c4500c-2b7f-6883-1a08-000000000500}
+ProcessId: 992
+Image: C:\Windows\System32\schtasks.exe
+FileVersion: 10.0.19041.1503 (WinBuild.160101.0800)
+Description: Task Scheduler Configuration Tool
+Product: Microsoft® Windows® Operating System
+Company: Microsoft Corporation
+OriginalFileName: schtasks.exe
+CommandLine: schtasks  /change /tn "MaliciousTask" /tr "C:\evil_script.ps1"
+CurrentDirectory: C:\Program Files\SplunkUniversalForwarder\bin\
+User: DESKTOP-R6K3C8S\thait
+LogonGuid: {d6c4500c-068d-6883-dda2-070000000000}
+LogonId: 0x7A2DD
+TerminalSessionId: 1
+IntegrityLevel: High
+Hashes: MD5=76CD6626DD8834BD4A42E6A565104DC2,SHA256=013C013E0EFD13C9380FAD58418B7ACA8356E591A5CCEFFDB910F7D8B0AD28EF,IMPHASH=ECCE05491F2E8F279F4790BCB1318C05
+ParentProcessGuid: {d6c4500c-1437-6883-6206-000000000500}
+ParentProcessId: 1876
+ParentImage: C:\Windows\System32\cmd.exe
+ParentCommandLine: "C:\Windows\system32\cmd.exe" 
+ParentUser: DESKTOP-R6K3C8S\thait
+```
+**Event description:** The task's action was altered to point to `evil_script.ps1`, which may indicate adversarial pivoting or an attempt to load a less detectable payload.
+
+### Detect task execution
+Use this query to find when a scheduled task was manually triggered:
+```
+index=sysmon_logs EventCode=1 CommandLine="*run*" Image="*schtasks.exe"
+```
+Focuses on execution events where the scheduled task is manually run using the `/run` flag.
+
+**Log from Splunk:**
+```
+07/25/2025 12:02:12 AM
+LogName=Microsoft-Windows-Sysmon/Operational
+EventCode=1
+EventType=4
+ComputerName=DESKTOP-R6K3C8S
+User=NOT_TRANSLATED
+Sid=S-1-5-18
+SidType=0
+SourceName=Microsoft-Windows-Sysmon
+Type=Information
+RecordNumber=3212
+Keywords=None
+TaskCategory=Process Create (rule: ProcessCreate)
+OpCode=Info
+Message=Process Create:
+RuleName: -
+UtcTime: 2025-07-25 07:02:12.183
+ProcessGuid: {d6c4500c-2bf4-6883-2708-000000000500}
+ProcessId: 4056
+Image: C:\Windows\System32\schtasks.exe
+FileVersion: 10.0.19041.1503 (WinBuild.160101.0800)
+Description: Task Scheduler Configuration Tool
+Product: Microsoft® Windows® Operating System
+Company: Microsoft Corporation
+OriginalFileName: schtasks.exe
+CommandLine: schtasks  /run /tn "MaliciousTask"
+CurrentDirectory: C:\Program Files\SplunkUniversalForwarder\bin\
+User: DESKTOP-R6K3C8S\thait
+LogonGuid: {d6c4500c-068d-6883-dda2-070000000000}
+LogonId: 0x7A2DD
+TerminalSessionId: 1
+IntegrityLevel: High
+Hashes: MD5=76CD6626DD8834BD4A42E6A565104DC2,SHA256=013C013E0EFD13C9380FAD58418B7ACA8356E591A5CCEFFDB910F7D8B0AD28EF,IMPHASH=ECCE05491F2E8F279F4790BCB1318C05
+ParentProcessGuid: {d6c4500c-1437-6883-6206-000000000500}
+ParentProcessId: 1876
+ParentImage: C:\Windows\System32\cmd.exe
+ParentCommandLine: "C:\Windows\system32\cmd.exe" 
+ParentUser: DESKTOP-R6K3C8S\thait
+```
+**Event description:** **MaliciousTask** was manually executed, a behavior often observed in hands-on keyboard attacks or post-exploitation activities.
+
+### Correlate events
+To map out the full attack sequence involving task operations
+```
+index=sysmon_logs EventCode=1 Image="*schtasks.exe" OR EventCode=3
+```
+This query pulls both process creation (EventCode=1) and network connection logs (EventCode=3) for comprehensive visibility around `schtasks.exe` activity.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./cor.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>

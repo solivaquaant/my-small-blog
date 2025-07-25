@@ -1,0 +1,115 @@
+# Tracking suspicious Windows Registry changes
+## Overview
+*The Windows Registry* is a common target for adversaries looking to establish persistence, modify security configurations, or stealthily execute malware. 
+Registry-based persistence techniques are particularly dangerous because they allow malicious code to survive system reboots and execute without raising immediate alarms.
+
+In this blog post, we simulate suspicious registry modifications and deletions, then walk through how to detect and investigate them using Sysmon and Splunk. 
+You'll learn how to identify key events tied to registry persistence and how to correlate them with process activity to build effective detection strategies.
+
+---
+
+## Execution steps
+### Simulate registry-based persistence
+We create a registry key under the Run path to auto-launch a malicious binary every time a user logs in:
+```
+New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "malware" -Value "C:\malware.exe"
+```
+This PowerShell command adds a new value named malware to the current user's Run registry key. 
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./mal.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+### Simulate Registry Key deletion
+Next, we delete a registry key to mimic tampering or cleanup behavior:
+```
+Remove-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run\MalwareSimulation"
+```
+This represents an attacker removing traces of their presence or deactivating prior persistence mechanisms.
+
+---
+
+## Log analysis in Splunk
+### Detect Registry persistence entry creation
+To identify suspicious additions to the registry, especially under **Run** keys:
+```
+index=sysmon_logs EventCode=13 | where like(TargetObject, "%Run%")
+```
+`EventCode=13` corresponds to Sysmon's Registry Value Set events. 
+The filter like(TargetObject, "%Run%") focuses on keys typically used for persistence.
+
+**Log from Splunk:**
+```
+07/25/2025 04:50:13 AM
+LogName=Microsoft-Windows-Sysmon/Operational
+EventCode=13
+EventType=4
+ComputerName=DESKTOP-R6K3C8S
+User=NOT_TRANSLATED
+Sid=S-1-5-18
+SidType=0
+SourceName=Microsoft-Windows-Sysmon
+Type=Information
+RecordNumber=5650
+Keywords=None
+TaskCategory=Registry value set (rule: RegistryEvent)
+OpCode=Info
+Message=Registry value set:
+RuleName: T1060,RunKey
+EventType: SetValue
+UtcTime: 2025-07-25 11:50:13.486
+ProcessGuid: {d6c4500c-6edd-6883-2303-000000000700}
+ProcessId: 2676
+Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+TargetObject: HKU\S-1-5-21-3305846525-3407497656-2755245524-1001\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\malware
+Details: C:\malware.exe
+User: DESKTOP-R6K3C8S\thait
+```
+**Event description:** A new registry value was created under the Run key by `powershell.exe`, pointing to `C:\malware.exe`.
+
+### Detect Registry key deletions
+To uncover attempts to remove registry keys: 
+```
+index=sysmon_logs EventCode=12 | stats count by TargetObject, Image, User
+```
+`EventCode=12` tracks registry key creation and deletion. 
+Using `stats count` groups results for easy aggregation by registry path, executable, and user.
+
+**Log from Splunk:**
+
+```
+07/25/2025 04:54:43 AM
+LogName=Microsoft-Windows-Sysmon/Operational
+EventCode=12
+EventType=4
+ComputerName=DESKTOP-R6K3C8S
+User=NOT_TRANSLATED
+Sid=S-1-5-18
+SidType=0
+SourceName=Microsoft-Windows-Sysmon
+Type=Information
+RecordNumber=5703
+Keywords=None
+TaskCategory=Registry object added or deleted (rule: RegistryEvent)
+OpCode=Info
+Message=Registry object added or deleted:
+RuleName: T1060,RunKey
+EventType: DeleteKey
+UtcTime: 2025-07-25 11:54:43.358
+ProcessGuid: {d6c4500c-701e-6883-6503-000000000700}
+ProcessId: 1412
+Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+TargetObject: HKU\S-1-5-21-3305846525-3407497656-2755245524-1001\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\MalwareSimulation
+User: DESKTOP-R6K3C8S\thait
+```
+**Event description:** A registry key related to a simulated persistence mechanism was deleted via `powershell.exe`.
+
+### Correlate Registry events with process execution
+To identify which processes were responsible for modifying the registry:
+```
+index=sysmon_logs EventCode=1 Image="*powershell.exe"
+```
+This pulls `EventCode=1` logs - which indicate process creation - specifically for `powershell.exe`. 
+By correlating these with registry modification events, we can tie user activity to specific registry changes.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./cor.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>

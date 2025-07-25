@@ -1,0 +1,96 @@
+# Detecting RDP brute-force attacks
+## Overview
+*Remote Desktop Protocol (RDP)* is a common attack vector for brute-force attempts due to its widespread use in enterprise environments. 
+This blog post demonstrates how to simulate an RDP brute-force attack using Hydra from Kali Linux against a Windows target, and how to detect such attempts using Sysmon and Splunk. 
+We'll walk through configuring the environment, executing the attack, and analyzing the resulting logs for forensic and detection purposes.
+
+---
+
+## Execution steps
+### Configure the Windowstarget to accept RDP connections
+Allow ICMP (`ping`) and RDP through the Windows Firewall:
+```
+netsh advfirewall firewall add rule name="Allow ICMPv4-In" protocol=icmpv4:8,any dir=in action=allow
+netsh advfirewall firewall add rule name="Allow RDP-In" protocol=TCP localport=3389 dir=in action=allow
+```
+These commands enable ICMP Echo Request (ping) and allow inbound RDP traffic on port **3389**, which is the default for Remote Desktop.
+
+Check RDP Service Status, if the returned value is 1, RDP is disabled.
+```
+Get-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\' -Name "fDenyTSConnections"
+```
+
+Enable RDP and necessary firewall rules:
+```
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\' -Name "fDenyTSConnections" -Value 0
+Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+```
+This enables RDP access and ensures firewall rules are active to allow incoming connections.
+
+### Validate RDP port availability from Kali
+On Kali Linux, run an `nmap` scan:
+```
+nmap -p 3389 <victim_ip>
+```
+If the port shows as open, RDP is reachable. If it shows filtered or closed, RDP may still be blocked by firewall or not properly enabled.
+
+### Execute a brute-force attack using Hydra
+```
+hydra -V -f -l <username> -P <path_to_wordlist> rdp://<victim_ip>
+```
+Explanation of the command:
+- `V`: verbose output, shows each attempt
+- `f`: stop after the first valid login is found
+- `l <username>`: username to brute-force
+- `P <path_to_wordlist>`: list of passwords to try
+- `rdp://<victim_ip>`: target service and IP
+This simulates an attacker trying to gain RDP access by guessing passwords for the user.
+
+## Log analysis in Splunk
+To detect brute-force attempts, we rely on Sysmon `Event ID 3`, which logs network connections. 
+These are essential for identifying repeated unauthorized access attempts to sensitive ports like **3389** (RDP).
+
+SPL query to detect RDP connections:
+```
+index="sysmon_logs" sourcetype=XmlWinEventLog:Sysmon DestinationPort=3389
+```
+This query filters for all outbound or inbound connections on port **3389**, the standard port for RDP. 
+It's useful for identifying the source IPs attempting RDP access.
+
+**Log from Splunk:**
+```
+07/25/2025 08:53:12 AM
+LogName=Microsoft-Windows-Sysmon/Operational
+EventCode=3
+EventType=4
+ComputerName=DESKTOP-R6K3C8S
+User=NOT_TRANSLATED
+Sid=S-1-5-18
+SidType=0
+SourceName=Microsoft-Windows-Sysmon
+Type=Information
+RecordNumber=8633
+Keywords=None
+TaskCategory=Network connection detected (rule: NetworkConnect)
+OpCode=Info
+Message=Network connection detected:
+RuleName: RDP
+UtcTime: 2025-07-25 14:39:11.827
+ProcessGuid: {d6c4500c-a83d-6883-150a-000000000700}
+ProcessId: 4004
+Image: C:\Windows\System32\svchost.exe
+User: NT AUTHORITY\NETWORK SERVICE
+Protocol: tcp
+Initiated: false
+SourceIsIpv6: false
+SourceIp: 192.168.200.5
+SourceHostname: -
+SourcePort: 39954
+SourcePortName: -
+DestinationIsIpv6: false
+DestinationIp: 192.168.200.4
+DestinationHostname: DESKTOP-R6K3C8S.localdomain
+DestinationPort: 3389
+DestinationPortName: ms-wbt-server
+```
+**Event description:** A connection was detected from a remote IP (`192.168.200.5`, Kali Linux) to the RDP service on the Windows host (`192.168.200.4`) using TCP on port **3389**.

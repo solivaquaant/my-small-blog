@@ -1,0 +1,74 @@
+# Investigating suspicious PowerShell activity
+
+## Overview
+*PowerShell* is a powerful administrative tool built into Windows-but its flexibility also makes it a favorite among attackers. 
+From fileless malware to encoded scripts, PowerShell is often leveraged in post-exploitation scenarios, lateral movement, and data exfiltration.
+
+In this post, we walk through setting up PowerShell logging in Splunk, simulating suspicious activity using `Invoke-WebRequest`, and detecting that behavior using Sysmon logs and SPL queries. 
+Our focus is on identifying anomalous script executions and file downloads that may indicate compromise.
+
+---
+
+## Execution steps
+### Configure PowerShell Logging in Splunk
+To monitor PowerShell activity, first create a new index on your Splunk Server: `powershell_logs`
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./index.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Then, on the Splunk Forwarder machine, configure data ingestion by modifying the `inputs.conf` file:
+```
+[WinEventLog://Microsoft-Windows-PowerShell/Operational]
+disabled = 0
+index = powershell_logs
+sourcetype = WinEventLog:PowerShell
+```
+Next, add a file monitor for the PowerShell log file:
+```
+splunk add monitor "C:\Windows\System32\winevt\Logs\Microsoft-Windows-PowerShell%4Operational.evtx"
+```
+Restart the Splunk Forwarder and check on the Splunk Server to see if PowerShell logs are being received.
+
+### Simulate suspicious PowerShell activity
+Download a suspicious file from the Internet using PowerShell:
+```
+Invoke-WebRequest -Uri "https://secure.eicar.org/eicar.com.txt" -OutFile "$env:USERPROFILE\Downloads\eicar.com.txt"
+```
+
+## Log analysis in Splunk
+### Detect file creation events via Sysmon
+To catch new file creations that may stem from PowerShell downloads, use the following SPL query:
+```
+index="sysmon_logs" EventCode=11 TargetFilename="*eicar.com.txt*"
+```
+`EventCode=11` in Sysmon corresponds to **FileCreate** events. 
+This search filters those events for files with the name `eicar.com.txt`.
+
+**Log from Splunk:**
+```
+07/25/2025 06:18:38 AM
+LogName=Microsoft-Windows-Sysmon/Operational
+EventCode=11
+EventType=4
+ComputerName=DESKTOP-R6K3C8S
+User=NOT_TRANSLATED
+Sid=S-1-5-18
+SidType=0
+SourceName=Microsoft-Windows-Sysmon
+Type=Information
+RecordNumber=7958
+Keywords=None
+TaskCategory=File created (rule: FileCreate)
+OpCode=Info
+Message=File created:
+RuleName: Downloads
+UtcTime: 2025-07-25 13:18:38.509
+ProcessGuid: {d6c4500c-701e-6883-6503-000000000700}
+ProcessId: 1412
+Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+TargetFilename: C:\Users\thait\Downloads\eicar.com.txt
+CreationUtcTime: 2025-07-25 13:18:38.509
+User: DESKTOP-R6K3C8S\thait
+```
+**Event description:** A new file named `eicar.com.txt` was created in the Downloads folder by a PowerShell process. 
+

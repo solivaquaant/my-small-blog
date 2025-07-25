@@ -1,0 +1,105 @@
+# Detecting suspicious file operations in critical Windows directories
+
+## Overview
+Monitoring file operations within critical system directories is essential for detecting early signs of compromise. 
+Attackers often create, modify, or delete files in these locations to execute malicious payloads, tamper with configurations, or disrupt system functionality.
+
+In this blog post, we simulate file creation, modification, and deletion events using *PowerShell* and demonstrate how to detect and analyze these activities with Sysmon and Splunk. 
+Our goal is to uncover unauthorized actions that may indicate malware behavior or insider threats.
+
+---
+
+## Execution steps
+### Create a suspicious executable
+```
+echo MaliciousContent > C:\Windows\System32\malicious.exe
+```
+This command creates a new file named `malicious.ex`e in the **System32** directory - an immediate red flag, as this location should not contain user-generated executables.
+
+### Modify an existing file
+Appending content to `config.sys` simulates tampering with a critical system file. 
+```
+echo AlteredContent >> C:\Windows\System32\config.sys
+```
+
+### Delete a critical file
+Deleting system DLLs can cause application crashes, weaken defenses, or disrupt services
+```
+del C:\Windows\System32\important.dll
+```
+
+---
+
+## Log analysis in Splunk
+To detect and analyze these activities, we rely on Sysmon **Event ID 11**, which records file creation events-including those triggered by modifications and deletions (depending on how the file system behaves).
+### Detect new file creation
+```
+index=sysmon_logs EventCode=11 TargetFilename="*System32*" OR TargetFilename="*Program Files*" 
+| stats count by TargetFilename, Image, User
+```
+This SPL query filters for file creation events in key system directories. 
+The `stats count` command aggregates entries by file path, the process responsible, and the user.
+
+**Log from Splunk:**
+```
+07/25/2025 07:37:47 AM
+LogName=Microsoft-Windows-Sysmon/Operational
+EventCode=11
+EventType=4
+ComputerName=DESKTOP-R6K3C8S
+User=NOT_TRANSLATED
+Sid=S-1-5-18
+SidType=0
+SourceName=Microsoft-Windows-Sysmon
+Type=Information
+RecordNumber=8111
+Keywords=None
+TaskCategory=File created (rule: FileCreate)
+OpCode=Info
+Message=File created:
+RuleName: EXE
+UtcTime: 2025-07-25 14:37:47.128
+ProcessGuid: {d6c4500c-701e-6883-6503-000000000700}
+ProcessId: 1412
+Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+TargetFilename: C:\Windows\System32\malicious.exe
+CreationUtcTime: 2025-07-25 14:37:47.128
+User: DESKTOP-R6K3C8S\thait
+```
+**Event description:** A file named `malicious.exe` was created by PowerShell in the **System32** directory, likely indicating an attempt to plant an executable in a trusted location.
+
+### Detect file modifications
+While Sysmon doesn't explicitly log file modification events, appending data to an existing file may still trigger a **FileCreate** event if the file handle is treated as new. 
+The same SPL query can be reused:
+```
+index=sysmon_logs EventCode=11 TargetFilename="*System32*" 
+| stats count by TargetFilename, Image, User
+```
+**Log from Splunk:**
+```
+07/25/2025 07:40:45 AM
+LogName=Microsoft-Windows-Sysmon/Operational
+EventCode=11
+EventType=4
+ComputerName=DESKTOP-R6K3C8S
+User=NOT_TRANSLATED
+Sid=S-1-5-18
+SidType=0
+SourceName=Microsoft-Windows-Sysmon
+Type=Information
+RecordNumber=8132
+Keywords=None
+TaskCategory=File created (rule: FileCreate)
+OpCode=Info
+Message=File created:
+RuleName: -
+UtcTime: 2025-07-25 14:40:45.034
+ProcessGuid: {d6c4500c-701e-6883-6503-000000000700}
+ProcessId: 1412
+Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+TargetFilename: C:\Windows\System32\config.sys
+CreationUtcTime: 2025-07-25 14:40:45.034
+User: DESKTOP-R6K3C8S\thait
+```
+**Event description:** PowerShell was used to append data to `config.sys`, a legacy system configuration file. 
+

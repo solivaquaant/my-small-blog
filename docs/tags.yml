@@ -13,10 +13,10 @@ reverse-engineer:
   permalink: /reverse-engineer
   description: Reverse engineering tag description
 
-cryptanalysis:
-  label: Cryptanalysis
-  permalink: /cryptanalysis
-  description: Cryptanalysis tag description
+cryptography:
+  label: Cryptography
+  permalink: /cryptography
+  description: Cryptography tag description
 
 forensics:
   label: Forensics
