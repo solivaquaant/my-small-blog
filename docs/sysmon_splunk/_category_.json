@@ -1,8 +1,0 @@
-{
-  "label": "Sysmon & Splunk",
-  "position": 4,
-  "link": {
-    "type": "generated-index",
-    "description": "Some Sysmon and Splunk labs."
-  }
-}

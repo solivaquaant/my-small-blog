@@ -1,0 +1,48 @@
+---
+tags: []
+---
+# FindAndOpen
+
+- **Description:** Someone might have hidden the password in the trace file.
+Find the key to unlock this file. This tracefile might be good to analyze.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+The challenge provides two files: a `.pcap` capture and a `.zip` archive.
+I began by analyzing the `.pcap` file using Wireshark.
+
+Upon inspection, the capture contains two main types of packets:
+1. mDNS protocol packets
+2. Packets labeled as **Ethernet II** in the *Info* column.  
+I focused on the second type first.
+
+Packets 1-9 have a custom Protocol ID of `0x6865`, and their Data fields contain numeric sequences. 
+When concatenated and decoded, they reveal the string: *"Flying on Ethernet secret: Is this the flag"*
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./1.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Packets 23-47 contain additional data. 
+When combining both the Protocol and Data fields and decoding the result, I extracted: *"iBwaWNvQ1RGe1Could the flag have been splitted?"*
+
+Packet 48 contains a Base64-encoded Data string: *"VGhpcyBpcyB0aGUgc2VjcmV0OiBwaWNvQ1RGe1IzNERJTkdfTE9LZF8="*.
+Decoding this gives:*"This is the secret: `picoCTF{R34DING_LOKd_"`*
+
+Packets 49-57 appear to contain more obfuscated content, such as: *"PBwaWUvQ1RGesabababkjaASKBKSBACVVAVSDDSSSSDSKJBJS"*
+
+Packets 58-65 provide a clearer hint: *"PBwaWUvQ1RGe1Maybe try checking the other file"*
+
+At this point, the only meaningful output was a partial flag:
+```
+picoCTF{R34DING_LOKd_
+```
+
+Following the hint from the final packets, I turned my attention to the `.zip` file. 
+Using the partial flag as the password, I successfully extracted its contents.
+Read the content of the extracted file and was able to complete the flag.
+
+## 🚩Flag
+> `picoCTF{R34DING_LOKd_fil56_succ3ss_cbf2ebf6}`
+

@@ -1,0 +1,8 @@
+{
+  "label": "Sysmon & Splunk",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "A lab guide to Sysmon and Splunk, exploring how to use Sysmon for monitoring and Splunk for data analysis in cybersecurity contexts."
+  }
+}

@@ -1,0 +1,30 @@
+---
+tags: []
+---
+# Redaction gone wrong
+
+- **Description:** Now you DON'T see me.
+This report has some critical data in it, some of which have been redacted correctly, while some were not. 
+Can you find an important key that was not redacted properly?
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+This challenge provides a PDF file, but parts of it appear to be redacted with black boxes. 
+A simple trick to reveal the hidden content is to press `Ctrl + A` to select all text, then copy and paste it into a plain text editor.
+By doing so, the full content becomes visible-including the supposedly redacted parts. Among the revealed text, we find the flag:
+```
+Financial Report for ABC Labs, Kigali, Rwanda for the year 2021.  
+Breakdown - Just painted over in MS word.  
+Cost Benefit Analysis 
+Credit Debit 
+This is not the flag, keep looking 
+Expenses from the    
+picoCTF{C4n_Y0u_S33_m3_fully} 
+Redacted document.  
+```
+That's it. Just some paint over a Word document pretending to be secure.
+
+## 🚩Flag
+> `picoCTF{C4n_Y0u_S33_m3_fully} `

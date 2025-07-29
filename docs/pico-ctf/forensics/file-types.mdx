@@ -1,0 +1,173 @@
+---
+tags: []
+---
+# File types
+
+- **Description:** This file was found among some files marked confidential but my pdf reader cannot read it, maybe yours can.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+The challenge provides a seemingly broken PDF file that can't be opened normally. 
+Suspecting something unusual, I ran the `file` command, which revealed that it was actually a **shell archive text**. 
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file Flag.pdf  
+Flag.pdf: shell archive text
+```
+Renaming the file with a `.shar` extension and executing it extracted its contents.
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ mv Flag.pdf Flag.shar
+
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ sh Flag.shar         
+x - created lock directory _sh00046.
+x - extracting flag (text)
+x - removed lock directory _sh00046.
+```
+
+The extracted output was an **ar archive** - a classic Unix archive format that also underpins `.deb` packages. 
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag
+flag: current ar archive
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ ar x flag  
+```
+I extracted it, which revealed a **cpio archive**. 
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag
+flag: cpio archive; device 234, inode 37426, mode 100644, uid 0, gid 0, modified Thu Mar 16 01:40:17 2023, 510 bytes "flag"
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ mv flag Flag         
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ cpio -i < Flag
+2 blocks
+```
+
+Following the trail, I continued unpacking each successive format:
+* From **cpio**, I got a **bzip2** file
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag
+flag: bzip2 compressed data, block size = 900k
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ bunzip2 flag            
+bunzip2: Can't guess original name for flag -- using flag.out
+```
+* Extracting the bzip2 file gave me a **gzip** file
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag.out 
+flag.out: gzip compressed data, was "flag", last modified: Thu Mar 16 01:40:17 2023, from Unix, original size modulo 2^32 327
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ mv flag.out flag.gz
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ gunzip flag.gz  
+```
+* Unpacking the gzip yielded a **lzip** archive
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag    
+flag: lzip compressed data, version: 1
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ mv flag flag.lz    
+                                                                                                                                                                                                                      
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ lzip -d flag.lz
+```
+* This led to an **LZ4** file
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag
+flag: LZ4 compressed data (v1.4+)
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ mv flag flag.lz4
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ lz4 -dv flag.lz4 
+*** lz4 v1.10.0 64-bit multithread, by Yann Collet ***
+Decoding file flag 
+flag.lz4                       : decoded 265 bytes
+```
+* Which unpacked into an **lzma** file
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag      
+flag: LZMA compressed data, non-streamed, size 254
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ mv flag flag.lzma
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ lzma -d flag.lzma
+```
+* Then came an **lzop** file
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag
+flag: lzop compressed data - version 1.040, LZO1X-1, os: Unix
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ mv flag flag.lzo 
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ lzop -d flag.lzo
+```
+* Followed by yet another **lzip** file
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag
+flag: lzip compressed data, version: 1
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ mv flag flag.lzip
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ lzip -d flag.lzip
+```
+* Then an **xz** archive
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag.lzip.out 
+flag.lzip.out: XZ compressed data, checksum CRC64
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ mv flag.lzip.out flag.xz
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ xz -d flag.xz 
+```
+After unpacking layer upon layer of compression formats, I finally retrieved a file containing the flag-written in hexadecimal. 
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ file flag         
+flag: ASCII text
+                                                                                                              
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ cat flag                         
+7069636f4354467b66316c656e406d335f6d406e3170756c407431306e5f
+6630725f3062326375723137795f37396230316332367d0a
+```
+Decoding it revealed the final flag.
+```
+┌──(kali㉿kali)-[~/Desktop/test]
+└─$ cat flag | xxd -r -p
+picoCTF{f1len@m3_m@n1pul@t10n_f0r_0b2cur17y_79b01c26}
+```
+A true test of patience and decompression skills (*and I hate it lol*).
+
+
+## 🚩Flag
+> `picoCTF{f1len@m3_m@n1pul@t10n_f0r_0b2cur17y_79b01c26}`

@@ -1,0 +1,69 @@
+---
+tags: [forensics]
+---
+# MSB
+
+- **Description:** This image passes LSB statistical analysis, but we can't help but think there must be something to the visual artifacts present in this image...
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+The challenge provides an image file along with a hint referencing **MSB**.
+
+Unlike **LSB** - a commonly used technique in steganography challenges - **MSB** refers to the **Most Significant Bit**, 
+which is the leftmost bit in a byte (bit 7, if counting from 0). 
+It holds the highest value because it contributes the most to the overall value of the byte. 
+In contrast, the **Least Significant Bit (LSB)** is the rightmost bit (bit 0), carrying the smallest value (1).
+
+For challenges involving either LSB or MSB, a simple script can often be used to extract hidden data:
+- Read each pixel of the image
+- Extract the MSB from each color channel (bit 7)
+- Concatenate the bits into a binary stream and convert it to ASCII to reveal any embedded message.
+```python
+from PIL import Image
+
+def extract_msb_bits(image_path):
+    img = Image.open(image_path)
+    pixels = list(img.getdata())
+    
+    bitstream = ""
+
+    for pixel in pixels:
+        if isinstance(pixel, tuple):
+            for channel in pixel[:3]: 
+                msb = (channel & 0b10000000) >> 7
+                bitstream += str(msb)
+        else:
+            msb = (pixel & 0b10000000) >> 7
+            bitstream += str(msb)
+
+    return bitstream
+
+def bits_to_ascii(bitstream):
+    chars = []
+    for i in range(0, len(bitstream), 8):
+        byte = bitstream[i:i+8]
+        if len(byte) < 8:
+            continue
+        ascii_char = chr(int(byte, 2))
+        chars.append(ascii_char)
+    return ''.join(chars)
+
+if __name__ == "__main__":
+    image_path = "Ninja-and-Prince-Genji-Ukiyoe-Utagawa-Kunisada.flag.png" 
+    bitstream = extract_msb_bits(image_path)
+    hidden_text = bits_to_ascii(bitstream)
+    print(hidden_text)
+```
+
+Running this script on the provided image yielded a very long text. 
+By searching for the string **pico** within that output, I was able to locate the flag.
+```
+┌──(venv)─(kali㉿kali)-[~/Desktop/pico-ctf]
+└─$ python script.py | grep "pico"
+picoCTF{15_y0ur_que57_qu1x071c_0r_h3r01c_3a219174}
+```
+
+## 🚩Flag
+> `picoCTF{15_y0ur_que57_qu1x071c_0r_h3r01c_3a219174}`
