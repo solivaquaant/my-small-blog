@@ -12,8 +12,7 @@ tags: [forensics]
 Upon analyzing the provided `bitlocker-1.dd` disk image, we identified the presence of the string **FVE-FS**, which signifies a BitLocker-encrypted volume (Full Volume Encryption File System). 
 This confirms that the partition has been secured using BitLocker.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ file bitlocker-1.dd 
+> file bitlocker-1.dd 
 bitlocker-1.dd: DOS/MBR boot sector, code offset 0x58+2, OEM-ID "-FVE-FS-", sectors/cluster 8, reserved sectors 0, Media descriptor 0xf8, sectors/track 63, heads 255, hidden sectors 124499968, FAT (32 bit), sectors/FAT 8160, serial number 0, unlabeled; NTFS, sectors/track 63, physical drive 0x1fe0, $MFT start cluster 393217, serial number 02020454d414e204f, checksum 0x41462020
 ```
 
@@ -29,8 +28,7 @@ $bitlocker$0$16$cb4809fe9628471a411f8380e0f668db$1048576$12$d04d9c58eed6da010a00
 Next, we launched a brute-force attack using John the Ripper along with the well-known `rockyou.txt` wordlist. 
 The correct password was successfully recovered as **jacqueline**.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+> john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
 Note: This format may emit false positives, so it will keep trying even after finding a possible candidate.
 Using default input encoding: UTF-8
 Loaded 1 password hash (BitLocker, BitLocker [SHA-256 AES 32/64])
@@ -56,18 +54,15 @@ sudo dislocker -V bitlocker-1.dd -ujacqueline -- /media/bit
 
 After successful decryption, a virtual file named `dislocker-file` was created in `/media/bit`. This file represents the unlocked volume.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ sudo ls /media/bit                 
+> sudo ls /media/bit                 
 dislocker-file
 ```
 
 Next, we mounted the decrypted volume:
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ sudo mkdir -p /media/win                                  
+> sudo mkdir -p /media/win                                  
                                                                                                                                                                                                                                                                      
-┌──(kali㉿kali)-[~/Desktop]
-└─$ sudo mount -o loop /media/bit/dislocker-file /media/win
+> sudo mount -o loop /media/bit/dislocker-file /media/win
 The disk contains an unclean file system (0, 0).
 Metadata kept in Windows cache, refused to mount.
 Falling back to read-only mount because the NTFS partition is in an
@@ -80,8 +75,7 @@ During mounting, the system detected an unclean file system state (likely due to
 As a result, the volume was mounted in **read-only** mode for safety.  
 Finally, we navigated to the mounted directory and retrieved the flag.
 ```bash
-┌──(kali㉿kali)-[/media/win]
-└─$ cat flag.txt 
+> cat flag.txt 
 picoCTF{us3_b3tt3r_p4ssw0rd5_pl5!_3242adb1} 
 ```
 

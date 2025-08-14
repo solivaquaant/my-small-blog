@@ -11,26 +11,22 @@ tags: []
 ## 🔎 Solution
 The provided file is a Linux executable.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ file strings                           
+> file strings                           
 strings: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=0cdedfba33422d235dba8c90e00fb77b235f1ff8, not stripped
 ```
 
 When executed, the program displays some initial output, but nothing immediately useful. However, it hints at using the `strings` command.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ chmod +x strings
+> chmod +x strings
                                                                                                                       
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ./strings       
+> ./strings       
 Maybe try the 'strings' function? Take a look at the man page
 ```
 
 The `strings` utility is a command-line tool that extracts and prints human-readable text from binary files. It's commonly used in CTFs to quickly identify hardcoded messages, debug information, or hidden flags embedded in executables.
 To efficiently search for the flag, we can combine strings with `grep` to filter for lines containing the keyword **picoCTF**:
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ strings strings | grep "picoCTF"
+> strings strings | grep "picoCTF"
 picoCTF{5tRIng5_1T_7f766a23}
 ```
 This will return any embedded strings in the binary that include the flag format.

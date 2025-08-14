@@ -11,8 +11,7 @@ tags: []
 ## 🔎 Solution
 The first server contains leaked information. Upon connecting, we discover the password: `My_Passw@rd_@1234`.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ nc tethys.picoctf.net 53058
+> nc tethys.picoctf.net 53058
 SSH-2.0-OpenSSH_7.6p1 My_Passw@rd_@1234
 ```
 
@@ -84,8 +83,7 @@ This command creates a symbolic link named banner that redirects to the restrict
 Now, when a user connects to the server again, `script.py` reads the new banner - which is actually a symlink to `flag.txt`. 
 As a result, the contents of the flag are displayed on connection, successfully revealing the flag.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ nc tethys.picoctf.net 55013
+> nc tethys.picoctf.net 55013
 picoCTF{b4nn3r_gr4bb1n9_su((3sfu11y_218ef5d6}
 ```
 

@@ -30,8 +30,7 @@ dd if=disko-2.dd of=partition1.img bs=512 skip=2048 count=51200
 Once extracted, we search for the keyword **picoCTF** inside the image. 
 This yields the correct flag among the results.
 ```
-┌──(kali㉿kali)-[~/Desktop/pico-ctf]
-└─$ sudo strings partition1.img | grep -i picoCTF
+> sudo strings partition1.img | grep -i picoCTF
 picoCTF{4_P4Rt_1t_i5_055dd175}
 ```
 

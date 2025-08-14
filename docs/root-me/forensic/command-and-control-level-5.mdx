@@ -16,8 +16,7 @@ Find john password.
 To identify user accounts present on the system, the first step involves retrieving the **hivelist**. 
 Simply put, the hivelist reveals the starting memory addresses of Windows registry hives - data structures that store configuration settings and user account information.
 ```js
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 hivelist 
+> ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 hivelist 
 Volatility Foundation Volatility Framework 2.6
 Virtual    Physical   Name
 ---------- ---------- ----

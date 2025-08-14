@@ -9,7 +9,7 @@ tags: [android, reverse-engineer]
 ---
 
 ## 🔎 Solution
-The app’s interface remains minimal - just a text input and a single button.
+The app's interface remains minimal - just a text input and a single button.
 To understand what the app is doing behind the scenes, I opened the APK in [Bytecode Viewer](https://github.com/Konloch/bytecode-viewer) (run with java). 
 Inside the decompiled classes, I located the `FlagstaffHill.class`, which contains a method named `getFlag`.
 ```
@@ -21,7 +21,7 @@ This method is straightforward: it checks whether the input string matches a spe
 If it does, the flag is returned. Otherwise, the app simply logs **"NOPE"**.
 
 
-Rather than reverse-engineering the method logic directly, a faster approach is to inspect the app’s resources. 
+Rather than reverse-engineering the method logic directly, a faster approach is to inspect the app's resources. 
 Using apktool, I decompiled the APK: `apktool d one.apk`, then navigated to `two/res/values/strings.xml`
 This file typically holds static strings used throughout the app. 
 

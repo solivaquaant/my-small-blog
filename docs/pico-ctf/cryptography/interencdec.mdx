@@ -11,25 +11,22 @@ tags: []
 ## 🔎 Solution
 Upon inspecting the contents of the file, we quickly recognize that it is a Base64-encoded string.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ cat enc_flag                        
+> cat enc_flag                        
 YidkM0JxZGtwQlRYdHFhR3g2YUhsZmF6TnFlVGwzWVROclgyZzBOMm8yYXpZNWZRPT0nCg==
 ```
 Decoding it once reveals yet another Base64-encoded string. 
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ cat enc_flag | base64 -d            
+> cat enc_flag | base64 -d            
 b'd3BqdkpBTXtqaGx6aHlfazNqeTl3YTNrX2g0N2o2azY5fQ=='
 ```
 After a second round of decoding, we finally obtain another string.
 However, the output doesn't immediately resemble the expected flag format.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ echo "d3BqdkpBTXtqaGx6aHlfazNqeTl3YTNrX2g0N2o2azY5fQ==" | base64 -d
+> echo "d3BqdkpBTXtqaGx6aHlfazNqeTl3YTNrX2g0N2o2azY5fQ==" | base64 -d
 wpjvJAM{jhlzhy_k3jy9wa3k_h47j6k69}
 ```
 
-Looking closely, we notice that the structure and length of the string suggest it might be the flag — just obfuscated. 
+Looking closely, we notice that the structure and length of the string suggest it might be the flag - just obfuscated. 
 For example, the standard flag format `picoCTF{...}` appears as something like `wpjvJAM{...}`. 
 The number of characters remains unchanged, but the letters have been shifted.  
 

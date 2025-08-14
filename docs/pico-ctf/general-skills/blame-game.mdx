@@ -12,8 +12,7 @@ tags: []
 While reviewing the commit history using `git log`, we notice a large number of entries with the same message: **important business work**. 
 This repetition makes it difficult to identify meaningful changes.
 ```bash
-┌──(kali㉿kali)-[~/Desktop/drop-in]
-└─$ git log 
+> git log 
 commit ee09a4c4c11ecef32e6030630ef426d946ab46a4 (HEAD -> master)
 Author: picoCTF <ops@picoctf.com>
 Date:   Sat Mar 9 21:09:19 2024 +0000
@@ -34,10 +33,9 @@ Date:   Sat Mar 9 21:09:19 2024 +0000
 ```
 Fortunately, the directory contains only a single file - **message.py**. To narrow the scope, we use `git log message.py`.
 This command filters the log to only show commits that modified the specific file, making it easier to trace relevant activity.
-Among the results, one commit stands out with the message: **optimize file size of prod code**. The author of that commit is the flag we’re looking for.
+Among the results, one commit stands out with the message: **optimize file size of prod code**. The author of that commit is the flag we're looking for.
 ```bash
-┌──(kali㉿kali)-[~/Desktop/drop-in]
-└─$ git log message.py 
+> git log message.py 
 commit fadeca9476b6713ec8cdda633aca9e9aebffc698
 Author: picoCTF{@sk_th3_1nt3rn_e9957ce1} <ops@picoctf.com>
 Date:   Sat Mar 9 21:09:11 2024 +0000

@@ -13,16 +13,14 @@ The challenge provides three files: `pw.txt` containing the password, `ende.py` 
 Opening `pw.txt` reveals the password: `6008014f6008014f6008014f6008014f`.  
 Running the script shows a usage hint:
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ python ende.py         
+> python ende.py         
 Usage: ende.py (-e/-d) [file]
 ```
 
 To decrypt the file, we use the `-d` option followed by the encrypted file's name, then enter the password when prompted.
 The flag is revealed upon successful decryption.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ python ende.py -d flag.txt.en                     
+> python ende.py -d flag.txt.en                     
 Please enter the password:6008014f6008014f6008014f6008014f
 picoCTF{4p0110_1n_7h3_h0us3_6008014f}
 ```

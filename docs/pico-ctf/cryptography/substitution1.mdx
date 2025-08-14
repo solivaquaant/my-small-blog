@@ -1,0 +1,29 @@
+---
+tags: [cryptography]
+---
+# substitution1
+
+- **Description:** A second message has come in the mail, and it seems almost identical to the first one. 
+Maybe the same thing will work again.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+Similar to the **substitution0** challenge, the provided text is also encrypted with a **substitution cipher**.
+
+Using [an online tool](https://www.dcode.fr/monoalphabetic-substitution) to automatically decrypt it, we obtain the substitution key as `ATZMXDREBLNJIVQCOFGWPYHUSK`.
+
+The original message is then decrypted as follows:
+```
+CTFS (SHORT FOR CAPTURE THE FLAG) ARE A TYPE OF COMPUTER SECURITY COMPETITION. 
+CONTESTANTS ARE PRESENTED WITH A SET OF CHALLENGES WHICH TEST THEIR CREATIVITY, TECHNICAL (AND GOOGLING) SKILLS, AND PROBLEM-SOLVING ABILITY. 
+CHALLENGES USUALLY COVER A NUMBER OF CATEGORIES, AND WHEN SOLVED, EACH YIELDS A STRING (CALLED A FLAG) WHICH IS SUBMITTED TO AN ONLINE SCORING SERVICE. 
+CTFS ARE A GREAT WAY TO LEARN A WIDE ARRAY OF COMPUTER SECURITY SKILLS IN A SAFE, LEGAL ENVIRONMENT, AND ARE HOSTED AND PLAYED BY MANY SECURITY GROUPS AROUND THE WORLD FOR FUN AND PRACTICE. 
+
+FOR THIS PROBLEM, THE FLAG IS: PICOCTF{FR3QU3NCY_4774CK5_4R3_C001_4871E6FB}
+```
+
+
+## 🚩Flag
+> `picCTF{FR3QU3NCY_4774CK5_4R3_C001_4871E6FB}`

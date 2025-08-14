@@ -8,12 +8,12 @@ tags: [android, reverse-engineer]
 ---
 
 ## 🔎 Solution
-The application presents a very simple interface: a single text input field and a button. At first glance, clicking the button doesn’t seem to trigger any visible action or response.
+The application presents a very simple interface: a single text input field and a button. At first glance, clicking the button doesn't seem to trigger any visible action or response.
 <div style={{ width: '50%', margin: '0 auto' }}>
   <img src={require("./image.png").default} style={{ width: '100%', height: 'auto' }} />
 </div>
 
-In simple Android challenges, it's not uncommon for the flag to be hidden in the app logs—especially during early-stage or beginner-level tasks. To investigate, run `adb logcat`. 
+In simple Android challenges, it's not uncommon for the flag to be hidden in the app logs-especially during early-stage or beginner-level tasks. To investigate, run `adb logcat`. 
 
 Then I click the button again in the app. This time, something interesting appeared in the logs - our flag.
 ```

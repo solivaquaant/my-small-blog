@@ -12,8 +12,7 @@ tags: [steganography, forensics]
 **Metadata** in an image file contains supplementary information that describes various technical and contextual details about the image without altering its visual content.  
 To analyze the metadata of an image file, `exiftool` can be used. Upon inspecting the metadata, the `License` field contains a value encoded in **Base64**. 
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ exiftool cat.jpg   
+> exiftool cat.jpg   
 ExifTool Version Number         : 13.00
 File Name                       : cat.jpg
 Directory                       : .
@@ -47,8 +46,7 @@ Megapixels                      : 4.1
 
 Decoding this string reveals the flag.                                                                                                         
 ```bash                                                                                                        
-┌──(kali㉿kali)-[~/Desktop]
-└─$ echo "cGljb0NURnt0aGVfbTN0YWRhdGFfMXNfbW9kaWZpZWR9" | base64 -d
+> echo "cGljb0NURnt0aGVfbTN0YWRhdGFfMXNfbW9kaWZpZWR9" | base64 -d
 picoCTF{the_m3tadata_1s_modified} 
 ```
 

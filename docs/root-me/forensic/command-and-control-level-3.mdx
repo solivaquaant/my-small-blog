@@ -15,8 +15,7 @@ To identify potentially malicious processes, we first examined the system's proc
 This visualization helps reveal abnormal parent-child relationships between processes. 
 Notably, we observed that the process `iexplore.exe` (PID 2772) had spawned a child process: `cmd.exe`. 
 ```js
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 pstree    
+> ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 pstree    
 ...
 0x87978b78:System                                      4      0    103   3257 2013-01-12 16:38:09 UTC+0000
 . 0x88c3ed40:smss.exe                                 308      4      2     29 2013-01-12 16:38:09 UTC+0000
@@ -41,8 +40,7 @@ Such an anomaly strongly suggests this process may be involved in malicious acti
 Next, we utilized the `cmdline` plugin, which retrieves the full command-line arguments used to launch each process. 
 This allowed us to extract the complete file path associated with the suspicious process.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 cmdline -p 2772
+> ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 cmdline -p 2772
 Volatility Foundation Volatility Framework 2.6
 ************************************************************************
 iexplore.exe pid:   2772
@@ -51,8 +49,7 @@ Command line : "C:\Users\John Doe\AppData\Roaming\Microsoft\Internet Explorer\Qu
 
 Finally, we calculated the **MD5 hash** of the path and complete the challenge.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ echo -n -E "C:\Users\John Doe\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\iexplore.exe" | md5sum 
+> echo -n -E "C:\Users\John Doe\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\iexplore.exe" | md5sum 
 49979149632639432397b3a1df8cb43d  -
 ```
 

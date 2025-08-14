@@ -17,8 +17,7 @@ After opening the pcap file in Wireshark, it's clear that the captured data come
 Using `aircrack-ng`, I analyzed the capture to determine whether the traffic was encrypted. 
 The result showed that the network with SSID "Gone_Surfing" used WPA encryption and contained one handshake.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ aircrack-ng wpa-ing_out.pcap 
+> aircrack-ng wpa-ing_out.pcap 
 Reading packets, please wait...
 Opening wpa-ing_out.pcap
 Resetting EAPOL Handshake decoder state.

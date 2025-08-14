@@ -12,8 +12,7 @@ tags: [steganography, forensics]
 **Metadata** in an image file contains supplementary information that describes various technical and contextual details about the image without altering its visual content.  
 To analyze the metadata of an image file, `exiftool` can be used. Upon inspecting the metadata, the `Attribution URL` field contains a value encoded in **Base64**. 
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ exiftool ukn_reality.jpg
+> exiftool ukn_reality.jpg
 ExifTool Version Number         : 13.00
 File Name                       : ukn_reality.jpg
 Directory                       : .
@@ -43,8 +42,7 @@ Megapixels                      : 12.4
 
 Decoding this string reveals the flag.                                                                                                         
 ```bash                                                                                                        
-┌──(kali㉿kali)-[~/Desktop]
-└─$ echo "cGljb0NURntNRTc0RDQ3QV9ISUREM05fZDhjMzgxZmR9Cg==" | base64 -d
+> echo "cGljb0NURntNRTc0RDQ3QV9ISUREM05fZDhjMzgxZmR9Cg==" | base64 -d
 picoCTF{ME74D47A_HIDD3N_d8c381fd}
 ```
 

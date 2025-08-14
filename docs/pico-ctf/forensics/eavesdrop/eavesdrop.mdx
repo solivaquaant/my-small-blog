@@ -28,13 +28,11 @@ Switching the display to **raw** format and saving the output as `file.des3`, I 
 ```
 Running the command successfully revealed the flag within the decrypted file.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ openssl des3 -d -salt -in file.des3 -out file.txt -k supersecretpassword123
+> openssl des3 -d -salt -in file.des3 -out file.txt -k supersecretpassword123
 *** WARNING : deprecated key derivation used.
 Using -iter or -pbkdf2 would be better.
                                                                                         
-┌──(kali㉿kali)-[~/Desktop]
-└─$ cat file.txt
+> cat file.txt
 picoCTF{nc_73115_411_5786acc3}  
 ```
 

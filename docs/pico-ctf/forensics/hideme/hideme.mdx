@@ -12,8 +12,7 @@ The SOC analyst saw one image been sent back and forth between two people. They 
 ## 🔎 Solution
 With the provided image file, we utilized `binwalk` to extract embedded data. The analysis revealed a hidden file located at `secret/flag.png`.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ binwalk -e flag.png                       
+> binwalk -e flag.png                       
 
 DECIMAL       HEXADECIMAL     DESCRIPTION
 --------------------------------------------------------------------------------

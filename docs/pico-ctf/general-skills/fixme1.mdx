@@ -11,8 +11,7 @@ tags: []
 ## 🔎 Solution
 This challenge focuses on debugging a Python script. When running the program, it immediately throws an error at **line 20: unexpected indent**.  
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ python fixme1.py 
+> python fixme1.py 
   File "/home/kali/Desktop/fixme1.py", line 20
     print('That is correct! Here\'s your flag: ' + flag)
 IndentationError: unexpected indent
@@ -32,8 +31,7 @@ print('That is correct! Here\'s your flag: ' + flag)
 
 After correcting the indentation and rerunning the script, the program executes successfully - and reveals the flag.
 ```bash                                                                                                                      
-┌──(kali㉿kali)-[~/Desktop]
-└─$ python fixme1.py  
+> python fixme1.py  
 That is correct! Here's your flag: picoCTF{1nd3nt1ty_cr1515_6a476c8f}
 ```
 

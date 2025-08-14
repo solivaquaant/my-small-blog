@@ -1,0 +1,27 @@
+---
+tags: [cryptography]
+---
+# HideToSee
+
+- **Description:** How about some hide and seek heh?
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+The challenge provides an image hinting at the **Atbash Cipher** - a classic substitution cipher where each letter is replaced by its counterpart in the reversed alphabet (A ↔ Z, B ↔ Y,...).
+
+Using `steghide` to inspect the image for hidden content, with an empty passphrase
+```
+> steghide extract -sf atbash.jpg
+Enter passphrase: 
+wrote extracted data to "encrypted.txt".
+```
+We successfully extract a hidden string:
+```
+krxlXGU{zgyzhs_xizxp_xz00558y}
+```
+Applying [Atbash decryption tool](https://www.dcode.fr/atbash-cipher) to this string reveals the final flag.
+
+## 🚩Flag
+> `picoCTF{atbash_crack_ca00558b}`

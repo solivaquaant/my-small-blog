@@ -1,0 +1,50 @@
+---
+tags: [forensics]
+---
+# Disk, disk, sleuth! II
+
+- **Description:** All we know is the file with the flag is named `down-at-the-bottom.txt`...
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+After extracting the provided disk image, I examined it using `mmls` and identified a single Linux partition. 
+```
+> mmls dds2-alpine.flag.img 
+DOS Partition Table
+Offset Sector: 0
+Units are in 512-byte sectors
+
+      Slot      Start        End          Length       Description
+000:  Meta      0000000000   0000000000   0000000001   Primary Table (#0)
+001:  -------   0000000000   0000002047   0000002048   Unallocated
+002:  000:000   0000002048   0000262143   0000260096   Linux (0x83)
+```
+
+With this offset, I used `fls` to list the files and directories within the partition, and to locate the target file, I combined this with `grep`:
+```
+> fls -o 2048 -r dds2-alpine.flag.img | grep "down-at-the-bottom.txt"
++ r/r 18291:    down-at-the-bottom.txt
+```
+
+This revealed that the file `down-at-the-bottom.txt` resides at inode **18291**. I then extracted its contents using `icat`:
+```                                                                                                            
+> icat -o 2048 dds2-alpine.flag.img 18291
+   _     _     _     _     _     _     _     _     _     _     _     _     _  
+  / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \ 
+ ( p ) ( i ) ( c ) ( o ) ( C ) ( T ) ( F ) ( { ) ( f ) ( 0 ) ( r ) ( 3 ) ( n )
+  \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/ 
+   _     _     _     _     _     _     _     _     _     _     _     _     _  
+  / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \ 
+ ( s ) ( 1 ) ( c ) ( 4 ) ( t ) ( 0 ) ( r ) ( _ ) ( n ) ( 0 ) ( v ) ( 1 ) ( c )
+  \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/ 
+   _     _     _     _     _     _     _     _     _     _     _  
+  / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \ 
+ ( 3 ) ( _ ) ( 0 ) ( b ) ( a ) ( 8 ) ( d ) ( 0 ) ( 2 ) ( d ) ( } )
+  \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/ 
+```
+The contents of the file contained the flag.
+
+## 🚩Flag
+> `picoCTF{f0r3ns1c4t0r_n0v1c3_0ba8d02d}`

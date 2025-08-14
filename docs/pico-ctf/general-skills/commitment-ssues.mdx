@@ -14,8 +14,7 @@ Running the `git log` command reveals the commit history, allowing us to trace t
 From the log, it appears that the author initially committed a file containing the flag. 
 A subsequent commit seems to have modified or removed some part of that content - indicating a significant change occurred between the 2 commits.  
 ```bash
-┌──(kali㉿kali)-[~/Desktop/drop-in]
-└─$ git log 
+> git log 
 commit e1237df82d2e69f62dd53279abc1c8aeb66f6d64 (HEAD -> master)
 Author: picoCTF <ops@picoctf.com>
 Date:   Sat Mar 9 21:10:14 2024 +0000
@@ -32,8 +31,7 @@ To investigate further, we use `git show` on the later commit.
 This reveals that the original flag content was deleted and replaced with the string **"TOP SECRET".** 
 By analyzing the diff, we can recover the original flag that was intentionally hidden.
 ```bash                                                                                                                                                                                                                                
-┌──(kali㉿kali)-[~/Desktop/drop-in]
-└─$ git show
+> git show
 commit e1237df82d2e69f62dd53279abc1c8aeb66f6d64 (HEAD -> master)
 Author: picoCTF <ops@picoctf.com>
 Date:   Sat Mar 9 21:10:14 2024 +0000

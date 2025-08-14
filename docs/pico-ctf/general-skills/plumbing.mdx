@@ -1,0 +1,20 @@
+---
+tags: []
+---
+# plumning
+
+- **Description:** Sometimes you need to handle process data outside of a file. Can you find a way to keep the output from this program and search for the flag? 
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+Upon connecting to the server, a large amount of text is displayed. 
+By piping the output through `grep` to search for the keyword **pico**, we can quickly isolate and retrieve the flag.
+```
+> nc jupiter.challenges.picoctf.org 14291 | grep "pico"
+picoCTF{digital_plumb3r_ea8bfec7}
+```
+
+## 🚩Flag
+> `picoCTF{digital_plumb3r_ea8bfec7}`

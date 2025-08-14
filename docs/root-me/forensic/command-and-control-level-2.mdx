@@ -22,8 +22,7 @@ Using the wrong profile can result in incomplete or inaccurate data.
 
 To identify the profile, we use the `imageinfo` plugin:
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ./vol2/volatility2 -f ch2.dmp imageinfo
+> ./vol2/volatility2 -f ch2.dmp imageinfo
 Volatility Foundation Volatility Framework 2.6
 INFO    : volatility.debug    : Determining profile based on KDBG search...
           Suggested Profile(s) : Win7SP1x86_23418, Win7SP0x86, Win7SP1x86
@@ -45,8 +44,7 @@ To retrieve the **workstation's hostname**, we use the `envars` plugin.
 This plugin enumerates environment variables associated with running processes. 
 These environment blocks often contain useful metadata, including usernames, TEMP paths, and sometimes the computer's hostname.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 envars | grep "COMPUTERNAME"
+> ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 envars | grep "COMPUTERNAME"
 Volatility Foundation Volatility Framework 2.6
      560 services.exe         0x001207f0 COMPUTERNAME                   WIN-ETSA91RKCFP
      576 lsass.exe            0x002507f0 COMPUTERNAME                   WIN-ETSA91RKCFP

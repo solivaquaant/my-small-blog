@@ -12,15 +12,13 @@ tags: []
 The goal of this challenge is to locate and read the contents of a file named `uber-secret.txt` after extracting a given archive or directory.
 To find the file, we use the following command `find [path-to-directory] -name [file-name]`. This command recursively searches through the directory tree for the target file by name.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ find files -name "uber-secret.txt" 
+> find files -name "uber-secret.txt" 
 files/adequate_books/more_books/.secret/deeper_secrets/deepest_secrets/uber-secret.txt
 ```
 
 Once the correct path to `uber-secret.txt` is identified, simply display its contents and the flag will be revealed within the file.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ cat files/adequate_books/more_books/.secret/deeper_secrets/deepest_secrets/uber-secret.txt
+> cat files/adequate_books/more_books/.secret/deeper_secrets/deepest_secrets/uber-secret.txt
 picoCTF{f1nd_15_f457_ab443fd1}
 ```
 

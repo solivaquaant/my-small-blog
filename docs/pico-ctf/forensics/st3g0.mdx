@@ -16,8 +16,7 @@ To investigate it, I used a tool called `zsteg` - a powerful utility designed fo
 By running `zsteg` on the image, I discovered the flag hidden in the **b1,rgb,lsb,xy** channel - a classic use of least significant bit steganography across all RGB color components.
 
 ```js
-┌──(kali㉿kali)-[~/Desktop/pico-ctf]
-└─$ zsteg pico.flag.png              
+> zsteg pico.flag.png              
 b1,r,lsb,xy         .. text: "~__B>VG?G@"
 //highlight-next-line
 b1,rgb,lsb,xy       .. text: "picoCTF{7h3r3_15_n0_5p00n_a9a181eb}$t3g0"

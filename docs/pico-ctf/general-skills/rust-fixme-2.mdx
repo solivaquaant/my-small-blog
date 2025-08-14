@@ -9,11 +9,11 @@ tags: []
 ---
 
 ## 🔎 Solution
-After extracting the archive using `tar -xvf fixme2.tar.gz`, you’ll find the following files in the directory:
+After extracting the archive using `tar -xvf fixme2.tar.gz`, you'll find the following files in the directory:
 - Cargo.toml
 - Cargo.lock
 - src/main.rs
-Now try compiling and running the project with `cargo run`, you’ll encounter the following error:
+Now try compiling and running the project with `cargo run`, you'll encounter the following error:
 ```
 error[E0596]: cannot borrow `*borrowed_string` as mutable, as it is behind a `&` reference
 ```
@@ -43,8 +43,7 @@ decrypt(encrypted_buffer, &mut party_foul);
 ```
 With these changes in place, recompile the project and this time, the program should run successfully and print the flag.
 ```
-┌──(kali㉿kali)-[~/Desktop/pico-ctf/fixme2]
-└─$ cargo run           
+> cargo run           
    Compiling rust_proj v0.1.0 (/home/kali/Desktop/pico-ctf/fixme2)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s
      Running `target/debug/rust_proj`

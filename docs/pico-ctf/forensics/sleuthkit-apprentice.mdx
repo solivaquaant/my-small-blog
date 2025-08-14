@@ -15,8 +15,7 @@ This reveals 3 main partitions:
 2. Linux Swap / Solaris partition (0x82): Start sector 206848
 3. Second Linux partition (0x83): Start sector 360448
 ```
-┌──(kali㉿kali)-[~/Desktop/pico-ctf]
-└─$ mmls disk.flag.img 
+> mmls disk.flag.img 
 DOS Partition Table
 Offset Sector: 0
 Units are in 512-byte sectors
@@ -40,14 +39,12 @@ ls /mnt/disk2
 After mounting, I searched recursively for any file named `flag` within the partition. 
 This led to the discovery of a file named `flag.uni.txt`.
 ```
-┌──(kali㉿kali)-[/mnt/disk2/tmp]
-└─$ sudo find /mnt/disk2 -type f -name "*flag*"
+> sudo find /mnt/disk2 -type f -name "*flag*"
 /mnt/disk2/root/my_folder/flag.uni.txt
 ```
 Viewing the contents of this file revealed the flag.
 ```
-┌──(kali㉿kali)-[/mnt/disk2/tmp]
-└─$ sudo cat /mnt/disk2/root/my_folder/flag.uni.txt
+> sudo cat /mnt/disk2/root/my_folder/flag.uni.txt
 picoCTF{by73_5urf3r_3497ae6b}
 ```
 

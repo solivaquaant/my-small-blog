@@ -1,0 +1,43 @@
+---
+tags: [forensics]
+---
+# advanced-potion-making
+
+- **Description:** Ron just found his own copy of advanced potion making, but its been corrupted by some kind of spell. 
+Help him recover it!
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+This challenge provides us with a file whose type is initially unknown.
+```
+> file advanced-potion-making 
+advanced-potion-making: data
+```
+Inspecting the file's hexadecimal data reveals the string `IHDR`. 
+`IHDR` is the first chunk in the PNG format and always appears immediately after the 8-byte PNG signature.
+```
+> xxd advanced-potion-making
+00000000: 8950 4211 0d0a 1a0a 0012 1314 4948 4452  .PB.........IHDR
+00000010: 0000 0990 0000 04d8 0802 0000 0004 2de7  ..............-.
+00000020: 7800 0000 0173 5247 4200 aece 1ce9 0000  x....sRGB.......
+```
+Opening the file in **HxD** (or any hex editor) shows that its header does not match the correct PNG header format. 
+To fix this, we modify the first 16 bytes to `89 50 42 11 0D 0A 1A 0A 00 12 13 14 49 48 44 52`.
+<div style={{ width: '80%', margin: '0 auto' }}>
+  <img src={require("./hxd.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+*You can refer to [PNG header specifications](https://asecuritysite.com/forensics/png?file=%2Flog%2Fbasn0g01.png) for details.*
+
+After this correction, the file displays as a solid red image. 
+Using [**Stegsolve**](https://github.com/eugenekolo/sec-tools/tree/master/stego/stegsolve/stegsolve) to view the image under different planes, 
+we find that in the *Red plane 0* mode, the hidden flag is revealed.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{w1z4rdry}`
+

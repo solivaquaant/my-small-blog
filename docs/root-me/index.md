@@ -19,13 +19,13 @@ Welcome to the Root Me section of my blog!
 
 ### Why Root Me?
 
-Root Me is a fantastic platform for building and sharpening your cybersecurity skills, whether you're a beginner or a seasoned professional. The challenges are diverse, well-structured, and gradually increase in complexity — making it an ideal environment for continuous learning.
+Root Me is a fantastic platform for building and sharpening your cybersecurity skills, whether you're a beginner or a seasoned professional. The challenges are diverse, well-structured, and gradually increase in complexity - making it an ideal environment for continuous learning.
 
 ---
 
 ### What you'll find here?
 
-In this section, I share my personal solutions and write-ups for various Root Me challenges. Each write-up is designed to explain both the "how" and the "why" behind each solution — helping you understand the concepts, not just the answers.
+In this section, I share my personal solutions and write-ups for various Root Me challenges. Each write-up is designed to explain both the "how" and the "why" behind each solution - helping you understand the concepts, not just the answers.
 
 Whether you're stuck on a challenge or just looking for different approaches, I hope these write-ups offer clarity and insight.
 

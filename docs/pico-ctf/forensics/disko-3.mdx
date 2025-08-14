@@ -21,8 +21,7 @@ Mounting the image using conventional methods didn't yield anything useful at fi
 However, after digging deeper, I turned to `binwalk` - and that's when things clicked. 
 Using it to extract embedded files, I successfully uncovered the contents hidden within.
 ```
-┌──(kali㉿kali)-[~/Desktop/pico-ctf]
-└─$ binwalk -e disko-3.dd 
+> binwalk -e disko-3.dd 
 
 DECIMAL       HEXADECIMAL     DESCRIPTION
 --------------------------------------------------------------------------------
@@ -51,8 +50,7 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 Among the extracted files was one named `flag`. 
 A quick inspection of its contents revealed exactly what I was looking for - the flag. Simple as that.
 ```
-┌──(kali㉿kali)-[~/Desktop/pico-ctf/_disko-3.dd.extracted]
-└─$ cat flag                
+> cat flag                
 Here is your flag
 picoCTF{n3v3r_z1p_2_h1d3_26d4f233}
 ```

@@ -13,11 +13,9 @@ The challenge provides 2 files: a program file and a Bash script.
 The Bash script is designed to disassemble a binary executable and extract readable strings from it.  
 After granting execute permissions to the script and running it with the binary file as an argument, it generates 2 output files: `static.ltdis.strings.txt` and `static.ltdis.x86_64.txt`.
 ```bash                                                                                                                
-┌──(kali㉿kali)-[~/Desktop]
-└─$ chmod +x ./ltdis.sh 
+> chmod +x ./ltdis.sh 
                                                                                                              
-┌──(kali㉿kali)-[~/Desktop]
-└─$ ./ltdis.sh static 
+> ./ltdis.sh static 
 Attempting disassembly of static ...
 Disassembly successful! Available at: static.ltdis.x86_64.txt
 Ripping strings from binary with file offsets...
@@ -25,8 +23,7 @@ Any strings found in static have been written to static.ltdis.strings.txt with f
 ```
 By inspecting the contents of `static.ltdis.strings.txt`, you can discover the flag.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ cat static.ltdis.strings.txt 
+> cat static.ltdis.strings.txt 
     238 /lib64/ld-linux-x86-64.so.2
     361 libc.so.6
     36b puts
@@ -47,8 +44,7 @@ By inspecting the contents of `static.ltdis.strings.txt`, you can discover the f
 Another way to solve this challenge is by using the `strings` command in combination with `grep` to search for the keyword **picoCTF** directly within the `static` file. 
 This approach also reveals the flag.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ strings static | grep "picoCTF"          
+> strings static | grep "picoCTF"          
 picoCTF{d15a5m_t34s3r_ae0b3ef2}
 ```
 

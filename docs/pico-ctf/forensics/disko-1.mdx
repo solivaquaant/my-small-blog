@@ -11,15 +11,13 @@ tags: []
 ## 🔎 Solution
 First, we extract the contents of the `.gz` archive using the `gunzip` command.
 ```bash
-┌──(kali㉿kali)-[~/Desktop]
-└─$ gunzip disko-1.dd.gz 
+> gunzip disko-1.dd.gz 
 ```
 
 Since the extracted file is a disk image, we can use the `strings` command to scan for readable text within the binary. 
 By filtering the output for the keyword **picoCTF***, we are able to locate and retrieve the flag.
 ```bash                                                                                                            
-┌──(kali㉿kali)-[~/Desktop]
-└─$ strings disko-1.dd| grep "picoCTF"
+> strings disko-1.dd| grep "picoCTF"
 picoCTF{1t5_ju5t_4_5tr1n9_be6031da}
 ```
 
