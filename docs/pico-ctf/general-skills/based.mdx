@@ -1,0 +1,51 @@
+---
+tags: []
+---
+# Based
+
+- **Description:** To get truly 1337, you must understand different data encodings, such as hexadecimal or binary. 
+Can you get the flag from this program to prove you are on the way to becoming 1337?
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+The purpose of this challenge is to explore different formats used to represent strings. 
+Common encodings include binary, hexadecimal, octal, Base32, Base64, and many others.
+
+After connecting to the server, we are given several encoded strings and must convert them back into readable text.
+- For the first string, it is clear that the format is **binary**, since it only contains the digits `0` and `1`.
+```
+Please give the 01101100 01101001 01111010 01100001 01110010 01100100 as a word.
+...
+you have 45 seconds.....
+
+Input:
+lizard
+```
+- For the second string, the format is likely **octal**, as lowercase letters (`a-z`) correspond to octal values ranging from 141 to 172.
+```
+Please give me the  163 164 162 145 145 164 as a word.
+Input:
+street
+```
+- For the final string, the format appears to be **hexadecimal**, consisting of characters from `0-9` and `a-f`.
+
+To quickly perform these conversions, we can use [this tool](https://kt.gy/tools.html#conv/). 
+```
+Please give me the 6e75727365 as a word.
+Input:
+nurse
+```
+Once all three strings are decoded correctly, we obtain the flag.
+```
+You've beaten the challenge
+Flag: picoCTF{learning_about_converting_values_b375bb16}
+```
+
+## 🚩Flag
+> `picoCTF{learning_about_converting_values_b375bb16}`
+
+
+
+

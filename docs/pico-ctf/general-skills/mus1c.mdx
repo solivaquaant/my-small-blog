@@ -1,0 +1,37 @@
+---
+tags: []
+---
+# mus1c
+
+- **Description:** I wrote you a song. Put it in the `picoCTF{}` flag format.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+This challenge introduces the Rockstar programming language, which was first encountered in the earlier task [**1\_wanna\_b3\_a\_r0ck5tar**](https://solivaquaant.github.io/my-small-blog/docs/pico-ctf/general-skills/wanna_b3_a_r0ck5tar).
+
+The approach here is slightly different because the challenge uses a newer version of Rockstar, meaning we don't need to install the `rockstar-py` tool for code conversion.
+
+Instead, we can use the official [Rockstar online interpreter](https://codewithrockstar.com/), which produces an output in decimal numbers. 
+```
+114
+114
+114
+111
+99
+107
+110
+114
+110
+48
+49
+49
+51
+114
+```
+Converting these decimal values into ASCII characters reveals the string **rrrocknrn0113r**, which is the flag.
+
+
+## 🚩Flag
+> `picoCTF{rrrocknrn0113r}`

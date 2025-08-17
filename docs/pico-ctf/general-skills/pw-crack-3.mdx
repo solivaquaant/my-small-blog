@@ -1,0 +1,55 @@
+---
+tags: []
+---
+# PW Crack 3
+
+- **Description:** Can you crack the password to get the flag?
+Download the password checker here and you'll need the encrypted flag and the hash in the same directory too.
+There are 7 potential passwords with 1 being correct. 
+You can find these by examining the password checker script.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+By inspecting the source code of the password checker, we can see that this is a Python script designed to validate the correct password and decrypt the flag. 
+The flag is stored in an encrypted file (`level3.flag.txt.enc`) and will only be decrypted if the user enters the correct password, which matches the hash stored in `level3.hash.bin`.
+
+The script contains a function `str_xor(secret, key)` that performs XOR encryption on a given string using a key. 
+**XOR** is a symmetric encryption method-meaning that applying the same operation with the same key twice will return the original data. 
+This makes it straightforward to decrypt the flag once the correct key (password) is found.
+```python
+def str_xor(secret, key):
+    #extend key to secret length
+    new_key = key
+    i = 0
+    while len(new_key) < len(secret):
+        new_key = new_key + key[i]
+        i = (i + 1) % len(key)        
+    return "".join([chr(ord(secret_c) ^ ord(new_key_c)) for (secret_c,new_key_c) in zip(secret,new_key)])
+```
+
+The source code also conveniently provides a list of 7 possible passwords. 
+```python
+pos_pw_list = ["8799", "d3ab", "1ea2", "acaf", "2295", "a9de", "6f3d"]
+```
+With such a small set, we could try each password manually to find the correct one. 
+However, to speed things up, we can write a simple brute-force script that tests each candidate against the stored hash to identify the valid password.
+```python 
+for pw in pos_pw_list:
+    if hash_pw(pw) == correct_pw_hash:
+        print(f"Correct password: {pw}")
+        flag = str_xor(flag_enc.decode(), pw)
+        print(f"Flag: {flag}")
+        break
+```
+Running the brute-force yields the correct password: **2295**, which successfully decrypts the file and reveals the flag.
+```
+> python level3.py
+Please enter correct password for flag: 2295
+Welcome back... your flag, user:
+picoCTF{m45h_fl1ng1ng_6f98a49f}
+```
+
+## 🚩Flag
+> `picoCTF{m45h_fl1ng1ng_6f98a49f}`

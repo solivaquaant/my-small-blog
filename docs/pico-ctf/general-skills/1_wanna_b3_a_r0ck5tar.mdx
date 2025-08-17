@@ -1,0 +1,71 @@
+---
+tags: []
+---
+# 1_wanna_b3_a_r0ck5tar
+
+- **Description:** I wrote you another song. Put the flag in the picoCTF{} flag format
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+This challenge revolves around [**Rockstar**](https://codewithrockstar.com/) - an esoteric programming language (esolang) designed to make code look like the lyrics of a rock song.
+
+Given the lyrics, we used the [**rockstar-py tool**](https://github.com/yyyyyyyan/rockstar-py) to transpile them into Python. 
+```
+rockstar-py -i lyrics.txt -o script.py
+```
+Once rewritten, the resulting Python code looked like this:
+```python
+Rocknroll = True
+Silence = False
+a_guitar = 10
+Tommy = 44
+Music = 170
+
+the_music = int(input("Enter the guitar number: "))
+
+if the_music == a_guitar:
+    print("Keep on rocking!")
+    the_rhythm = int(input("Enter the rhythm number: "))
+    if the_rhythm - Music == 0:
+        Tommy = 66
+        print("Tommy:", Tommy)
+        Music = 79
+        Jamming = 78
+        print("Music:", Music)
+        print("Jamming:", Jamming)
+        Tommy = 74
+        print("Tommy:", Tommy)
+        print("They are dazzling audiences!")
+        Rock = 86
+        print("Rock:", Rock)
+        Tommy = 73
+        print("Tommy:", Tommy)
+        print("Bring on the rock!")
+    else:
+        print("That ain't it, Chief.")
+else:
+    print("That ain't it, Chief.")
+```
+Running the program, we entered the guitar number (`a_guitar`) and the rhythm value so that `the_rhythm - Music = 0` (with `Music = 170`, the rhythm input should be `170`).
+```
+> python script.py       
+Enter the guitar number: 10
+Keep on rocking!
+Enter the rhythm number: 170
+Tommy: 66
+Music: 79
+Jamming: 78
+Tommy: 74
+They are dazzling audiences!
+Rock: 86
+Tommy: 73
+Bring on the rock!
+```
+The program output the sequence of values: **66, 79, 78, 74, 86, 73**. 
+These are ASCII codes, which, when converted to characters using [an ASCII table](https://www.dcode.fr/ascii-code), spell **BONJOVI** - and that string serves as the flag.
+
+
+## 🚩Flag
+> `picoCTF{BONJOVI}`
