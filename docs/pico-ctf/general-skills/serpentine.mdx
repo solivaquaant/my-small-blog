@@ -1,0 +1,57 @@
+---
+tags: []
+---
+# Serpentine
+
+- **Description:** Find the flag in the Python script!
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+This challenge provides us with a Python source file.
+
+When executed with the **b** option (intended to print the flag), the program reports that the `print_flag` function has been misplaced.
+```
+a) Print encouragement
+b) Print flag
+c) Quit
+What would you like to do? (a/b/c) b
+
+Oops! I must have misplaced the print_flag function! Check my source code!
+```
+Inspecting the source code, we find 2 key components defined at the beginning:
+- `str_xor`, a helper function performing an XOR operation.
+```python
+def str_xor(secret, key):
+    #extend key to secret length
+    new_key = key
+    i = 0
+    while len(new_key) < len(secret):
+        new_key = new_key + key[i]
+        i = (i + 1) % len(key)        
+    return "".join([chr(ord(secret_c) ^ ord(new_key_c)) for (secret_c,new_key_c) in zip(secret,new_key)])
+```
+- `print_flag`, which is supposed to output the flag string.
+```python
+def print_flag():
+  flag = str_xor(flag_enc, 'enkidu')
+  print(flag)
+```
+However, within the `main` function, `print_flag` is never actually invoked. 
+This means the solution is straightforward: we simply need to modify the code so that the function is called.
+
+The placement of the call doesn't matter - it could be before the `while` loop or within 1 of the conditional branches. 
+In this case, I inserted the call under the **b) Print flag option.**
+```python
+elif choice == 'b':
+      print_flag()
+```
+Running the program again after this adjustment successfully reveals the flag.
+```
+What would you like to do? (a/b/c) b
+picoCTF{7h3_r04d_l355_7r4v3l3d_8e47d128}
+```
+
+## 🚩Flag
+> `picoCTF{7h3_r04d_l355_7r4v3l3d_8e47d128}`

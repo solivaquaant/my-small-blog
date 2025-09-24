@@ -1,0 +1,30 @@
+---
+tags: [forensics]
+---
+# extensions
+
+- **Description:** This is a really weird text file TXT? Can you find the flag?
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+In this challenge, we are given a `.txt` file. 
+At first glance, it appears to be a plain text file.
+
+Opening it in a hex editor, however, immediately reveals something interesting: the file begins with the byte sequence `89 50 4E 47 0D 0A 1A 0A` - which is the magic header of a PNG image file.
+```
+> xxd flag.txt      
+00000000: 8950 4e47 0d0a 1a0a 0000 000d 4948 4452  .PNG........IHDR
+00000010: 0000 06a1 0000 0260 0802 0000 0085 ad5e  .......`.......^
+00000020: 9a00 0000 0173 5247 4200 aece 1ce9 0000  .....sRGB.......
+```
+With this in mind, the solution is straightforward. 
+By simply changing the file extension from `.txt` to `.png`, we can open it as an image. 
+Viewing the image reveals the hidden content, which contains the flag.
+<div style={{ width: '80%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{now_you_know_about_extensions}`

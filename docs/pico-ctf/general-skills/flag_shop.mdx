@@ -1,0 +1,92 @@
+---
+tags: []
+---
+# flag_shop
+
+- **Description:** There's a flag shop selling stuff, can you buy a flag?
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+This challenge presents us with a flag shop menu featuring three options:
+```
+Welcome to the flag exchange
+We sell flags
+1. Check Account Balance
+2. Buy Flags
+3. Exit
+```
+Checking the account balance shows a starting value of `1100`.
+```
+Enter a menu selection
+1
+Balance: 1100
+```
+Choosing the **Buy flag** option reveals 2 purchasable items:
+```
+Currently for sale
+1. Defintely not the flag Flag
+2. 1337 Flag
+```
+1. **Definitely not the flag Flag** priced at `900`, where we can specify the quantity.
+2. **1337 Flag** priced at `100 000`, which is initially out of reach due to insufficient funds.
+
+Our goal is to somehow manipulate the balance in order to purchase the coveted **1337 Flag**.
+
+Looking at the provided source code, we notice the following:
+- A variable `total_cost` (a signed integer) is initialized to `0` and later calculated as `900 * number_flags`.
+```c
+int number_flags = 0;
+
+if(number_flags > 0){
+    int total_cost = 0;
+    total_cost = 900*number_flags;
+```
+- Since both `total_cost` and the balance are signed integers, the program is vulnerable to **integer overflow**. 
+If `total_cost` overflows into a negative value, the comparison `total_cost <= account_balance` will trivially succeed, and subtracting a negative number will effectively increase the account balance instead of decreasing it.
+```c
+if(total_cost <= account_balance){
+    account_balance = account_balance - total_cost;
+    printf("\nYour current balance after transaction: %d\n\n", account_balance);
+    }
+    else{
+        printf("Not enough funds to complete purchase\n");
+}
+```
+
+**Integer overflow** occurs when an arithmetic operation produces a result that lies outside the representable range of the chosen data type. 
+For a signed 32-bit integer, the valid range is from `-2 147 483 648` to `2 147 483 647`. 
+If a computation exceeds this boundary, the value "wraps around" to the opposite end of the range.
+
+Suppose we try to purchase **4 000 000** units of "Definitely not the flag Flag".
+- The computed `total_cost` becomes `-694967296` due to overflow.
+```
+Currently for sale
+1. Defintely not the flag Flag
+2. 1337 Flag
+1
+These knockoff Flags cost 900 each, enter desired quantity
+4000000
+
+The final cost is: -694967296
+
+Your current balance after transaction: 694968396
+```
+- The program then updates the balance as:
+```
+account_balance = account_balance - total_cost
+= 1100 - (-694967296)
+= 694968396
+```
+With nearly 695 million in our account, we can now afford the **1337 Flag** and successfully obtain the challenge flag.
+```
+1337 flags cost 100000 dollars, and we only have 1 in stock
+Enter 1 to buy one
+1
+YOUR FLAG IS: picoCTF{m0n3y_bag5_65d67a74}
+Welcome to the flag exchange
+```
+
+## 🚩Flag
+> `picoCTF{m0n3y_bag5_65d67a74}`
