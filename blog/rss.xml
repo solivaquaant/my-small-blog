@@ -4,15 +4,50 @@
         <title>Thái Ngọc Diễm Trinh Blog</title>
         <link>https://solivaquaant.github.io/my-small-blog/blog</link>
         <description>Thái Ngọc Diễm Trinh Blog</description>
-        <lastBuildDate>Sun, 17 Aug 2025 05:53:50 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 24 Sep 2025 09:13:36 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
         <item>
+            <title><![CDATA[Stego secrets: Extracting embedded files using HxD and dd]]></title>
+            <link>https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf</link>
+            <guid>https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf</guid>
+            <pubDate>Wed, 24 Sep 2025 09:13:36 GMT</pubDate>
+            <description><![CDATA[Write-up of a CTF challenge from Digital Forensics course, focusing on steganography techniques to extract hidden files.]]></description>
+            <content:encoded><![CDATA[<p>During Lab 2 of Digital Forensics course, we explored the topic of <strong>Steganography</strong>.
+As part of the session, our instructor introduced a CTF-style challenge and offered bonus points to anyone who could successfully retrieve the flag.</p>
+<!-- -->
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="solution">Solution<a href="https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf#solution" class="hash-link" aria-label="Direct link to Solution" title="Direct link to Solution">​</a></h2>
+<p>We were provided with a video file and a hint: <em>"Look for the hex signature of a file that might be hidden inside."</em></p>
+<p>To begin, I opened the video file using <strong>HxD</strong>, a hex editor.
+Upon inspection, I noticed that the file header identified it as an <code>ftypisom</code> format, which is a common container signature for MP4 videos.</p>
+<p>To search for embedded file signatures, I used the <strong>Search</strong> function (<code>Ctrl + F</code>) in HxD.
+Under <strong>Text-string</strong>, I looked for typical MP4 box types like:</p>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">"ftyp", "mdat", "moov", "pnot", "udta", "uuid", "moof", "free", ...</span><br></span></code></pre></div></div>
+<p>Alternatively, I could switch to <strong>Hex-values</strong> mode and search for hex representations of known file headers.</p>
+<p>After some scanning, I found the following hex sequence:</p>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">66 74 79 70 6D 70 34 32</span><br></span></code></pre></div></div>
+<p>This corresponds to the ASCII string <code>ftypmp42</code>, indicating the header of an <strong>MP4 (version 2)</strong> file.
+This signature was located at <strong>offset <code>0x1D62C78</code></strong>.</p>
+<div style="width:100%;margin:0 auto"><img src="https://solivaquaant.github.io/my-small-blog/assets/images/offset-6cb5964b27134a84fc7d0bdf547af73c.png" style="width:100%;height:auto"></div>
+<p>To extract the embedded MP4 file, I first converted the offset to decimal: 0x1D62C78 = 30813300.</p>
+<p>Then, using the <code>dd</code> command in a Unix-like environment, I extracted the hidden file:</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">dd if=video-challenge.mp4 of=output.mp4 bs=1 skip=30813300</span><br></span></code></pre></div></div>
+<p>Opening the extracted <code>output.mp4</code> revealed the flag for the challenge.</p>
+<div style="width:80%;margin:0 auto"><img src="https://solivaquaant.github.io/my-small-blog/assets/images/flag-15f326ca74a2aa718bc2357efc7d8831.png" style="width:100%;height:auto"></div>
+<p>This exercise demonstrated how steganographic techniques can be used to conceal full files within other media, and how basic hex analysis combined with known file signatures can help uncover them.</p>
+<h1>Flag</h1>
+<blockquote>
+<p><code>inseclab{b3h1nd_th3_sc3n3}</code></p>
+</blockquote>]]></content:encoded>
+            <category>Steganography</category>
+            <category>CTF</category>
+        </item>
+        <item>
             <title><![CDATA[Exploring DLL Side Loading: A practical walkthrough using Notepad++]]></title>
             <link>https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading-notepadpp</link>
             <guid>https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading-notepadpp</guid>
-            <pubDate>Sun, 17 Aug 2025 05:53:50 GMT</pubDate>
+            <pubDate>Wed, 24 Sep 2025 09:13:36 GMT</pubDate>
             <description><![CDATA[Blog]]></description>
             <content:encoded><![CDATA[<p>In today's blog post, we're diving into DLL Side Loading - a technique often exploited by attackers to execute malicious code by abusing the way Windows searches for and loads dynamic link libraries.
 We'll break down how DLL Side Loading works, how the Windows DLL search order contributes to the vulnerability, and walk through a practical example using Notepad++ as our target application.</p>
@@ -116,41 +151,6 @@ Once the user launches GUP.exe (e.g., by checking for updates), a session is est
 <p>From a red team or educational perspective, this hands-on walkthrough using Notepad++ shows just how easy it can be to hijack execution flow when the right conditions align.</p>
 <p><em>Stay safe. Stay informed.</em></p>]]></content:encoded>
             <category>Malware</category>
-        </item>
-        <item>
-            <title><![CDATA[Stego secrets: Extracting embedded files using HxD and dd]]></title>
-            <link>https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf</link>
-            <guid>https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf</guid>
-            <pubDate>Sun, 17 Aug 2025 05:53:50 GMT</pubDate>
-            <description><![CDATA[Write-up of a CTF challenge from Digital Forensics course, focusing on steganography techniques to extract hidden files.]]></description>
-            <content:encoded><![CDATA[<p>During Lab 2 of Digital Forensics course, we explored the topic of <strong>Steganography</strong>.
-As part of the session, our instructor introduced a CTF-style challenge and offered bonus points to anyone who could successfully retrieve the flag.</p>
-<!-- -->
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="solution">Solution<a href="https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf#solution" class="hash-link" aria-label="Direct link to Solution" title="Direct link to Solution">​</a></h2>
-<p>We were provided with a video file and a hint: <em>"Look for the hex signature of a file that might be hidden inside."</em></p>
-<p>To begin, I opened the video file using <strong>HxD</strong>, a hex editor.
-Upon inspection, I noticed that the file header identified it as an <code>ftypisom</code> format, which is a common container signature for MP4 videos.</p>
-<p>To search for embedded file signatures, I used the <strong>Search</strong> function (<code>Ctrl + F</code>) in HxD.
-Under <strong>Text-string</strong>, I looked for typical MP4 box types like:</p>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">"ftyp", "mdat", "moov", "pnot", "udta", "uuid", "moof", "free", ...</span><br></span></code></pre></div></div>
-<p>Alternatively, I could switch to <strong>Hex-values</strong> mode and search for hex representations of known file headers.</p>
-<p>After some scanning, I found the following hex sequence:</p>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">66 74 79 70 6D 70 34 32</span><br></span></code></pre></div></div>
-<p>This corresponds to the ASCII string <code>ftypmp42</code>, indicating the header of an <strong>MP4 (version 2)</strong> file.
-This signature was located at <strong>offset <code>0x1D62C78</code></strong>.</p>
-<div style="width:100%;margin:0 auto"><img src="https://solivaquaant.github.io/my-small-blog/assets/images/offset-6cb5964b27134a84fc7d0bdf547af73c.png" style="width:100%;height:auto"></div>
-<p>To extract the embedded MP4 file, I first converted the offset to decimal: 0x1D62C78 = 30813300.</p>
-<p>Then, using the <code>dd</code> command in a Unix-like environment, I extracted the hidden file:</p>
-<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">dd if=video-challenge.mp4 of=output.mp4 bs=1 skip=30813300</span><br></span></code></pre></div></div>
-<p>Opening the extracted <code>output.mp4</code> revealed the flag for the challenge.</p>
-<div style="width:80%;margin:0 auto"><img src="https://solivaquaant.github.io/my-small-blog/assets/images/flag-15f326ca74a2aa718bc2357efc7d8831.png" style="width:100%;height:auto"></div>
-<p>This exercise demonstrated how steganographic techniques can be used to conceal full files within other media, and how basic hex analysis combined with known file signatures can help uncover them.</p>
-<h1>Flag</h1>
-<blockquote>
-<p><code>inseclab{b3h1nd_th3_sc3n3}</code></p>
-</blockquote>]]></content:encoded>
-            <category>Steganography</category>
-            <category>CTF</category>
         </item>
     </channel>
 </rss>
