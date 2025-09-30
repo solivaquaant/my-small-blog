@@ -1,0 +1,111 @@
+--- 
+authors: tndt
+tags: []
+description: A blog about Typed Paths registry in Windows.
+---
+# Unmasking user activity: A deep dive into Windows TypedPaths
+What if the Windows Registry kept a memory of every path you typed into Explorer? 
+Typed Paths do exactly that-making them a goldmine for investigators tracking attacker movements.
+{/* truncate */}
+
+## What are Typed Paths & why do they matter in DFIR?
+**Typed Paths** are a forensic artifact found deep within the Windows Registry. 
+Essentially, they record the paths (file, folder, or even commands) that a user has typed or pasted into the **File Explorer** (or Windows Explorer) address bar. 
+Their primary function is to power the convenient auto-complete feature for subsequent inputs.
+
+Examples of what's recorded:
+- `C:\Windows\System32`
+- `\\192.168.1.100\share` (a network share)
+- `cmd`
+- `powershell`
+
+Think of it as the **Most Recently Used** (MRU) list for the Explorer's path bar.
+
+While simple, this artifact provides a crucial window into user (or attacker) behavior, specifically what commands they executed or what resources they tried to access.
+It can quickly expose the telltale signs of unusual activity:
+- Running specific malware executables or scripts.
+- Accessing suspicious or external network shares (UNC paths).
+- Executing command-line tools like cmd, powershell, or mstsc directly from the path bar.
+
+## Where are Typed Paths stored?
+Typed Paths are a **per-user** structure, meaning the data is located within that specific user's hive file (`NTUSER.DAT`).
+
+The Registry Key Location:
+- `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths`
+
+In a mounted offline hive, you'd find it under: `HKEY_USERS\<User-SID>\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths`
+
+The sub-values are typically named `url1`, `url2`, `url3`, and so on, with a data type of `REG_SZ` (text string). 
+Crucially, the newest path is almost always found in `url1`. 
+When a new path is added, the older entries get "rolled down" to the next number.
+
+## What data can you expect to find?
+The paths stored in TypedPaths can take various forms, offering rich context:
+- Folder Paths: `C:\Users\Alice\Documents`
+- File/Executable Paths: `C:\Temp\installer.exe`
+- UNC Network Paths: `\\10.10.10.5\share` or `\\attacker-server\payload`
+- Simple Commands: `cmd`, `powershell`, `mstsc`
+
+URLs or other strings if an application or user inputs them into the address bar.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./registry-ex.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## The value in DFIR & threat hunting
+Despite its simplicity, TypedPaths can reveal the exact strings or commands an account attempted to run or access. 
+This is incredibly valuable for:
+- Spotting suspicious behavior: Identifying specific actions like connecting to an unfamiliar IP via UNC path, directly invoking a payload, or running an unusual binary.
+- Verifying the threat actor's path: Confirming if the attacker used the Run dialog box or Explorer's address bar to launch tools like `psexec` or `powershell`.
+- Detecting abnormal network access: Pinpointing attempts to access network resources that fall outside a user's normal scope of work.
+
+Since this is a per-user artifact, it's excellent for isolating and differentiating the actions taken by various accounts on a compromised machine.
+
+## How to collect Typed Paths
+You generally have 2 main contexts for collection:
+
+### Live / On-system collection
+This is useful for quick triage on a running system, but be mindful not to alter the registry state while analyzing.
+- **PowerShell**:
+    - Basic command (read urlN values):
+    ```
+    Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths"
+    ```
+    - Export to CSV (separating urlN into Key/Value columns) for storage or ingestion into an analysis pipeline:
+    ```
+    Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" |
+        Select-Object -Property * |
+        ForEach-Object {
+            $props = $_.psobject.properties | Where-Object { $_.Name -match '^url' }
+            foreach ($p in $props) {
+                [PSCustomObject]@{ Key = $p.Name; Value = $p.Value }
+            }
+        } | Export-Csv -Path C:\test.csv -NoTypeInformation -Encoding UTF8
+    ```
+
+- **reg.exe**: Export the key into a `.reg` file for backup/copy:
+```
+reg export "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" typedpaths.reg
+```
+
+### Offline / image analysis
+This is the safer, forensically sound method:
+- Load the Hive: You extract the `NTUSER.DAT` file from the relevant user's profile on the disk image.
+- Analyze: Load this hive copy into a dedicated forensic tool (like Registry Explorer) for read-only analysis.
+
+## Limitations
+Typed Paths are a great indicator, but they are not a "smoking gun" on their own:
+- Commit Time: Entries are not always immediate. If the Explorer window hasn't been closed, the entry might not have been "committed" to the registry yet.
+- No Per-Entry Timestamp: This is the biggest drawback. TypedPaths does not store an individual timestamp for each urlN value.
+- The only timestamp available is the **LastWriteTime** of the parent TypedPaths key (the last time any entry was added or modified).
+- Evasion: A user (or threat actor) can manually clear these registry values.
+- Windows Versions: The behavior, size, and even the exact storage path can sometimes vary between Windows versions.
+
+You must correlate TypedPaths content with other artifacts-such as Prefetch, Shellbags, Event Logs, Amcache, UserAssist, or Sysmon-to accurately establish timelines and confidence levels.
+
+## Conclusion
+Typed Paths isn't a silver bullet, but it is an invaluable, intuitive, and fast source of intelligence-especially during initial triage or when other logging sources are incomplete. 
+When collected, validated, and correlated properly, Typed Paths can significantly shorten your investigation time and expose specific, high-value suspicious behaviors left behind by an attacker.
+
+<div style={{ width: '100%', margin: '0 auto' }}>
+  {/* <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} /> */}
+</div>
