@@ -2,55 +2,16 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://solivaquaant.github.io/my-small-blog/blog</id>
     <title>Thái Ngọc Diễm Trinh Blog</title>
-    <updated>2025-09-24T09:13:36.000Z</updated>
+    <updated>2025-09-30T02:41:55.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://solivaquaant.github.io/my-small-blog/blog"/>
     <subtitle>Thái Ngọc Diễm Trinh Blog</subtitle>
     <icon>https://solivaquaant.github.io/my-small-blog/img/jumping_avt.gif</icon>
     <entry>
-        <title type="html"><![CDATA[Stego secrets: Extracting embedded files using HxD and dd]]></title>
-        <id>https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf</id>
-        <link href="https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf"/>
-        <updated>2025-09-24T09:13:36.000Z</updated>
-        <summary type="html"><![CDATA[Write-up of a CTF challenge from Digital Forensics course, focusing on steganography techniques to extract hidden files.]]></summary>
-        <content type="html"><![CDATA[<p>During Lab 2 of Digital Forensics course, we explored the topic of <strong>Steganography</strong>.
-As part of the session, our instructor introduced a CTF-style challenge and offered bonus points to anyone who could successfully retrieve the flag.</p>
-<!-- -->
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="solution">Solution<a href="https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf#solution" class="hash-link" aria-label="Direct link to Solution" title="Direct link to Solution">​</a></h2>
-<p>We were provided with a video file and a hint: <em>"Look for the hex signature of a file that might be hidden inside."</em></p>
-<p>To begin, I opened the video file using <strong>HxD</strong>, a hex editor.
-Upon inspection, I noticed that the file header identified it as an <code>ftypisom</code> format, which is a common container signature for MP4 videos.</p>
-<p>To search for embedded file signatures, I used the <strong>Search</strong> function (<code>Ctrl + F</code>) in HxD.
-Under <strong>Text-string</strong>, I looked for typical MP4 box types like:</p>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">"ftyp", "mdat", "moov", "pnot", "udta", "uuid", "moof", "free", ...</span><br></span></code></pre></div></div>
-<p>Alternatively, I could switch to <strong>Hex-values</strong> mode and search for hex representations of known file headers.</p>
-<p>After some scanning, I found the following hex sequence:</p>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">66 74 79 70 6D 70 34 32</span><br></span></code></pre></div></div>
-<p>This corresponds to the ASCII string <code>ftypmp42</code>, indicating the header of an <strong>MP4 (version 2)</strong> file.
-This signature was located at <strong>offset <code>0x1D62C78</code></strong>.</p>
-<div style="width:100%;margin:0 auto"><img src="https://solivaquaant.github.io/my-small-blog/assets/images/offset-6cb5964b27134a84fc7d0bdf547af73c.png" style="width:100%;height:auto"></div>
-<p>To extract the embedded MP4 file, I first converted the offset to decimal: 0x1D62C78 = 30813300.</p>
-<p>Then, using the <code>dd</code> command in a Unix-like environment, I extracted the hidden file:</p>
-<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">dd if=video-challenge.mp4 of=output.mp4 bs=1 skip=30813300</span><br></span></code></pre></div></div>
-<p>Opening the extracted <code>output.mp4</code> revealed the flag for the challenge.</p>
-<div style="width:80%;margin:0 auto"><img src="https://solivaquaant.github.io/my-small-blog/assets/images/flag-15f326ca74a2aa718bc2357efc7d8831.png" style="width:100%;height:auto"></div>
-<p>This exercise demonstrated how steganographic techniques can be used to conceal full files within other media, and how basic hex analysis combined with known file signatures can help uncover them.</p>
-<h1>Flag</h1>
-<blockquote>
-<p><code>inseclab{b3h1nd_th3_sc3n3}</code></p>
-</blockquote>]]></content>
-        <author>
-            <name>Thai Trinh</name>
-            <uri>https://github.com/solivaquaant</uri>
-        </author>
-        <category label="Steganography" term="Steganography"/>
-        <category label="CTF" term="CTF"/>
-    </entry>
-    <entry>
         <title type="html"><![CDATA[Exploring DLL Side Loading: A practical walkthrough using Notepad++]]></title>
         <id>https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading-notepadpp</id>
         <link href="https://solivaquaant.github.io/my-small-blog/blog/dll-side-loading-notepadpp"/>
-        <updated>2025-09-24T09:13:36.000Z</updated>
+        <updated>2025-09-30T02:41:55.000Z</updated>
         <summary type="html"><![CDATA[Blog]]></summary>
         <content type="html"><![CDATA[<p>In today's blog post, we're diving into DLL Side Loading - a technique often exploited by attackers to execute malicious code by abusing the way Windows searches for and loads dynamic link libraries.
 We'll break down how DLL Side Loading works, how the Windows DLL search order contributes to the vulnerability, and walk through a practical example using Notepad++ as our target application.</p>
@@ -158,5 +119,147 @@ Once the user launches GUP.exe (e.g., by checking for updates), a session is est
             <uri>https://github.com/solivaquaant</uri>
         </author>
         <category label="Malware" term="Malware"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Stego secrets: Extracting embedded files using HxD and dd]]></title>
+        <id>https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf</id>
+        <link href="https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf"/>
+        <updated>2025-09-30T02:41:55.000Z</updated>
+        <summary type="html"><![CDATA[Write-up of a CTF challenge from Digital Forensics course, focusing on steganography techniques to extract hidden files.]]></summary>
+        <content type="html"><![CDATA[<p>During Lab 2 of Digital Forensics course, we explored the topic of <strong>Steganography</strong>.
+As part of the session, our instructor introduced a CTF-style challenge and offered bonus points to anyone who could successfully retrieve the flag.</p>
+<!-- -->
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="solution">Solution<a href="https://solivaquaant.github.io/my-small-blog/blog/nt334-lab2-ctf#solution" class="hash-link" aria-label="Direct link to Solution" title="Direct link to Solution">​</a></h2>
+<p>We were provided with a video file and a hint: <em>"Look for the hex signature of a file that might be hidden inside."</em></p>
+<p>To begin, I opened the video file using <strong>HxD</strong>, a hex editor.
+Upon inspection, I noticed that the file header identified it as an <code>ftypisom</code> format, which is a common container signature for MP4 videos.</p>
+<p>To search for embedded file signatures, I used the <strong>Search</strong> function (<code>Ctrl + F</code>) in HxD.
+Under <strong>Text-string</strong>, I looked for typical MP4 box types like:</p>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">"ftyp", "mdat", "moov", "pnot", "udta", "uuid", "moof", "free", ...</span><br></span></code></pre></div></div>
+<p>Alternatively, I could switch to <strong>Hex-values</strong> mode and search for hex representations of known file headers.</p>
+<p>After some scanning, I found the following hex sequence:</p>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">66 74 79 70 6D 70 34 32</span><br></span></code></pre></div></div>
+<p>This corresponds to the ASCII string <code>ftypmp42</code>, indicating the header of an <strong>MP4 (version 2)</strong> file.
+This signature was located at <strong>offset <code>0x1D62C78</code></strong>.</p>
+<div style="width:100%;margin:0 auto"><img src="https://solivaquaant.github.io/my-small-blog/assets/images/offset-6cb5964b27134a84fc7d0bdf547af73c.png" style="width:100%;height:auto"></div>
+<p>To extract the embedded MP4 file, I first converted the offset to decimal: 0x1D62C78 = 30813300.</p>
+<p>Then, using the <code>dd</code> command in a Unix-like environment, I extracted the hidden file:</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">dd if=video-challenge.mp4 of=output.mp4 bs=1 skip=30813300</span><br></span></code></pre></div></div>
+<p>Opening the extracted <code>output.mp4</code> revealed the flag for the challenge.</p>
+<div style="width:80%;margin:0 auto"><img src="https://solivaquaant.github.io/my-small-blog/assets/images/flag-15f326ca74a2aa718bc2357efc7d8831.png" style="width:100%;height:auto"></div>
+<p>This exercise demonstrated how steganographic techniques can be used to conceal full files within other media, and how basic hex analysis combined with known file signatures can help uncover them.</p>
+<h1>Flag</h1>
+<blockquote>
+<p><code>inseclab{b3h1nd_th3_sc3n3}</code></p>
+</blockquote>]]></content>
+        <author>
+            <name>Thai Trinh</name>
+            <uri>https://github.com/solivaquaant</uri>
+        </author>
+        <category label="Steganography" term="Steganography"/>
+        <category label="CTF" term="CTF"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unmasking user activity: A deep dive into Windows TypedPaths]]></title>
+        <id>https://solivaquaant.github.io/my-small-blog/blog/typed-paths</id>
+        <link href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths"/>
+        <updated>2025-09-30T02:41:55.000Z</updated>
+        <summary type="html"><![CDATA[A blog about Typed Paths registry in Windows.]]></summary>
+        <content type="html"><![CDATA[<p>What if the Windows Registry kept a memory of every path you typed into Explorer?
+Typed Paths do exactly that-making them a goldmine for investigators tracking attacker movements.</p>
+<!-- -->
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="what-are-typed-paths--why-do-they-matter-in-dfir">What are Typed Paths &amp; why do they matter in DFIR?<a href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths#what-are-typed-paths--why-do-they-matter-in-dfir" class="hash-link" aria-label="Direct link to What are Typed Paths &amp; why do they matter in DFIR?" title="Direct link to What are Typed Paths &amp; why do they matter in DFIR?">​</a></h2>
+<p><strong>Typed Paths</strong> are a forensic artifact found deep within the Windows Registry.
+Essentially, they record the paths (file, folder, or even commands) that a user has typed or pasted into the <strong>File Explorer</strong> (or Windows Explorer) address bar.
+Their primary function is to power the convenient auto-complete feature for subsequent inputs.</p>
+<p>Examples of what's recorded:</p>
+<ul>
+<li><code>C:\Windows\System32</code></li>
+<li><code>\\192.168.1.100\share</code> (a network share)</li>
+<li><code>cmd</code></li>
+<li><code>powershell</code></li>
+</ul>
+<p>Think of it as the <strong>Most Recently Used</strong> (MRU) list for the Explorer's path bar.</p>
+<p>While simple, this artifact provides a crucial window into user (or attacker) behavior, specifically what commands they executed or what resources they tried to access.
+It can quickly expose the telltale signs of unusual activity:</p>
+<ul>
+<li>Running specific malware executables or scripts.</li>
+<li>Accessing suspicious or external network shares (UNC paths).</li>
+<li>Executing command-line tools like cmd, powershell, or mstsc directly from the path bar.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="where-are-typed-paths-stored">Where are Typed Paths stored?<a href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths#where-are-typed-paths-stored" class="hash-link" aria-label="Direct link to Where are Typed Paths stored?" title="Direct link to Where are Typed Paths stored?">​</a></h2>
+<p>Typed Paths are a <strong>per-user</strong> structure, meaning the data is located within that specific user's hive file (<code>NTUSER.DAT</code>).</p>
+<p>The Registry Key Location:</p>
+<ul>
+<li><code>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths</code></li>
+</ul>
+<p>In a mounted offline hive, you'd find it under: <code>HKEY_USERS\&lt;User-SID&gt;\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths</code></p>
+<p>The sub-values are typically named <code>url1</code>, <code>url2</code>, <code>url3</code>, and so on, with a data type of <code>REG_SZ</code> (text string).
+Crucially, the newest path is almost always found in <code>url1</code>.
+When a new path is added, the older entries get "rolled down" to the next number.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="what-data-can-you-expect-to-find">What data can you expect to find?<a href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths#what-data-can-you-expect-to-find" class="hash-link" aria-label="Direct link to What data can you expect to find?" title="Direct link to What data can you expect to find?">​</a></h2>
+<p>The paths stored in TypedPaths can take various forms, offering rich context:</p>
+<ul>
+<li>Folder Paths: <code>C:\Users\Alice\Documents</code></li>
+<li>File/Executable Paths: <code>C:\Temp\installer.exe</code></li>
+<li>UNC Network Paths: <code>\\10.10.10.5\share</code> or <code>\\attacker-server\payload</code></li>
+<li>Simple Commands: <code>cmd</code>, <code>powershell</code>, <code>mstsc</code></li>
+</ul>
+<p>URLs or other strings if an application or user inputs them into the address bar.</p>
+<div style="width:100%;margin:0 auto"><img src="https://solivaquaant.github.io/my-small-blog/assets/images/registry-ex-1fa1df6433e085946353e60e051da2b3.png" style="width:100%;height:auto"></div>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="the-value-in-dfir--threat-hunting">The value in DFIR &amp; threat hunting<a href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths#the-value-in-dfir--threat-hunting" class="hash-link" aria-label="Direct link to The value in DFIR &amp; threat hunting" title="Direct link to The value in DFIR &amp; threat hunting">​</a></h2>
+<p>Despite its simplicity, TypedPaths can reveal the exact strings or commands an account attempted to run or access.
+This is incredibly valuable for:</p>
+<ul>
+<li>Spotting suspicious behavior: Identifying specific actions like connecting to an unfamiliar IP via UNC path, directly invoking a payload, or running an unusual binary.</li>
+<li>Verifying the threat actor's path: Confirming if the attacker used the Run dialog box or Explorer's address bar to launch tools like <code>psexec</code> or <code>powershell</code>.</li>
+<li>Detecting abnormal network access: Pinpointing attempts to access network resources that fall outside a user's normal scope of work.</li>
+</ul>
+<p>Since this is a per-user artifact, it's excellent for isolating and differentiating the actions taken by various accounts on a compromised machine.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-collect-typed-paths">How to collect Typed Paths<a href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths#how-to-collect-typed-paths" class="hash-link" aria-label="Direct link to How to collect Typed Paths" title="Direct link to How to collect Typed Paths">​</a></h2>
+<p>You generally have 2 main contexts for collection:</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="live--on-system-collection">Live / On-system collection<a href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths#live--on-system-collection" class="hash-link" aria-label="Direct link to Live / On-system collection" title="Direct link to Live / On-system collection">​</a></h3>
+<p>This is useful for quick triage on a running system, but be mindful not to alter the registry state while analyzing.</p>
+<ul>
+<li>
+<p><strong>PowerShell</strong>:</p>
+<ul>
+<li>Basic command (read urlN values):</li>
+</ul>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths"</span><br></span></code></pre></div></div>
+<ul>
+<li>Export to CSV (separating urlN into Key/Value columns) for storage or ingestion into an analysis pipeline:</li>
+</ul>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" |</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    Select-Object -Property * |</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    ForEach-Object {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        $props = $_.psobject.properties | Where-Object { $_.Name -match '^url' }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        foreach ($p in $props) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">            [PSCustomObject]@{ Key = $p.Name; Value = $p.Value }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    } | Export-Csv -Path C:\test.csv -NoTypeInformation -Encoding UTF8</span><br></span></code></pre></div></div>
+</li>
+<li>
+<p><strong>reg.exe</strong>: Export the key into a <code>.reg</code> file for backup/copy:</p>
+</li>
+</ul>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">reg export "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" typedpaths.reg</span><br></span></code></pre></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="offline--image-analysis">Offline / image analysis<a href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths#offline--image-analysis" class="hash-link" aria-label="Direct link to Offline / image analysis" title="Direct link to Offline / image analysis">​</a></h3>
+<p>This is the safer, forensically sound method:</p>
+<ul>
+<li>Load the Hive: You extract the <code>NTUSER.DAT</code> file from the relevant user's profile on the disk image.</li>
+<li>Analyze: Load this hive copy into a dedicated forensic tool (like Registry Explorer) for read-only analysis.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="limitations">Limitations<a href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths#limitations" class="hash-link" aria-label="Direct link to Limitations" title="Direct link to Limitations">​</a></h2>
+<p>Typed Paths are a great indicator, but they are not a "smoking gun" on their own:</p>
+<ul>
+<li>Commit Time: Entries are not always immediate. If the Explorer window hasn't been closed, the entry might not have been "committed" to the registry yet.</li>
+<li>No Per-Entry Timestamp: This is the biggest drawback. TypedPaths does not store an individual timestamp for each urlN value.</li>
+<li>The only timestamp available is the <strong>LastWriteTime</strong> of the parent TypedPaths key (the last time any entry was added or modified).</li>
+<li>Evasion: A user (or threat actor) can manually clear these registry values.</li>
+<li>Windows Versions: The behavior, size, and even the exact storage path can sometimes vary between Windows versions.</li>
+</ul>
+<p>You must correlate TypedPaths content with other artifacts-such as Prefetch, Shellbags, Event Logs, Amcache, UserAssist, or Sysmon-to accurately establish timelines and confidence levels.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="conclusion">Conclusion<a href="https://solivaquaant.github.io/my-small-blog/blog/typed-paths#conclusion" class="hash-link" aria-label="Direct link to Conclusion" title="Direct link to Conclusion">​</a></h2>
+<p>Typed Paths isn't a silver bullet, but it is an invaluable, intuitive, and fast source of intelligence-especially during initial triage or when other logging sources are incomplete.
+When collected, validated, and correlated properly, Typed Paths can significantly shorten your investigation time and expose specific, high-value suspicious behaviors left behind by an attacker.</p>
+<div style="width:100%;margin:0 auto"></div>]]></content>
+        <author>
+            <name>Thai Trinh</name>
+            <uri>https://github.com/solivaquaant</uri>
+        </author>
     </entry>
 </feed>
