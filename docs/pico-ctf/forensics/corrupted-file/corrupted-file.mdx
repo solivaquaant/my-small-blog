@@ -1,0 +1,45 @@
+---
+tags: [picomini-by-cmu-africa]
+---
+# Corrupted file
+
+- **Description:** This file seems broken... or is it? Maybe a couple of bytes could make all the difference. Can you figure out how to bring it back to life?
+
+---
+
+## 🔎 Solution
+We are given a file without an extension. 
+Running the `file` command on it only identifies it as generic data.
+```
+> file file
+file: data
+```
+Using `xxd` to inspect the hex dump, I noticed the string `JFIF` within the first few bytes. 
+Looking this up, I determined that the file should be a `.jpeg`.
+```
+> xxd file | head
+00000000: 5c78 ffe0 0010 4a46 4946 0001 0100 0001  \x....JFIF......
+00000010: 0001 0000 ffdb 0043 0008 0606 0706 0508  .......C........
+00000020: 0707 0709 0908 0a0c 140d 0c0b 0b0c 1912  ................
+00000030: 130f 141d 1a1f 1e1d 1a1c 1c20 242e 2720  ........... $.' 
+00000040: 222c 231c 1c28 3729 2c30 3134 3434 1f27  ",#..(7),01444.'
+00000050: 393d 3832 3c2e 3334 32ff db00 4301 0909  9=82<.342...C...
+00000060: 090c 0b0c 180d 0d18 3221 1c21 3232 3232  ........2!.!2222
+00000070: 3232 3232 3232 3232 3232 3232 3232 3232  2222222222222222
+00000080: 3232 3232 3232 3232 3232 3232 3232 3232  2222222222222222
+00000090: 3232 3232 3232 3232 3232 3232 3232 ffc0  22222222222222..
+```
+However, a valid JPEG file typically starts with the bytes `FF D8 FF E0`, while in this case the first bytes were `5C 78 FF E0`.
+
+To fix this, I opened the file in a hex editor (I used HxD) and modified the first two bytes to `FF D8`. 
+<div style={{ width: '60%', margin: '0 auto' }}>
+  <img src={require("./hxd.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+After renaming the file with the `.jpeg` extension, the image became viewable-revealing the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.jpeg").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{r3st0r1ng_th3_by73s_efd8c6c0}`
+

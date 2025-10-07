@@ -2,6 +2,7 @@
 authors: tndt
 tags: [malware]
 description: Blog 
+date: 2025-05-03
 ---
 # Exploring DLL Side Loading: A practical walkthrough using Notepad++
 In today's blog post, we're diving into DLL Side Loading - a technique often exploited by attackers to execute malicious code by abusing the way Windows searches for and loads dynamic link libraries.
@@ -14,8 +15,8 @@ We'll break down how DLL Side Loading works, how the Windows DLL search order co
 **Dynamic link libraries (DLLs)** are modular components that contain code and data used by multiple programs simultaneously. 
 DLLs help reduce redundancy and optimize memory usage across Windows systems.
 
-**DLL Side Loading** is a technique where an attacker places a malicious DLL in a location where a legitimate application may inadvertently load it instead of the intended one. 
-This often happens due to the **Windows DLL Search Order**, which prioritizes certain directories (like the application's folder) over system directories when loading libraries.
+**DLL side loading** is a technique where an attacker places a malicious DLL in a location where a legitimate application may inadvertently load it instead of the intended one. 
+This often happens due to the **Windows DLL search order**, which prioritizes certain directories (like the application's folder) over system directories when loading libraries.
 By exploiting this search behavior, attackers can trick applications into executing their malicious payloads without modifying the target application itself.
 
 ## Tools & setup

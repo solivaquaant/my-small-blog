@@ -12,10 +12,10 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
 
 const config = {
-  title: 'Thái Ngọc Diễm Trinh',
+  title: 'solivaquaant',
   tagline: 'Cybersecurity Student | University of Information Technology - VietNam National University, Ho Chi Minh City',
 
-  favicon: 'img/jumping_avt.gif',
+  favicon: 'img/avt-trans.png',
 
   // Set the production url of your site here
   url: 'https://solivaquaant.github.io/',
@@ -70,7 +70,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      // image: 'img/docusaurus-social-card.jpg',
       navbar: {
         title: 'Welcome',
         logo: {

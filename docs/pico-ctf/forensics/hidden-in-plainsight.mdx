@@ -1,0 +1,58 @@
+---
+tags: [picomini-by-cmu-africa]
+---
+# Hidden in plainsight
+
+- **Description:** You're given a seemingly ordinary JPG image. Something is tucked away out of sight inside the file. Your task is to discover the hidden payload and extract the flag. 
+
+---
+
+## 🔎 Solution
+When I inspected the supplied image's metadata, I found a suspicious `Comment` field containing a Base64-looking string.
+```js
+> exiftool img.jpg                                                          
+ExifTool Version Number         : 13.00
+File Name                       : img.jpg
+Directory                       : .
+File Size                       : 74 kB
+File Modification Date/Time     : 2025:10:01 04:50:27-04:00
+File Access Date/Time           : 2025:10:01 04:50:31-04:00
+File Inode Change Date/Time     : 2025:10:01 04:50:31-04:00
+File Permissions                : -rw-------
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+JFIF Version                    : 1.01
+Resolution Unit                 : None
+X Resolution                    : 1
+Y Resolution                    : 1
+//highlight-next-line
+Comment                         : c3RlZ2hpZGU6Y0VGNmVuZHZjbVE9
+Image Width                     : 640
+Image Height                    : 640
+Encoding Process                : Baseline DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
+Image Size                      : 640x640
+Megapixels                      : 0.410
+```
+
+Decoding that string produced: `steghide:cEF6endvcmQ=`
+- The prefix `steghide:` hinted at the steghide tool - a common utility for hiding and extracting files inside carrier files (often images). 
+- The trailing portion (`cEF6endvcmQ=`) is itself Base64, which decodes to the passphrase: `pAzzword`
+```
+> echo "cEF6endvcmQ=" | base64 -d                 
+pAzzword
+```
+I used that passphrase with `steghide` to extract the hidden payload from the image.
+```
+> steghide extract -sf img.jpg   
+Enter passphrase: 
+wrote extracted data to "flag.txt".
+```
+The extraction produced a file named `flag.txt`.
+Finally, opening `flag.txt` revealed the challenge flag.
+
+## 🚩Flag
+> `picoCTF{h1dd3n_1n_1m4g3_871ba555}`

@@ -1,0 +1,39 @@
+---
+tags: [picomini-by-cmu-africa]
+---
+# Flag in Flame
+
+- **Description:** The SOC team discovered a suspiciously large log file after a recent breach. When they opened it, they found an enormous block of encoded text instead of typical logs. Could there be something hidden within? Your mission is to inspect the resulting file and reveal the real purpose of it. The team is relying on your skills to uncover any concealed information within this unusual log.  
+Download the encoded data here: Logs Data. Be prepared-the file is large, and examining it thoroughly is crucial .
+---
+
+## 🔎 Solution
+While inspecting the artifact, the data appeared to be Base64-encoded. 
+Decoding the blob produced a PNG image rather than plain text.
+```
+> cat logs.txt | base64 -d        
+�PNG
+▒
+IHDR�!���IDATx�����,ɕ'���q��������▒���Fczzg�fi\�h���O4�▒��F�m�fC[��
+```
+I exported the decoded bytes into a `.png` file and opened it. 
+```
+> base64 -d logs.txt > decoded.bin
+```
+<div style={{ width: '70%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+The image contains an alphanumeric string: 
+```
+7069636F4354467B666F72656E736963735F616E616C797369735F69735F616D617A696E675F32346431363839357D
+```
+Interpreting that string as a hexadecimal value and decoding it yields the challenge flag.
+
+## 🚩Flag
+> `picoCTF{forensics_analysis_is_amazing_24d16895}`
+
+<div style={{ width: '0%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+

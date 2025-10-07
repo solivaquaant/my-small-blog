@@ -37,3 +37,9 @@ network:
   label: Network
   permalink: /network
   description: Network tag description
+
+picomini-by-cmu-africa:
+  label: picoMini by CMU-Africa
+  permalink: /picomini-by-cmu-africa
+  description: picoMini by CMU-Africa tag description
+  

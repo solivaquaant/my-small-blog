@@ -30,7 +30,8 @@ function HomepageHeader() {
           {/* Right Column: Text Content */}
           <div style={{ flex: '2 1 500px' }}>
             <Heading as="h1" className="hero__title">
-              {siteConfig.title}
+              {/* {siteConfig.title} */}
+              Thái Ngọc Diễm Trinh
             </Heading>
             <p className="hero__subtitle">{siteConfig.tagline}</p>
             <p style={{ lineHeight: '1.6' }}>
