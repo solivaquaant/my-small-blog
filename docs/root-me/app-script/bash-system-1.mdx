@@ -48,7 +48,7 @@ app-script-ch11@challenge02:~$ ./ch11
 /challenge/app-script/ch11/.passwd
 ```
 
-There are multiple possible approaches from here, but we'll go with **a symbolic link** (symlink) attack by exploiting how the system("`ls ...`") call works.
+There are multiple possible approaches from here, but we'll go with **a symbolic link** (symlink) attack by exploiting how the `system("ls ...")` call works.
 
 Key observations:
 - The `system()` function does not invoke `/bin/ls` directly.

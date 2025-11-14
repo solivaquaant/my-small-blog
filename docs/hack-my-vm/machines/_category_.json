@@ -1,0 +1,8 @@
+{
+  "label": "Machines",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "HackMyVM Machines write-ups."
+  }
+}

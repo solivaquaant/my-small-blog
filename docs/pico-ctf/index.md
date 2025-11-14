@@ -8,12 +8,12 @@ Welcome to the picoCTF section of my blog!
 
 **[picoCTF](https://picoctf.org)** is a beginner-friendly Capture The Flag competition developed by security experts at Carnegie Mellon University. It is designed to teach cybersecurity fundamentals through hands-on challenges that span across various categories such as:
 
-- 🕵️‍♂️ Reverse Engineering  
-- 🌐 Web Exploitation  
-- 🧮 Cryptography  
-- 🧠 Binary Exploitation  
-- 📁 Forensics  
-- ⚙️ General Skills  
+- General skills  
+- Reverse engineering  
+- Web exploitation  
+- Cryptography  
+- Binary exploitation  
+- Forensics  
 
 ---
 

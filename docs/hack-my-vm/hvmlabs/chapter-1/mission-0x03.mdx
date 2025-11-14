@@ -1,0 +1,42 @@
+﻿---
+tags: []
+---
+# Mission 0x03
+
+## 🔎 Solution
+After SSH'ing in as `angela`, the next task was to retrieve `emma`'s password, which the mission states is located on line 4069 of a provided file:
+```
+angela@venus:~$ cat mission.txt 
+################
+# MISSION 0x03 #
+################
+
+## EN ##
+The password of the user emma is in line 4069 of the file findme.txt
+```
+
+There are multiple ways to extract a specific line from a file. I used a simple `head` + `tail` pipeline to get line 4069:
+```
+angela@venus:~$ head -n 4069 findme.txt | tail -n 1
+fIvltaGaq0OUH8O
+```
+
+Explanation:
+* `head -n 4069 findme.txt` prints the first 4,069 lines of the file.
+* The pipe `|` passes that output as input to the next command.
+* `tail -n 1` takes the last line from the piped input, which is line 4,069 of the original file.
+
+With the recovered password I SSH'd into `emma`:
+```
+ssh emma@venus.hackmyvm.eu -p 5000
+```
+
+Inside `emma`'s account I read the flag file:
+```
+emma@venus:~$ cat flagz.txt 
+8===0daqdDlmd9XogkiHu4yq===D~~
+```
+
+
+## 🚩Flag
+> `8===0daqdDlmd9XogkiHu4yq===D~~`

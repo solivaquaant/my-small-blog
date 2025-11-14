@@ -1,0 +1,102 @@
+---
+tags: []
+sidebar_position: 2
+---
+# Fawn 
+
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+After a successful connection, I ran a port scan with `nmap`, added `-sV` to enumerate service versions:
+```
+> nmap -sV 10.129.34.18
+
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     vsftpd 3.0.3
+Service Info: OS: Unix
+```
+The scan shows port **21** running an FTP service (`vsftpd 3.0.3`) on a Unix host. 
+**FTP** is a simple file-transfer protocol that often exposes directories and files; 
+in CTFs it's common to find readable files or an *anonymous* login.
+
+I connected to the FTP server with:
+```
+ftp <IP address>
+```
+The server responded with a `220` banner, indicating the service is ready. 
+Many FTP servers allow an anonymous login - use `anonymous` as the username and  `anonymous@domain` as the password. 
+```
+> ftp 10.129.34.18
+Connected to 10.129.34.18.
+220 (vsFTPd 3.0.3)
+Name (10.129.34.18:kali): anonymous
+331 Please specify the password.
+Password: 
+230 Login successful.
+```
+After authenticating I received a `230` response meaning **Login successful**.
+
+At the `ftp>` prompt I listed the directory:
+```
+ftp> ls
+229 Entering Extended Passive Mode (|||58674|)
+150 Here comes the directory listing.
+-rw-r--r--    1 0        0              32 Jun 04  2021 flag.txt
+226 Directory send OK.
+```
+
+A `flag.txt` file was visible. I downloaded it with `get` command:
+```
+ftp> get flag.txt
+local: flag.txt remote: flag.txt
+229 Entering Extended Passive Mode (|||30118|)
+150 Opening BINARY mode data connection for flag.txt (32 bytes).
+100% |***************************************************************|    32      271.73 KiB/s    00:00 ETA
+226 Transfer complete.
+32 bytes received in 00:00 (0.03 KiB/s)
+```
+Then I inspected the file locally to retrieve the flag, and obtained the flag.
+```
+> cat flag.txt 
+035db21c881520061c53e0536e44f815
+```
+
+## ✏️ Task answers
+**Task 1: What does the 3-letter acronym FTP stand for?**
+> File Transfer Protocol
+
+**Task 2: Which port does the FTP service listen on usually?**
+> 21
+
+**Task 3: FTP sends data in the clear, without any encryption. 
+What acronym is used for a later protocol designed to provide similar functionality to FTP but securely, as an extension of the SSH protocol?**
+> SFTP
+
+**Task 4: What is the command we can use to send an ICMP echo request to test our connection to the target?**
+> ping
+
+**Task 5: From your scans, what version is FTP running on the target?**
+> vsftpd 3.0.3
+
+**Task 6: From your scans, what OS type is running on the target?**
+> Unix
+
+**Task 7: What is the command we need to run in order to display the 'ftp' client help menu?**
+> ftp -?
+
+**Task 8: What is username that is used over FTP when you want to log in without having an account?**
+> anonymous
+
+**Task 9: What is the response code we get for the FTP message 'Login successful'?**
+> 230
+
+**Task 10: There are a couple of commands we can use to list the files and directories available on the FTP server. One is dir. What is the other that is a common way to list files on a Linux system.**
+> ls
+
+**Task 11: What is the command used to download the file we found on the FTP server?**
+> get
+
+## 🚩Flag
+> `035db21c881520061c53e0536e44f815`

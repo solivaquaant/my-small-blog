@@ -1,0 +1,53 @@
+﻿---
+tags: []
+---
+# Mission 0x05
+
+---
+
+## 🔎 Solution
+After SSH'ing in as `mia`, the next objective was to locate `camila`'s password which, according to the mission, was left inside a folder named `hereiam`:
+```
+mia@venus:~$ cat mission.txt 
+################
+# MISSION 0x05 #
+################
+
+## EN ##
+It seems that the user camila has left her password inside a folder called hereiam 
+```
+
+To search specifically for a directory named `hereiam` I used `find` with `-type d` (so the search only returns directories):
+```
+mia@venus:~$ find / -type d -name hereiam 2>/dev/null
+/opt/hereiam
+```
+
+Listing the target directory revealed a hidden file:
+```
+mia@venus:~$ ls -la /opt/hereiam/
+total 12
+drwxr-xr-x 2 root root 4096 Apr  5  2024 .
+drwxr-xr-x 1 root root 4096 Apr  5  2024 ..
+-rw-r--r-- 1 root root   16 Apr  5  2024 .here
+```
+
+Reading that hidden file returned Camila's password:
+```
+mia@venus:~$ cat /opt/hereiam/.here 
+F67aDmCAAgOOaOc
+```
+
+With the recovered credential I SSH'ed into Camila's account:
+```
+ssh camila@venus.hackmyvm.eu -p 5000
+```
+
+Inside `camila`'s home I read the flag file:
+```
+camila@venus:~$ cat flagz.txt 
+8===iDIi5sm1mDuqGmU5Psx6===D~~
+```
+
+## 🚩Flag
+> `8===iDIi5sm1mDuqGmU5Psx6===D~~`

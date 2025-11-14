@@ -1,0 +1,44 @@
+﻿---
+tags: []
+---
+# Mission 0x07
+
+---
+
+## 🔎 Solution
+After SSH’ing in as `luna`, the next objective was to locate a file that occupies exactly 6,969 bytes — that file contains `eleanor`’s password:
+```
+luna@venus:~$ cat mission.txt 
+################
+# MISSION 0x07 #
+################
+
+## EN ##
+The user eleanor has left her password in a file that occupies 6969 bytes.
+```
+
+I used `find` with the `-size` test. The suffix `c` means bytes, so `-size 6969c` matches files whose size is exactly 6,969 bytes:
+```
+luna@venus:~$ find / -size 6969c 2>/dev/null
+/usr/share/moon.txt
+```
+
+Printing the file revealed the password:
+```
+luna@venus:~$ cat /usr/share/moon.txt
+UNDchvln6Bmtu7b
+```
+
+With that credential I SSH’ed into `eleanor`:
+```
+ssh eleanor@venus.hackmyvm.eu -p 5000
+```
+
+Inside `eleanor`’s account I read the flag:
+```
+eleanor@venus:~$ cat flagz.txt 
+8===Iq5vbyiQl4ipNrLDArjD===D~~
+```
+
+## 🚩Flag
+> `8===Iq5vbyiQl4ipNrLDArjD===D~~`

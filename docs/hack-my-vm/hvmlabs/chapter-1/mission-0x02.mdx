@@ -1,0 +1,43 @@
+﻿---
+tags: []
+---
+# Mission 0x02
+
+## 🔎 Solution
+After connecting via SSH as `sophia`, the next task was to locate the password file for user `angela`:
+```
+sophia@venus:~$ cat mission.txt 
+################
+# MISSION 0x02 #
+################
+
+## EN ##
+The user angela has saved her password in a file but she does not remember where ... she only remembers that the file was called whereismypazz.txt
+```
+
+To locate a file in Linux, I used the `find` command. 
+Redirecting `2>/dev/null` hides permission-related error messages that would otherwise clutter the output:
+```
+sophia@venus:~$ find / -name "whereismypazz.txt" 2>/dev/null
+/share/whereismypazz.txt
+```
+
+Reading the file revealed Angela's password:
+```
+sophia@venus:~$ cat /usr/share/whereismypazz.txt
+oh5p9gAABugHBje
+```
+
+I then SSH'ed into the machine as `angela`:
+```
+ssh angela@venus.hackmyvm.eu -p 5000
+```
+
+Finally, viewing `flagz.txt` gave the flag for Mission 0x02, ready to move on to Mission 0x03:
+```
+angela@venus:~$ cat flagz.txt 
+8===SjMYBmMh4bk49TKq7PM8===D~~
+```
+
+## 🚩Flag
+> `8===SjMYBmMh4bk49TKq7PM8===D~~`

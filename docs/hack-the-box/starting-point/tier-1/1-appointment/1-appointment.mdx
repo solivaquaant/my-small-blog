@@ -1,0 +1,117 @@
+---
+tags: []
+sidebar_position: 1
+---
+# Appointment
+
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+I started with a full-port fast service/version scan to find listening services:
+```
+nmap -p- -sV --min-rate 5000 <IP-address>
+```
+
+The scan returned a single web service on port 80 running Apache:
+```
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.38 ((Debian))
+```
+Opening `http://10.129.174.181:80` in a browser showed a login page with a username/password form. 
+Web login forms are a common target in CTFs; one frequent class of vulnerability in such forms is SQL Injection, which occurs when user input is inserted directly into an SQL query without proper sanitization or parameterization.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./login.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+A typical backend query for authentication might look like:
+```
+SELECT * FROM users WHERE username = '<USER>' AND password = '<PASS>';
+```
+
+If the application concatenates the raw `USER` value into that query, an attacker can craft input that alters the query logic. 
+For example, supplying `admin' #` as the username (and any value for the password) results in the database receiving something like:
+```
+SELECT * FROM users WHERE username = 'admin' #' AND password = 'whatever';
+```
+
+In MySQL the `#` symbol starts a comment, so everything after it is ignored. 
+The `AND password = ...` part gets commented out, so the query effectively becomes:
+```
+SELECT * FROM users WHERE username = 'admin';
+```
+If an `admin` row exists, the authentication check passes even though no valid password was provided. 
+(Alternatives that achieve the same effect include `admin' -- ` - note that `--` needs a trailing space to start a comment in many SQL dialects - or a Boolean bypass like `' OR '1'='1` depending on how the query is constructed.)
+
+Using the payload `admin' #` as the username and leaving the password arbitrary allowed me to bypass authentication. After submitting the form I was logged in as admin and redirected to the page containing the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## ✏️ Task answers
+**Task 1: What does the acronym SQL stand for?**
+> Structured Query Language
+
+**Task 2: What is one of the most common type of SQL vulnerabilities?**
+> SQL Injection
+
+**Task 3: What is the 2021 OWASP Top 10 classification for this vulnerability?**
+> A03:2021-Injection
+
+**Task 4: What does Nmap report as the service and version that are running on port 80 of the target?**
+>  Apache httpd 2.4.38 ((Debian))
+
+**Task 5: What is the standard port used for the HTTPS protocol?**
+> 443
+
+**Task 6: What is a folder called in web-application terminology?**
+> Directory
+
+**Task 7: What is the HTTP response code is given for 'Not Found' errors?**
+> 404
+
+**Task 8: Gobuster is one tool used to brute force directories on a webserver. 
+What switch do we use with Gobuster to specify we're looking to discover directories, and not subdomains?**
+```
+> gobuster -h                                
+NAME:
+   gobuster - the tool you love
+
+USAGE:
+   gobuster command [command options]
+
+VERSION:
+   3.8
+
+AUTHORS:
+   Christian Mehlmauer (@firefart)
+   OJ Reeves (@TheColonial)
+
+COMMANDS:
+   dir      Uses directory/file enumeration mode
+   vhost    Uses VHOST enumeration mode (you most probably want to use the IP address as the URL parameter)
+   dns      Uses DNS subdomain enumeration mode
+   fuzz     Uses fuzzing mode. Replaces the keyword FUZZ in the URL, Headers and the request body
+   tftp     Uses TFTP enumeration mode
+   s3       Uses aws bucket enumeration mode
+   gcs      Uses gcs bucket enumeration mode
+   help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h     show help
+   --version, -v  print the version
+```
+> dir
+
+**Task 9: What single character can be used to comment out the rest of a line in MySQL?**
+> #
+
+**Task 10: If user input is not handled carefully, it could be interpreted as a comment. 
+Use a comment to login as admin without knowing the password. 
+What is the first word on the webpage returned?**
+> Congratulations
+
+## 🚩Flag
+> `e3d0796d002a446c0e622226f42e9672`
+

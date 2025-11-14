@@ -1,0 +1,8 @@
+{
+  "label": "Tier 0",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Hack The Box Starting Point Tier 0 write-ups."
+  }
+}

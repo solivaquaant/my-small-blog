@@ -1,0 +1,65 @@
+---
+tags: []
+---
+# Mission 0x01
+---
+
+## 🔎 Solution
+I connected to the target via SSH and used the corresponding password:
+```
+ssh hacker@venus.hackmyvm.eu -p 5000
+```
+
+Once on the box, I listed files in the current directory:
+```
+hacker@venus:~$ ls
+mission.txt  readme.txt
+```
+
+The `mission.txt` outlines the objective: find a hidden file in the current folder that contains a password for the user `sophia` and then log in as that user.
+```
+hacker@venus:~$ cat mission.txt 
+################
+# MISSION 0x01 #
+################
+
+## EN ##
+User sophia has saved her password in a hidden file in this folder. Find it and log in as sophia.
+```
+
+Hidden files (those beginning with `.`) are not shown by a plain `ls`. 
+I used `ls -la` to reveal them and observed a file named `.myhiddenpazz`:
+```
+hacker@venus:~$ ls -la
+total 44
+drwxr-x--- 1 root   hacker 4096 Apr  5  2024 .
+drwxr-xr-x 1 root   root   4096 Apr  5  2024 ..
+-rw-r----- 1 root   hacker   31 Apr  5  2024 ...
+-rw-r--r-- 1 hacker hacker  220 Apr 23  2023 .bash_logout
+-rw-r--r-- 1 hacker hacker 3526 Apr 23  2023 .bashrc
+-rw-r----- 1 root   hacker   16 Apr  5  2024 .myhiddenpazz
+-rwxr-xr-x 1 hacker hacker  807 Apr 23  2023 .profile
+-rw-r----- 1 root   hacker  287 Apr  5  2024 mission.txt
+-rw-r----- 1 root   hacker 2542 Apr  5  2024 readme.txt
+```
+
+I printed the hidden file to obtain the password:
+```
+hacker@venus:~$ cat .myhiddenpazz 
+Y1o645M3mR84ejc
+```
+
+With the recovered password I SSH'ed into the machine as `sophia`:
+```
+ssh sophia@venus.hackmyvm.eu -p 5000
+```
+
+Inside `sophia`'s account I read `flagz.txt` to capture the first flag:
+```
+sophia@venus:~$ cat flagz.txt 
+8===LUzzNuv8NB59iztWUIQS===D~~
+```
+
+## 🚩Flag
+> `8===LUzzNuv8NB59iztWUIQS===D~~`
+

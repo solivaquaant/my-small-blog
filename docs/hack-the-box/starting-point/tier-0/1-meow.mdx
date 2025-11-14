@@ -1,0 +1,85 @@
+---
+tags: []
+sidebar_position: 1
+---
+# Meow
+
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+I connected to the target machine via the VPN using the usual OpenVPN command:
+```
+sudo openvpn <file.ovpn>
+```
+
+Back on the Hack The Box page I selected **Spawn Machine** and noted the target IP address. 
+With the IP in hand I ran an `nmap` scan and discovered that **port 23 (telnet)** was open:
+```
+> nmap 10.129.232.240
+
+PORT   STATE SERVICE
+23/tcp open  telnet
+```
+
+A quick note about **Telnet**: it is a simple, legacy protocol that provides a plaintext, interactive remote terminal over TCP. 
+It's useful for quick access or testing, but because it sends everything unencrypted (including credentials), it should not be used on untrusted networks for sensitive administration - SSH is the modern, secure alternative.
+
+To connect I used the telnet client:
+```
+telnet <IP address>
+```
+
+The service responded with a banner and a login prompt:
+```
+> telnet 10.129.232.240
+Trying 10.129.232.240...
+Connected to 10.129.232.240.
+Escape character is '^]'.
+
+  █  █         ▐▌     ▄█▄ █          ▄▄▄▄
+  █▄▄█ ▀▀█ █▀▀ ▐▌▄▀    █  █▀█ █▀█    █▌▄█ ▄▀▀▄ ▀▄▀
+  █  █ █▄█ █▄▄ ▐█▀▄    █  █ █ █▄▄    █▌▄█ ▀▄▄▀ █▀█
+
+
+Meow login: 
+```
+
+I tried logging in as `root` and was granted access without a password. 
+Once on the shell I listed the directory contents with `ls` and found `flag.txt`.
+```
+root@Meow:~# ls
+flag.txt  snap
+```
+
+Viewing the file revealed the flag.
+```
+root@Meow:~# cat flag.txt 
+b40abdfe23665f766f9c61ecba8a4c19
+```
+## ✏️ Task answers
+**Task 1: What does the acronym VM stand for?**
+> Virtual Machine
+
+**Task 2: What tool do we use to interact with the operating system in order to issue commands via the command line, such as the one to start our VPN connection? 
+It's also known as a console or shell.**
+> terminal
+
+**Tassk 3: What service do we use to form our VPN connection into HTB labs?**
+> openvpn
+
+**Task 4: What tool do we use to test our connection to the target with an ICMP echo request?**
+> ping
+
+**Task 5: What is the name of the most common tool for finding open ports on a target?**
+> nmap
+
+**Task 6: What service do we identify on port 23/tcp during our scans?**
+> telnet
+
+**Task 7: What username is able to log into the target over telnet with a blank password?**
+> root
+
+## 🚩Flag
+> `b40abdfe23665f766f9c61ecba8a4c19`

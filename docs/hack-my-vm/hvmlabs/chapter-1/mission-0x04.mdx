@@ -1,0 +1,42 @@
+﻿---
+tags: []
+---
+# Mission 0x04
+
+---
+
+## 🔎 Solution
+After SSH'ing in as `emma`, the next task was to retrieve `mia`'s password - which the mission states is stored in a file literally named `-`:
+```
+emma@venus:~$ cat mission.txt 
+################
+# MISSION 0x04 #
+################
+
+## EN ##
+User mia has left her password in the file -.
+```
+
+At first this looks trivial, but many Unix utilities (`cat`, `less`, `more`, etc.) treat a standalone `-` as a special token meaning "read from standard input" (stdin), not "the file named `-`". 
+So running `cat -` will wait for you to type input rather than opening a file named `-`.
+
+To tell the shell and the command that you really mean the filename `-`, prefix it with `./` (the current directory). That disambiguates it from the stdin token:
+```
+emma@venus:~$ cat ./-
+iKXIYg0pyEH2Hos
+```
+
+With the recovered password I SSH'ed into `mia`:
+```
+ssh mia@venus.hackmyvm.eu -p 5000
+```
+
+Inside `mia`'s account I read the flag file:
+```
+mia@venus:~$ cat flagz.txt 
+8===FBMdY8hel2VMA3BaYJin===D~~
+```
+
+
+## 🚩Flag
+> `8===FBMdY8hel2VMA3BaYJin===D~~`

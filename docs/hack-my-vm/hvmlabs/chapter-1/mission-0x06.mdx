@@ -1,0 +1,53 @@
+﻿---
+tags: []
+---
+# Mission 0x06
+
+---
+
+## 🔎 Solution
+After SSH'ing in as `camila`, the next task was to find Luna's password, which the mission states is inside a file under the `muack` directory:
+```
+camila@venus:~$ cat mission.txt 
+################
+# MISSION 0x06 #
+################
+
+## EN ##
+The user luna has left her password in a file inside the muack folder. 
+```
+
+Listing `muack` shows a large tree of subdirectories:
+```
+camila@venus:~$ ls -la muack/
+total 2212
+drwxr-xr-x 551 root root   12288 Apr  5  2024 .
+drwxr-x---   3 root camila  4096 Apr  5  2024 ..
+drwxr-xr-x 152 root root    4096 Apr  5  2024 1
+drwxr-xr-x   2 root root    4096 Apr  5  2024 10
+drwxr-xr-x   2 root root    4096 Apr  5  2024 100
+drwxr-xr-x   2 root root    4096 Apr  5  2024 101
+drwxr-xr-x   2 root root    4096 Apr  5  2024 102
+drwxr-xr-x   2 root root    4096 Apr  5  2024 103
+...
+```
+
+Because the hint said the password was stored in a file, I searched for likely file contents inside the tree and found a file named `muack` containing the password:
+```
+camila@venus:~$ cat muack/111/111/muack
+j3vkuoKQwvbhkMc
+```
+
+Using that credential I SSH'ed into `luna`:
+```
+ssh luna@venus.hackmyvm.eu -p 5000
+```
+
+Inside `luna`'s account I read the flag:
+```
+luna@venus:~$ cat flagz.txt 
+8===KCO34FpIq3nBmHbyZvFh===D~~
+```
+
+## 🚩Flag
+> `8===KCO34FpIq3nBmHbyZvFh===D~~`
