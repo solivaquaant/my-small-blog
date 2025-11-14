@@ -1,0 +1,102 @@
+--- 
+authors: tndt
+tags: []
+description: A blog about yt-dlp
+date: 2025-10-14
+---
+
+# A few handy tips for downloading videos with yt-dlp
+
+If you often need to save videos from YouTube, Facebook, or TikTok - without watermarks - or even grab files from Google Drive that the owner has disabled downloads for, **yt-dlp** is a powerful tool worth knowing.
+In this post, I'll walk you through how to set it up and use it effectively on Windows. 
+
+(If you're on Linux or macOS, the steps are similar - just check your platform's installation guide.)
+{/* truncate */}
+
+## Setting up
+Before you can use `yt-dlp`, you'll need 2 key components installed on your system: **FFmpeg** and **Python 3**.
+
+### Installing FFmpeg
+Start by downloading the full build of FFmpeg from [this](https://www.gyan.dev/ffmpeg/builds/).
+Once downloaded, right-click the archive and choose **Extract Files**, then rename the extracted folder to `FFmpeg`. 
+Move this folder to your `C:\` drive so that your path becomes `C:\FFmpeg`.
+
+Next, open **Command Prompt** as *Administrator* and run:
+```
+setx /m PATH "C:\ffmpeg\bin;%PATH%"
+```
+This adds FFmpeg to your system's environment variables.
+
+To confirm everything's working, close the current Command Prompt, open a new one, and type:
+```
+ffmpeg --h
+```
+If the command runs successfully, you're good to go.
+If you get an error like *'ffmpeg' is not recognized as an internal or external command*, double-check your folder name and path.
+
+### Installing Python 3
+Since yt-dlp is written in Python, you'll need it installed. 
+Grab the latest version from [Python](https://www.python.org/downloads/) and install it as usual.
+
+### Creating a virtual environment
+To avoid version conflicts with other Python projects, it's best to create a virtual environment.
+1. Open the folder where you want to save your downloaded videos.
+2. Right-click inside it and choose **Open in Terminal**.
+3. Run the following command:
+   ```
+   python -m venv venv
+   ```
+   This creates a folder named `venv` - your isolated environment.
+4. Activate it with:
+   ```
+   .\venv\Scripts\activate
+   ```
+   When you see `(venv)` at the start of your command line, it means the environment is active.
+
+Each time you want to use yt-dlp, remember to activate this environment first.
+
+### Installing yt-dlp
+With your environment active, install yt-dlp by running:
+```
+pip install yt-dlp
+```
+That's it - you can now use yt-dlp to download videos right from the command line.
+
+## Downloading videos the usual way
+Downloading videos is straightforward once yt-dlp is set up.
+* To download a video in its original format (could be MP4, WebM, MOV, etc.):
+  ```
+  yt-dlp "video-link"
+  ```
+* To force the output format to MP4:
+  ```
+  yt-dlp -t mp4 "video-link"
+  ```
+* To download only a specific section of a video (for example, from 11:11 to 22:22):
+  ```
+  yt-dlp -t mp4 --download-sections "*00:11:11-00:22:22" "video-link"
+  ```
+
+## Downloading videos that require login (using cookies)
+Some videos - for example, private or restricted ones - require authentication. 
+yt-dlp supports downloading these by using your browser cookies.
+First, install a cookie-export extension for your browser:
+* **Chrome / Edge:** [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
+* **Firefox:** [cookies.txt](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/)
+* **Opera:** [EditThisCookie](https://addons.opera.com/en/extensions/details/edit-this-cookie/)
+
+Open the video link in your browser, use the extension to export cookies, and save them as a file (for example, `cookies.txt`).
+
+Then, in your terminal, run:
+
+```
+yt-dlp -f mp4 --cookies <path-to-cookie-file> "video-link"
+```
+This method even lets you download videos from **Google Drive**, including those where the owner has disabled the download option - neat, right?
+
+## Final thoughts
+These are just a few simple but useful tricks when working with **yt-dlp** - a lightweight yet powerful open-source downloader.
+It's perfect for saving videos for offline viewing, editing, or archiving.
+
+If I discover more interesting use cases or shortcuts later, I'll update this post.
+Thanks for reading, and happy downloading!
