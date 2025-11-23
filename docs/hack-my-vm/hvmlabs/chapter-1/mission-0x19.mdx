@@ -3,10 +3,36 @@ tags: []
 ---
 # Mission 0x19
 
----
-
 ## 🔎 Solution
+After logging in as **frida**, the next task focused on analyzing a file containing repeated lines.
+```
+################
+# MISSION 0x19 #
+################
 
+## EN ##
+The password of eliza is the only string that is repeated (unsorted) in repeated.txt.
+```
+
+The hint suggested that among all entries in the file, only one string appears more than once. 
+The `uniq` command includes an option that makes this easy: `-d`, which outputs only duplicated lines.
+
+Running it against the provided file:
+```
+frida@venus:~$ uniq -d repeated.txt 
+Fg6b6aoksceQqB9
+```
+
+That repeated value turned out to be the next password. Using it allowed access to the user **eliza**:
+```
+ssh eliza@venus.hackmyvm.eu -p 5000
+```
+
+Once inside, checking the usual file revealed the next flag:
+```
+eliza@venus:~$ cat flagz.txt 
+8===zwWIPyDf2ozwVhCTxm1I===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===zwWIPyDf2ozwVhCTxm1I===D~~`

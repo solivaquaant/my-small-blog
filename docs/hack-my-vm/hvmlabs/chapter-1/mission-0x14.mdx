@@ -3,10 +3,44 @@ tags: []
 ---
 # Mission 0x14
 
----
-
 ## 🔎 Solution
+After connecting to the machine via SSH as **alice**, the next task was to locate a password hidden inside the `passwd` file.
+The mission note made it clear enough:
+```
+################
+# MISSION 0x14 #
+################
 
+## EN ##
+The admin has left the password of the user anna as a comment in the file passwd.
+```
+
+Before diving in, it's important to remember what `/etc/passwd` actually is. On a Linux system, this file stores all registered users along with various metadata required for authentication and environment setup - such as UID, GID, home directory, and default shell.
+
+Each line in `/etc/passwd` follows the structure:
+```
+username:password:UID:GID:comment:home_directory:default_shell
+```
+
+So the goal was to inspect the file and look for anything unusual. 
+Running a quick `grep` against the current username revealed something interesting:
+```
+alice@venus:~$ cat /etc/passwd | grep "alice"
+alice:x:1014:1014:w8NvY27qkpdePox:/pwned/alice:/bin/bash
+```
+
+The comment field wasn't a regular descriptive string - it looked more like an intentionally planted password, very likely belonging to user `anna`.
+
+With that suspected credential, the next move was to attempt logging in as `anna`:
+```
+ssh anna@venus.hackmyvm.eu -p 5000
+```
+
+The login succeeded. From there, the only thing left was to inspect the home directory and check for the final flag:
+```
+anna@venus:~$ cat flagz.txt 
+8===5Y3DhT66fa6Da8RpLKG0===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===5Y3DhT66fa6Da8RpLKG0===D~~`

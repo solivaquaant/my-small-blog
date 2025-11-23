@@ -3,10 +3,53 @@ tags: []
 ---
 # Mission 0x21
 
----
-
 ## 🔎 Solution
+After connecting via SSH as *iris*, the next objective is retrieving *eloise*'s password.
+```
+iris@venus:~$ cat mission.txt 
+################
+# MISSION 0x21 #
+################
 
+## EN ##
+User eloise has saved her password in a particular way. 
+```
+
+Inside the same directory, there's a file named `irispass.txt` which contains the current logged-in user's password.
+```
+iris@venus:~$ cat irispass.txt 
+kYjyoLcnBZ9EJdz
+```
+
+The file named `eloise` looks more interesting. 
+The content starts with the sequence `/9j/4AAQSkZJRgABAQEAYABgAAD`, which is recognizable as a Base64-encoded JPEG header.
+```
+iris@venus:~$ cat eloise 
+/9j/4AAQSkZJRgABAQEAYABgAAD/4RD...
+```
+
+To recover the hidden data, the Base64 string is decoded and saved as an image file:
+```
+cat eloise | base64 -d > /tmp/output.jpg
+```
+
+The generated file is then transferred to the local machine for analysis:
+```
+scp -P 5000 iris@venus.hackmyvm.eu:/tmp/output.jpg .
+```
+
+Opening the image reveals the password for *eloise*: `yOUJlV0SHOnbSPm`.
+
+Using the recovered credentials, a new SSH session is established:
+```
+ssh eloise@venus.hackmyvm.eu -p 5000
+```
+
+Finally, reading the last file reveals the flag:
+```
+eloise@venus:~$ cat flagz.txt 
+8===57CzBLKaEq2N8YBFRu31===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===57CzBLKaEq2N8YBFRu31===D~~`

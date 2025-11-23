@@ -3,10 +3,97 @@ tags: []
 ---
 # Mission 0x34
 
----
-
 ## 🔎 Solution
+After connecting as *noa*, the next step points to a file that appears intentionally messy.
+```
+noa@venus:~$ cat mission.txt 
+################
+# MISSION 0x34 #
+################
 
+## EN ##
+The password of maia is surrounded by trash 
+```
+
+Opening the file normally isn't very readable, so using `strings` is a better approach to filter out meaningful ASCII sequences.
+```js
+noa@venus:~$ strings trash 
+b;pK
+*&dv
+ |.-
+wsG9
+D55-
+\|gu
+1q#^
+YV!)}
+f}nP
+T735
+5GOj'
+g3-5v)S~hK
+{Xu7
+O;rTl,
+]Bokc
+04`0
+X:Uf
+;Vtr3
+`vr)
+k`      I
+<(;pQ
+@$LiJ
+u7TI
+*Q{r%
+;%gzDB
+b%/*
+3g?d
+=I+"
+xfFN
+//highlight-next-line
+\nh1hnDPHpydEjoEN
+!       2L~8
+JmN8
+@%`j
+,       ^,
+e&xvN2
+_cKn
+.c|0
+)|hd&
+hl(p
+fEr:
+OdBb
+?OsP
+dnN9
+J7e(
+JL6(
+wI;%vz
+apPD
+a5qi
+|otr
+4TTm
+toyi
+*f|F
+.%J`t
+```
+
+Among the junk data, there's a recognizable pattern:
+```
+\nh1hnDPHpydEjoEN
+```
+
+All previous passwords in this challenge series have been 15 characters long, so removing the initial `\n` gives:
+```
+h1hnDPHpydEjoEN
+```
+
+With that password, the next SSH login works:
+```
+ssh maia@venus.hackmyvm.eu -p 5000
+```
+
+Retrieving the flag confirms the progression:
+```
+maia@venus:~$ cat flagz.txt 
+8===nu8IDScKFAXVcnFutKtG===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===nu8IDScKFAXVcnFutKtG===D~~`

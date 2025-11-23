@@ -3,10 +3,40 @@ tags: []
 ---
 # Mission 0x22
 
----
-
 ## 🔎 Solution
+After connecting via SSH as *eloise*, the next task is to retrieve *lucia*'s password.
+```
+eloise@venus:~$ cat mission.txt 
+################
+# MISSION 0x22 #
+################
 
+## EN ##
+User lucia has been creative in saving her password.
+```
+
+In the current directory, there is a file named `hi` containing a hexadecimal string:
+```
+eloise@venus:~$ cat hi
+00000000: 7576 4d77 4644 5172 5157 504d 6547 500a
+```
+
+Decoding the hex string reveals *lucia*'s password:
+```
+eloise@venus:~$ cat hi | xxd -r -p
+uvMwFDQrQWPMeGP
+```
+
+Using the recovered password, a new SSH session is initiated:
+```
+ssh lucia@venus.hackmyvm.eu -p 5000
+```
+
+Finally, reading the file exposes the flag:
+```
+lucia@venus:~$ cat flagz.txt 
+8===5Sr2pqeVTmn8RaaPmTPE===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===5Sr2pqeVTmn8RaaPmTPE===D~~`

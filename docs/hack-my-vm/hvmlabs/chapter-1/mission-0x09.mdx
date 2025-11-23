@@ -3,10 +3,42 @@ tags: []
 ---
 # Mission 0x09
 
----
-
 ## 🔎 Solution
+After SSH'ing in as `victoria`, the mission hinted that the next password was stored inside a ZIP file:
+```
+victoria@venus:~$ cat mission.txt 
+################
+# MISSION 0x09 #
+################
 
+## EN ##
+The user isla has left her password in a zip file.
+```
+
+To extract the archive, I used `unzip` and chose `/tmp` as the extraction directory:
+```
+victoria@venus:~$ unzip passw0rd.zip -d /tmp
+Archive:  passw0rd.zip
+replace /tmp/pwned/victoria/passw0rd.txt? [y]es, [n]o, [A]ll, [N]one, [r]ename: y
+ extracting: /tmp/pwned/victoria/passw0rd.txt  
+```
+
+Opening the extracted file revealed the password:
+```
+victoria@venus:~$ cat /tmp/pwned/victoria/passw0rd.txt 
+D3XTob0FUImsoBb
+```
+
+With that credential, I logged in as `isla`:
+```
+ssh isla@venus.hackmyvm.eu -p 5000
+```
+
+Then grabbed the next flag:
+```
+isla@venus:~$ cat flagz.txt 
+8===ZyZqc1suvGe4QlkZHFlq===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===ZyZqc1suvGe4QlkZHFlq===D~~`

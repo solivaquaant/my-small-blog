@@ -3,10 +3,39 @@ tags: []
 ---
 # Mission 0x40
 
----
-
 ## 🔎 Solution
+After connecting via SSH as **adela**, the next objective pointed toward something that could be "listened to":
+```
+adela@venus:~$ cat mission.txt 
+################
+# MISSION 0x40 #
+################
 
+## EN ##
+User sky has saved her password to something that can be listened to.
+```
+
+In the directory, a file named `wtf` seemed like the obvious lead. Opening it revealed a familiar pattern-Morse code:
+```
+adela@venus:~$ cat wtf 
+.--. .- .--. .- .--. .- .-. .- -.. .. ... .
+```
+
+Decoding the sequence produced the plaintext password:
+```
+papaparadise
+```
+
+With that, the next login was possible:
+```
+ssh sky@venus.hackmyvm.eu -p 5000
+```
+
+Inside the home directory, the final file contained the flag:
+```
+sky@venus:~$ cat flagz.txt 
+8===8T2IE4fNIvbs8sh1lnew===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===8T2IE4fNIvbs8sh1lnew===D~~`

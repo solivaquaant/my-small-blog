@@ -1,0 +1,23 @@
+---
+tags: []
+---
+# 030
+
+## 🔎 Solution
+The file provided looked like a QR code at first glance, but something was clearly missing - the 3 positioning squares normally found in the corners weren't there. 
+Without those markers, most scanners wouldn't decode it.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./og.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+I opened the image in Paint (any basic image editor works) and manually restored the missing alignment squares to match a standard QR structure. 
+Once the pattern was complete, the code became scannable.
+<div style={{ width: '30%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+After scanning the fixed QR code, the flag was revealed.
+
+
+## 🚩Flag
+> `HMV{qrsospecial}`

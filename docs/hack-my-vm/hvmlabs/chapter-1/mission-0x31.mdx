@@ -3,10 +3,46 @@ tags: []
 ---
 # Mission 0x31
 
----
-
 ## 🔎 Solution
+After connecting as *kira*, the next step points to another web-based hint.
+```
+kira@venus:~$ cat mission.txt 
+################
+# MISSION 31 #
+################
 
+## EN ##
+The user veronica visits a lot http://localhost/waiting.php
+```
+
+Accessing the given URL returns a message instead of a password:
+```
+kira@venus:~$ curl http://localhost/waiting.php
+
+Im waiting for the user-agent PARADISE.
+```
+
+This suggests the server is checking the request headers - specifically the `User-Agent`. 
+A User-Agent string is normally used by browsers or tools to identify themselves when communicating over HTTP. 
+Since the message explicitly mentions `PARADISE`, it makes sense to include it as the User-Agent value.
+
+Doing so reveals the next password:
+```
+kira@venus:~$ curl -A PARADISE http://localhost/waiting.php 
+
+QTOel6BodTx2cwX
+```
+
+With the new password, SSH access to the next user becomes possible:
+```
+ssh veronica@venus.hackmyvm.eu -p 5000
+```
+
+Once logged in, retrieving the usual file exposes the flag:
+```
+veronica@venus:~$ cat flagz.txt 
+8===iSSeKzoDXsKy8WPuqNPg===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===iSSeKzoDXsKy8WPuqNPg===D~~`

@@ -3,10 +3,87 @@ tags: []
 ---
 # Mission 0x29
 
----
-
 ## 🔎 Solution
+After connecting via SSH as *celeste*, the next hint points toward MySQL interaction.
+```
+celeste@venus:~$ cat mission.txt 
+################
+# MISSION 0x29 #
+################
 
+## EN ##
+The user celeste has access to mysql but for what?
+```
+
+Based on this hint, the current user should be able to authenticate into MySQL. 
+Using the same username and password works:
+```
+mysql -uceleste -pVLSNMTKwSV2o8Tn
+```
+
+Once inside, listing the available databases reveals two:
+```
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| venus              |
++--------------------+
+```
+
+Since `information_schema` is the system database, the focus shifts to the `venus` database:
+```
+MariaDB [(none)]> use venus;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+```
+
+Inside this database, there is a single table named `people`:
+```
+MariaDB [venus]> show tables;
++-----------------+
+| Tables_in_venus |
++-----------------+
+| people          |
++-----------------+
+```
+
+Querying the table reveals the flag in row number 35:
+```
++-----------+---------------+--------------------------------+
+| id_people | uzer          | pazz                           |
++-----------+---------------+--------------------------------+
+|        35 | haha          | 8===xKmPDsJSKpHLzkqKXyjx===D~~ |
++-----------+---------------+--------------------------------+
+```
+
+Unlike previous challenges, this mission doesn't mention any next target user in the `mission.txt`, which strongly suggests that the next passwords may also be hidden somewhere inside the database.
+
+Looking back at patterns from previous stages, all valid passwords discovered so far were exactly 15 characters long. 
+With that assumption, a filtered SQL query returns possible credentials for upcoming tasks:
+```
+MariaDB [venus]> SELECT * FROM people WHERE length(pazz) = 15;
++-----------+----------+-----------------+
+| id_people | uzer     | pazz            |
++-----------+----------+-----------------+
+|        16 | sfdfdsml | ixpeqdsfsdfdsfW |
+|        44 | yuio     | ixpgbvcbvcbeqdW |
+|        54 | crom     | ixpefdbvvcbrqdW |
+|        58 | bael     | ixpesdvsdvsdqdW |
+|        74 | nina     | ixpeqdWuvC5N9kG |
+|        77 | dsar     | ixpeF43F3F34qdW |
+|        78 | yop      | ixpeqdWCSDFDSFD |
+|        79 | loco     | ixpeF43F34F3qdW |
++-----------+----------+-----------------+
+```
+Testing these entries showed that most of them didn't exist on the system - except for one: **nina**. 
+So the next credential pair is clear:
+- User: nina
+- Password: ixpeqdWuvC5N9kG
+Mission 0x30 continues with nina.
 
 ## 🚩Flag
-> `
+> `8===xKmPDsJSKpHLzkqKXyjx===D~~`

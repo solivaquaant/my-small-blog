@@ -1,0 +1,33 @@
+---
+tags: []
+---
+# 077
+
+## 🔎 Solution
+The objective of this challenge was to identify the street name related to the provided image.
+
+Searching the image on Google revealed that it is located in **Paris, France**. 
+To speed up the process, I used **Gemini** to assist with the location analysis. 
+The result suggested the following details:
+- Possible shooting position: near the intersection of **Rue du Mont-Cenis** and **Rue Cortot**.
+- View direction: looking toward the intersection with **Rue Saint-Vincent** at the bottom of the stairs.
+- The area is located right behind the **Sacré-Cœur** basilica.
+
+With this information, the search radius could be narrowed down.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./small.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+At the identified location, the same building from the image can be spotted:
+```
+https://www.google.com/maps/@48.8884049,2.3419643,3a,75y,6.69h,94.86t/data=!3m7!1e1!3m5!1sAdHDFBaK9U2upvZVdVbaZw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-4.857606592948827%26panoid%3DAdHDFBaK9U2upvZVdVbaZw%26yaw%3D6.691299154451553!7i13312!8i6656?entry=ttu&g_ep=EgoyMDI1MTExNy4wIKXMDSoASAFQAw%3D%3D
+```
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./res.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+After testing both potential street names - Rue du Mont-Cenis and Rue Saint-Vincent - the correct answer turned out to be **Rue Saint-Vincent**.
+
+## 🚩Flag
+> `HMV{Rue_Saint-Vincent}`
+

@@ -3,10 +3,45 @@ tags: []
 ---
 # Mission 0x26
 
----
-
 ## 🔎 Solution
+After logging in via SSH as *alexa*, the next objective is to retrieve the password for user *ariel*. 
+The hint suggests that the password is available online over **HTTP**.
+```
+alexa@venus:~$ cat mission.txt 
+################
+# MISSION 0x26 #
+################
 
+## EN ##
+The password of the user ariel is online! (HTTP)
+```
+
+To locate the service, the network configuration is checked to identify the IP address of the current machine:
+```
+alexa@venus:~$ ip a
+9: eth0@if10: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:ac:42:00:0a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.66.0.10/24 brd 172.66.0.255 scope global eth0
+       valid_lft forever preferred_lft forever
+```
+
+With the host identified as `172.66.0.10`, the next step is to request the HTTP service on port 80. 
+The response contains the password:
+```
+alexa@venus:~$ curl http://172.66.0.10:80/
+33EtHoz9a0w2Yqo
+```
+
+Using this credential, a new SSH login is performed:
+```
+ssh ariel@venus.hackmyvm.eu -p 5000
+```
+
+Once logged in, reading the final file reveals the flag:
+```
+ariel@venus:~$ cat flagz.txt 
+8===lqTeJ1msxhNjNJCptxmZ===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===lqTeJ1msxhNjNJCptxmZ===D~~`

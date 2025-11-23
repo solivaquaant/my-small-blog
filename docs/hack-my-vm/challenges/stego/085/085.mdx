@@ -1,0 +1,35 @@
+---
+tags: []
+---
+# 085
+
+## 🔎 Solution
+I started by checking the metadata of the image. 
+Using `exiftool`, I noticed a reference to a ZIP file named `hidden`, which suggested that the PNG file might contain embedded compressed data.
+```
+> exiftool flag.png 
+ExifTool Version Number         : 13.25
+File Name                       : flag.png
+...
+Zip File Name                   : hidden/
+Warning                         : [minor] Use the Duplicates option to extract tags for all 2 files
+```
+
+Since the metadata hinted at a hidden archive, I used `binwalk` to extract any embedded files stored inside the image.
+```
+> binwalk -e flag.png
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+0             0x0             Zip archive data, at least v2.0 to extract, name: hidden/
+37            0x25            Zip archive data, at least v2.0 to extract, compressed size: 2633, uncompressed size: 2784, name: hidden/flag.png
+```
+
+`binwalk` successfully detected and extracted a directory named `hidden`. 
+Inside that directory was another PNG file, which contained the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HMV{F0r3N51C_3xP3rT_1N_7H3_R00M}`

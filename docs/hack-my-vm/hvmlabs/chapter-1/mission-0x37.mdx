@@ -3,10 +3,53 @@ tags: []
 ---
 # Mission 0x37
 
----
-
 ## 🔎 Solution
+After logging in as **alora**, the next task was to extract the password hidden inside an `.iso` file.
+```
+alora@venus:~$ cat mission.txt 
+################
+# MISSION 0x37 #
+################
 
+## EN ##
+The user julie has created an iso with her password.
+```
+
+An ISO file is essentially a disk image-commonly used for CDs, DVDs, or Blu-ray images. 
+It typically contains a full filesystem structure, metadata, and stored files. 
+Before mounting it, I checked whether anything readable could be extracted directly using `strings`.
+
+That worked surprisingly well:
+```
+alora@venus:~$ strings music.iso 
+CD001
+LINUX                           CDROM                           
+                                                                                                                                                                                                                                                                                                                                                                                                GENISOIMAGE ISO 9660/HFS FILESYSTEM CREATOR (C) 1993 E.YOUNGDALE (C) 1997-2006 J.PEARSON/J.SCHILLING (C) 2006-2007 CDRKIT TEAM                                                                                                                 2024040506284600
+2024040506284600
+0000000000000000
+2024040506284600
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+CD001
+MUSIC.ZIP;1RR
+music.zipPX$
+RRIP_1991ATHE ROCK RIDGE INTERCHANGE PROTOCOL PROVIDES SUPPORT FOR POSIX FILE SYSTEM SEMANTICSPLEASE CONTACT DISC PUBLISHER FOR SPECIFICATION SOURCE.  SEE PUBLISHER IDENTIFIER IN PRIMARY VOLUME DESCRIPTOR FOR CONTACT INFORMATION.
+pwned/alora/music.txtUT
+sjDf4i2MSNgSvOv
+pwned/alora/music.txtUT
+```
+
+The readable string `sjDf4i2MSNgSvOv` stands out clearly, and based on the format of previous passwords, it matches the expected length and pattern. If mounted properly, the path `pwned/alora/music.txt` would contain this same value.
+
+Using the password, I logged into the next user:
+```
+ssh julie@venus.hackmyvm.eu -p 5000
+```
+
+Inside the home directory, the flag was stored in the usual place:
+```
+julie@venus:~$ cat flagz.txt 
+8===Iwe1QpxTcx0A8Uusqjfe===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===Iwe1QpxTcx0A8Uusqjfe===D~~`

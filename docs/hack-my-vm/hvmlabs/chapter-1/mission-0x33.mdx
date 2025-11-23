@@ -3,10 +3,51 @@ tags: []
 ---
 # Mission 0x33
 
----
-
 ## 🔎 Solution
+After logging in as *lana*, the next objective involves handling a compressed file.
+```
+lana@venus:~$ cat mission.txt 
+################
+# MISSION 0x33 #
+################
 
+## EN ##
+The user noa loves to compress her things.
+```
+
+Inside the home directory, there is a file named `zip.gz`. 
+Despite the extension, it's not a standard gzip file - checking its type reveals it's actually a tar archive.
+```
+lana@venus:~$ file zip.gz 
+zip.gz: POSIX tar archive (GNU)
+```
+
+To make extraction easier, the file was transferred locally:
+```
+scp -P 5000  lana@venus.hackmyvm.eu:/pwned/lana/zip.gz .
+```
+
+After that, extracting the archive gives access to the contents:
+```
+tar -xf zip.gz
+```
+
+Reading the extracted file reveals the password:
+```
+> cat ./pwned/lana/zip 
+9WWOPoeJrq6ncvJ
+```
+
+Using those credentials allows access to the next user:
+```
+ssh noa@venus.hackmyvm.eu -p 5000
+```
+
+The flag is stored in the usual place:
+```
+noa@venus:~$ cat flagz.txt 
+8===HUNGevKdeKwcCvJru1CC===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===HUNGevKdeKwcCvJru1CC===D~~`

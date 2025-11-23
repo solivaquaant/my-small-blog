@@ -3,10 +3,37 @@ tags: []
 ---
 # Mission 0x24
 
----
-
 ## 🔎 Solution
+After logging in via SSH as *isabel*, the next objective is to recover the password for the user *freya*.
+```
+isabel@venus:~$ cat mission.txt 
+################
+# MISSION 0x24 #
+################
+
+## EN ##
+The password of the user freya is the only string that is not repeated in different.txt 
+```
+
+The file `different.txt` contains multiple entries, and only one of them is unique. 
+The easiest way to extract it is by using the `uniq -u` command:
+```
+isabel@venus:~$ uniq -u different.txt 
+EEDyYFDwYsmYawj
+```
+
+The output reveals the password for *freya*. 
+With this credential, the next SSH login is performed:
+```
+ssh freya@venus.hackmyvm.eu -p 5000
+```
+
+Inside the new session, reading the final file provides the next flag:
+```
+freya@venus:~$ cat flagz.txt 
+8===m1rRSv2pdm3sBGmgidul===D~~
+```
 
 
 ## 🚩Flag
-> `
+> `8===m1rRSv2pdm3sBGmgidul===D~~`

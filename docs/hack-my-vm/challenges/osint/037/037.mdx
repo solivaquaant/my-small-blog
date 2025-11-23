@@ -1,0 +1,40 @@
+---
+tags: []
+---
+# 037
+
+## 🔎 Solution
+The objective of this challenge was to determine where the image was taken.
+
+I started by checking whether any geolocation metadata was embedded in the file. 
+Using `exiftool` returned usable GPS coordinates:
+```
+> exiftool osint.jpg 
+GPS Altitude                    : 25 m Above Sea Level
+GPS Date/Time                   : 2016:07:25 18:44:29Z
+GPS Latitude                    : 58 deg 58' 2.87" N
+GPS Longitude                   : 18 deg 18' 59.03" E
+Focal Length                    : 4.2 mm
+GPS Position                    : 58 deg 58' 2.87" N, 18 deg 18' 59.03" E
+Light Value                     : 14.3
+```
+
+Searching these coordinates on Google Maps showed that the location is in **Gruvbyn, Sweden**, at approximately:
+```
+58.967464,18.316397
+```
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Since GPS coordinates are approximate, the exact answer for the challenge is:
+```
+58.967463,18.316396
+```
+
+## 🚩Flag
+> `HMV{58.967463,18.316396}`
+
+
+
+

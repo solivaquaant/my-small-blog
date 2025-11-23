@@ -3,10 +3,40 @@ tags: []
 ---
 # Mission 0x12
 
----
-
 ## 🔎 Solution
+After connecting to the target via SSH as user `lucy`, the next objective is to extract the password hidden in a specific pattern inside the system. 
+According to the mission file, the string for the next user (`elena`) is located between the characters `fu` and `ck`.
+```
+lucy@venus:~$ cat mission.txt 
+################
+# MISSION 0x12 #
+################
 
+## EN ##
+The password of the user elena is between the characters fu and ck 
+```
+
+To search for this pattern efficiently, I used `grep` with a regex expression matching anything between `fu` and `ck`:
+```
+lucy@venus:~$ cat file.yo | grep "fu.*ck"
+fu4xZ5lIKYmfPLg9tck
+```
+
+The substring between `fu` and `ck` reveals the password:
+```
+4xZ5lIKYmfPLg9t
+```
+
+With the extracted password, I logged into the next account:
+```
+ssh elena@venus.hackmyvm.eu -p 5000
+```
+
+Once inside, I checked the home directory and found the flag:
+```
+elena@venus:~$ cat flagz.txt 
+8===st1pTdqEQ0bvrJfWGwLA===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===st1pTdqEQ0bvrJfWGwLA===D~~`

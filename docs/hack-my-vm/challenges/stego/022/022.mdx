@@ -1,0 +1,23 @@
+---
+tags: []
+---
+# 022
+
+## 🔎 Solution
+After opening the image, I noticed something odd in the bottom-right corner: a small pattern showing multiple birds sitting on wires. 
+It didn't look random, so it was likely a clue.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./pic.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Based on the style, I searched for similar encodings and eventually came across [**Symbol Cipher**](https://www.dcode.fr/symbols-ciphers), which includes a variant known as [**Birds on a Wire Cipher**](https://www.dcode.fr/birds-on-a-wire-cipher). 
+The positions and number of birds determine letters based on the cipher's grid.
+
+Using that method to decode the sequence, the output revealed the text `BLUEBIRD`:
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./decode.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HMV{BLUEBIRD}`
+

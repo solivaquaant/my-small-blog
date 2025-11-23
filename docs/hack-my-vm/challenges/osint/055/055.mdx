@@ -1,0 +1,35 @@
+---
+tags: []
+---
+# 055
+
+## 🔎 Solution
+The challenge provides the following string:
+```
+MCZJ/CJ[[J].7¿?;(?9!?-/<;¿:=(=6!?-X
+K: wtf
+```
+
+It looks like random characters along with a key. 
+After testing several decoding methods, it turns out this was encoded using **XOR**.
+
+Using [CyberChef](https://cyberchef.org/) to decode the string produced:
+```
+BLUE LETTER!8°04'06.0" 34°52'29.0"W
+```
+
+This appears to be a set of GPS coordinates, although the latitude is missing a directional indicator. 
+Testing the coordinate with `S` gives:
+```
+8°04'06.0"S 34°52'29.0"W
+```
+
+Checking [this location](https://www.google.com/maps/place/8%C2%B004'06.0%22S+34%C2%B052'29.0%22W/@-8.0683073,-34.8747205,3a,75y,209.28h,90.35t/data=!3m7!1e1!3m5!1sJIQ3NQimM4OGpw85jNJY3A!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-0.3480033063839585%26panoid%3DJIQ3NQimM4OGpw85jNJY3A%26yaw%3D209.28010552960546!7i16384!8i8192!4m4!3m3!8m2!3d-8.0683333!4d-34.8747222?entry=ttu&g_ep=EgoyMDI1MTExNy4wIKXMDSoASAFQAw%3D%3D) reveals graffiti in the area with a blue word: **"CAP"**.
+That turned out to be the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HMV{CAP}`
+

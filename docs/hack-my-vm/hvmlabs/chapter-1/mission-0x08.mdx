@@ -3,10 +3,42 @@ tags: []
 ---
 # Mission 0x08
 
----
-
 ## 🔎 Solution
+After logging in as `eleanor`, the next step was to locate the password for the user `victoria`. 
+The mission specifies that the password is stored in a file owned by the user `violin`:
+```
+eleanor@venus:~$ cat mission.txt 
+################
+# MISSION 0x08 #
+################
 
+## EN ##
+The user victoria has left her password in a file in which the owner is the user violin.
+```
+
+To search for files based on ownership, I used `find` with the `-user` filter. 
+Redirecting errors keeps the output clean:
+```
+eleanor@venus:~$ find / -type f -user violin 2>/dev/null
+/usr/local/games/yo
+```
+
+Reading that file revealed the password:
+```
+eleanor@venus:~$ cat /usr/local/games/yo
+pz8OqvJBFxH0cSj
+```
+
+With the recovered password, I connected as `victoria`:
+```
+ssh victoria@venus.hackmyvm.eu -p 5000
+```
+
+Then I grabbed the flag:
+```
+victoria@venus:~$ cat flagz.txt 
+8===NWyTFi9LLqVsZ4OnuZYN===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===NWyTFi9LLqVsZ4OnuZYN===D~~`

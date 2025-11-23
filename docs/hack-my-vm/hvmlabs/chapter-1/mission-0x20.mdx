@@ -3,10 +3,42 @@ tags: []
 ---
 # Mission 0x20
 
----
-
 ## 🔎 Solution
+After logging in as **eliza**, the next hint suggested that the upcoming access wouldn't require a password but rather a stored key.
+```
+################
+# MISSION 0x20 #
+################
 
+## EN ##
+The user iris has left me her key.
+```
+
+Checking the home directory revealed a private OpenSSH key:
+```
+eliza@venus:~$ cat .iris_key 
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
+NhAAAAAwEAAQAAAYEAstTtUVotXEIF5+w37pKse/YGLEMMMnMB2DQQ1EF/KP7ey72FhO9S
+Jk4wPtBZ6+pPKefUA2uSJHGhHia++uBOcuWt3SAdR5gUqxpdFTgYqZczWEgCDoY/L0rUQG
+```
+
+Since this is a private key, SSH can use it for authentication - but only if the file permissions are secure. 
+SSH refuses to use keys that are readable by others, so the permission needs to be restricted:
+```
+chmod 600 .iris_key 
+```
+
+With the permissions fixed, the login attempt worked:
+```
+ssh -i .iris_key iris@venus.hackmyvm.eu -p 5000 
+```
+
+Inside **iris's** account, the flag was waiting as usual:
+```
+iris@venus:~$ cat flagz.txt 
+8===ClrdWOqlZ1vL61zSk9Va===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===ClrdWOqlZ1vL61zSk9Va===D~~`

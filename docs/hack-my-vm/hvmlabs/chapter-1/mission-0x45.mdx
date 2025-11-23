@@ -3,10 +3,36 @@ tags: []
 ---
 # Mission 0x45
 
----
-
 ## 🔎 Solution
+After gaining access as *karla*, the mission hint suggests that the next password is stored inside an image.
+```
+karla@venus:~$ cat mission.txt 
+################
+# MISSION 0x45 #
+################
 
+## EN ##
+User denise has saved her password in the image.
+```
+
+Since the hint points to hidden data, checking metadata is a logical first step. 
+Running `exiftool` on the available image reveals an interesting field under `About`, which looks like a password.
+```
+karla@venus:~$ exiftool yuju.jpg 
+File Name                       : yuju.jpg
+About                           : pFg92DpGucMWccA
+```
+
+Using the extracted value, it becomes possible to log in as the next user.
+```
+ssh denise@venus.hackmyvm.eu -p 5000
+```
+
+Once connected, retrieving the flag completes the stage.
+```
+denise@venus:~$ cat flagz.txt 
+8===uMXbjLdQde2iQFoWc8zf===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===uMXbjLdQde2iQFoWc8zf===D~~`

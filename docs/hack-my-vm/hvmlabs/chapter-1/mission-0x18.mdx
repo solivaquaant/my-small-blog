@@ -3,10 +3,58 @@ tags: []
 ---
 # Mission 0x18
 
----
-
 ## 🔎 Solution
+Once authenticated as **clara**, the challenge shifted toward cracking a password-protected ZIP archive containing the next credential.
+```
+################
+# MISSION 0x18 #
+################
 
+## EN ##
+The password of user frida is in the password-protected zip (rockyou.txt can help you)
+```
+
+To work on the file locally, the archive was transferred from the target machine using SCP:
+```
+scp -P 5000 clara@venus.hackmyvm.eu:/pwned/clara/protected.zip .
+```
+
+With the ZIP file available, the next step was to extract the hash using `zip2john`:
+```
+> zip2john protected.zip > hash.txt
+ver 1.0 efh 5455 efh 7875 protected.zip/pwned/clara/protected.txt PKZIP Encr: 2b chk, TS_chk, cmplen=28, decmplen=16, crc=239F7473 ts=3383 cs=3383 type=0
+```
+
+The hash was then cracked using **John The Ripper** with the famous `rockyou.txt` wordlist:
+```
+> john --wordlist=rockyou.txt hash.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (PKZIP [32/64])
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+pass123          (protected.zip/pwned/clara/protected.txt)     
+1g 0:00:00:00 DONE (2025-11-20 09:27) 50.00g/s 409600p/s 409600c/s 409600C/s 123456..whitetiger
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+```
+
+The cracked ZIP password was `pass123`. With that, the archive could finally be accessed:
+```
+clara@venus:~$ unzip -p protected.zip 
+[protected.zip] pwned/clara/protected.txt password: 
+Ed4ErEUJEaMcXli
+```
+
+That output contained the next user's password. Using it, SSH access to **frida** was successful:
+```
+ssh frida@venus.hackmyvm.eu -p 5000
+```
+
+Inside the account, the next flag was waiting:
+```
+frida@venus:~$ cat flagz.txt 
+8===Ikg2qj8KT2bGJtWvR6hC===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===Ikg2qj8KT2bGJtWvR6hC===D~~`

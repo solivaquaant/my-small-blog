@@ -3,10 +3,34 @@ tags: []
 ---
 # Mission 0x15
 
----
-
 ## 🔎 Solution
+After logging in as **anna**, the mission hint suggested that privilege escalation was the next step - specifically using `sudo` to become the user `natalia`:
+```
+################
+# MISSION 0x15 #
+################
 
+## EN ##
+Maybe sudo can help you to be natalia.
+```
+
+To switch to another user using `sudo`, the syntax is simple:
+```
+sudo -u <username> -i
+```
+
+So applying it here:
+```
+sudo -u natalia -i
+```
+
+The command worked, and the shell switched to `natalia` without prompting for a password - meaning `anna` was allowed to run commands as that user.
+
+Once inside the new account, checking for readable files led directly to the next flag:
+```
+natalia@venus:~$ cat flagz.txt 
+8===JWHa1GQq1AYrBWNXEJrH===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===JWHa1GQq1AYrBWNXEJrH===D~~`

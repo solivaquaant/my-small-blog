@@ -3,10 +3,47 @@ tags: []
 ---
 # Mission 0x30
 
----
-
 ## 🔎 Solution
+After logging in as *nina*, the next clue points to something hidden behind a local web endpoint.
+```
+nina@venus:~$ cat mission.txt 
+################
+# MISSION 0x30 #
+################
 
+## EN ##
+The user kira is hidding something in http://localhost/method.php
+```
+
+A simple request to the URL doesn't reveal anything useful:
+```
+nina@venus:~$ curl http://localhost/method.php=
+I dont like this method!
+```
+
+Since the hint refers to a PHP script related to HTTP interaction, it makes sense to test different request methods. 
+Trying POST gives the same response:
+```
+nina@venus:~$ curl -X POST http://localhost/method.php
+I dont like this method!
+```
+
+Switching to the PUT method finally exposes the password:
+```
+nina@venus:~$ curl -X PUT http://localhost/method.php
+tPlqxSKuT4eP3yr
+```
+
+Using this new credential pair, access to the next user becomes possible:
+```
+ssh kira@venus.hackmyvm.eu -p 5000
+```
+
+Once inside, the flag is stored in the usual location:
+```
+kira@venus:~$ cat flagz.txt 
+8===rJun2WyeuGIvabWQvJko===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===rJun2WyeuGIvabWQvJko===D~~`

@@ -1,0 +1,44 @@
+---
+tags: []
+---
+# 006
+
+## 🔎 Solution
+The challenge description includes a clue hinting at a DNS record:
+```
+hackmyvm.eu. 100 IN TXT
+```
+
+Breaking it down:
+- `<domain>` indicates the hostname the record belongs to - in this case, `hackmyvm.eu.`
+- `<TTL>` represents the Time To Live value, meaning how long (in seconds) the record will remain cached before a resolver queries it again - here it's `100`.
+- `<class>` specifies the record class - `IN` stands for Internet.
+- `<type>` refers to the DNS record type - here it's `TXT`, a record format used to store arbitrary text.
+
+To enumerate TXT records, I executed:
+```
+> dig hackmyvm.eu TXT
+
+; <<>> DiG 9.20.11-4+b1-Debian <<>> hackmyvm.eu TXT
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 25713
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;hackmyvm.eu.                   IN      TXT
+
+;; ANSWER SECTION:
+hackmyvm.eu.            60      IN      TXT     "hmv{sasviyalin}"
+
+;; Query time: 255 msec
+;; SERVER: 116.97.90.124#53(116.97.90.124) (UDP)
+;; WHEN: Sat Nov 22 11:33:24 EST 2025
+;; MSG SIZE  rcvd: 68
+```
+And with that, the flag appears.
+
+## 🚩Flag
+> `hmv{sasviyalin}`

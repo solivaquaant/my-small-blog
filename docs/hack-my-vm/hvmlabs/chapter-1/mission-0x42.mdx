@@ -3,10 +3,49 @@ tags: []
 ---
 # Mission 0x42
 
----
-
 ## 🔎 Solution
+After logging in as **sarah**, the next objective referenced a hidden password somewhere in the current directory:
+```
+sarah@venus:~$ cat mission.txt  
+################
+# MISSION 0x42 #
+################
 
+## EN ##
+The password of mercy is hidden in this directory.
+```
+
+Listing the directory contents showed something unusual-among the typical files, there was a file literally named `...`, easy to miss if not paying attention:
+```js
+sarah@venus:~$ ls -la
+total 36
+drwxr-x--- 2 root  sarah 4096 Apr  5  2024 .
+drwxr-xr-x 1 root  root  4096 Apr  5  2024 ..
+//highlight-next-line
+-rw-r----- 1 root  sarah   16 Apr  5  2024 ...
+-rw-r--r-- 1 sarah sarah  220 Apr 23  2023 .bash_logout
+-rw-r--r-- 1 sarah sarah 3526 Apr 23  2023 .bashrc
+-rw-r--r-- 1 sarah sarah  807 Apr 23  2023 .profile
+-rw-r----- 1 root  sarah   31 Apr  5  2024 flagz.txt
+-rw-r----- 1 root  sarah  175 Apr  5  2024 mission.txt
+```
+
+Opening this odd-looking file revealed the password:
+```
+sarah@venus:~$ cat ...
+ym5yyXZ163uIS8L
+```
+
+Using it allowed SSH access to the next account:
+```
+ssh mercy@venus.hackmyvm.eu -p 5000
+```
+
+Once inside, the flag was stored as usual:
+```
+mercy@venus:~$ cat flagz.txt 
+8===pBpnZCBSELaY0xQJ8YAY===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===pBpnZCBSELaY0xQJ8YAY===D~~`

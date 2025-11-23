@@ -3,10 +3,38 @@ tags: []
 ---
 # Mission 0x32
 
----
-
 ## 🔎 Solution
+After logging in as *veronica*, the next clue hints at something related to command aliases.
+```
+veronica@venus:~$ cat mission.txt 
+################
+# MISSION 0x32 #
+################
 
+## EN ##
+The user veronica uses a lot the password from lana, so she created an alias.
+```
+
+Aliases in Linux are shortcuts defined to replace long or repetitive commands. 
+They are stored temporarily in the current shell or permanently in files like `.bashrc`, and can be listed using the `alias` command.
+
+Checking the defined aliases reveals the password:
+```
+veronica@venus:~$ alias
+alias lanapass='UWbc0zNEVVops1v'
+alias ls='ls --color=auto'
+```
+
+Using the discovered password, access to the next user becomes possible:
+```
+ssh lana@venus.hackmyvm.eu -p 5000
+```
+
+Inside the user's directory, the flag is found as expected:
+```
+lana@venus:~$ cat flagz.txt 
+8===um3Hno2AsjFjuLWsfmDj===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===um3Hno2AsjFjuLWsfmDj===D~~`

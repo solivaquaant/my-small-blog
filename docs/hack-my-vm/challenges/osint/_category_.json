@@ -1,0 +1,8 @@
+{
+  "label": "OSINT",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Can you find it?"
+  }
+}

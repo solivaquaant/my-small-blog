@@ -3,10 +3,40 @@ tags: []
 ---
 # Mission 0x41
 
----
-
 ## 🔎 Solution
+After connecting via SSH as **sky**, the next hint pointed toward a web request involving headers:
+```
+sky@venus:~$ cat mission.txt  
+################                                                                                                           
+# MISSION 0x41 # 
+################ 
+ 
+## EN ## 
+User sarah uses header in http://localhost/key.php 
+```
 
+Accessing the URL normally didn't return much, but it clearly hinted at a missing HTTP header:
+```
+sky@venus:~$ curl http://localhost/key.php 
+Key header is true? 
+```
+
+Since the script expected a specific header named `key` with the value `true`, sending the request again with the correct parameter revealed the password:
+```
+sky@venus:~$ curl -H "key:true" http://localhost/key.php 
+LWOHeRgmIxg7fuS 
+```
+
+With the recovered password, the next SSH login was possible:
+```
+ssh sarah@venus.hackmyvm.eu -p 5000 
+```
+
+Inside the user directory, the flag was stored in a familiar file:
+```
+sarah@venus:~$ cat flagz.txt  
+8===nLCR949OMr4pLhMepKCM===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===nLCR949OMr4pLhMepKCM===D~~`

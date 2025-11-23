@@ -3,10 +3,46 @@ tags: []
 ---
 # Mission 0x44
 
----
-
 ## 🔎 Solution
+After connecting to the machine as *paula*, the mission file gives a subtle hint related to trust and group membership.
+```
+paula@venus:~$ cat mission.txt 
+################
+# MISSION 0x44 #
+################
 
+## EN ##
+The user karla trusts me, she is part of my group of friends. 
+```
+
+Checking the current group memberships shows that *paula* belongs to a secondary group named `hidden`, which stands out as a potential lead.
+```
+paula@venus:~$ groups
+paula hidden
+```
+
+To investigate further, I searched the filesystem for files owned by the `hidden` group. Only one file matched.
+```
+paula@venus:~$ find / -group hidden -type f 2>/dev/null
+/usr/src/.karl-a
+```
+
+Reading the contents of this file reveals what appears to be a password.
+```
+paula@venus:~$ cat /usr/src/.karl-a
+gYAmvWY3I7yDKRf
+```
+
+Using this password, I was able to log in as the next user.
+```
+ssh karla@venus.hackmyvm.eu -p 5000
+```
+
+Once inside, retrieving the flag completes this step.
+```
+karla@venus:~$ cat flagz.txt 
+8===SARQC95X3AWK9K4BBTMJ===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===SARQC95X3AWK9K4BBTMJ===D~~`

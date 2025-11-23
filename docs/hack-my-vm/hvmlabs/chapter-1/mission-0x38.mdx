@@ -3,10 +3,45 @@ tags: []
 ---
 # Mission 0x38
 
----
-
 ## 🔎 Solution
+Once logged in as **julie**, the next objective hinted at comparing differences:
+```
+julie@venus:~$ cat mission.txt 
+################
+# MISSION 0x38 #
+################
 
+## EN ##
+The user irene believes that the beauty is in the difference.
+```
+
+In the home directory, 2 files were provided: `1.txt` and `2.txt`. 
+Since the hint suggested a difference, the logical approach was to compare them using `diff`.
+```
+julie@venus:~$ diff 1.txt 2.txt 
+174c174
+< 8VeRLEFkBpe2DSD
+---
+> aNHRdohjOiNizlU
+```
+
+The output showed that only a single line differed. 
+That meant one of these strings had to be the password. 
+Testing them revealed the correct one:
+```
+8VeRLEFkBpe2DSD
+```
+
+With that, I could access the next account:
+```
+ssh irene@venus.hackmyvm.eu -p 5000
+```
+
+Inside the home directory, the flag was stored in the usual location:
+```
+irene@venus:~$ cat flagz.txt 
+8===c9hgLkLGzsNw7mB3VEr4===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===c9hgLkLGzsNw7mB3VEr4===D~~`

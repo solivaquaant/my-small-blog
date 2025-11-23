@@ -3,10 +3,45 @@ tags: []
 ---
 # Mission 0x39
 
----
-
 ## 🔎 Solution
+Once logged in as **irene**, the next mission hinted that the password for the next user was stored locally but encrypted:
+```
+irene@venus:~$ cat mission.txt 
+################
+# MISSION 0x39 #
+################
 
+## EN ##
+The user adela has lent her password to irene.
+```
+
+In the home directory, three files immediately stood out-they were clearly related to RSA encryption:
+```
+irene@venus:~$ ls -la
+-rw-r----- 1 root  irene 1704 Apr  5  2024 id_rsa.pem
+-rw-r----- 1 root  irene  451 Apr  5  2024 id_rsa.pub
+-rw-r----- 1 root  irene  256 Apr  5  2024 pass.enc
+```
+
+The presence of `pass.enc` suggested encrypted content, while `id_rsa.pem` was the private key needed to decrypt it. 
+Since RSA is asymmetric, the private key is required to turn the encrypted ciphertext back into plaintext.
+
+Using OpenSSL, the encrypted file was decrypted successfully:
+```
+irene@venus:~$ openssl rsautl -decrypt -inkey id_rsa.pem -in pass.enc
+nbhlQyKuaXGojHx
+```
+
+That output was clearly the password. With it, I could continue to the final user in this stage:
+```
+ssh adela@venus.hackmyvm.eu -p 5000
+```
+
+Once logged in, the flag was sitting in the home folder:
+```
+adela@venus:~$ cat flagz.txt 
+8===86XGXQefUeV2eEdrUzxx===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===86XGXQefUeV2eEdrUzxx===D~~`

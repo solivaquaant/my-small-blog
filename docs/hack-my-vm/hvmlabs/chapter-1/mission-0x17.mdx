@@ -3,10 +3,48 @@ tags: []
 ---
 # Mission 0x17
 
----
-
 ## 🔎 Solution
+After logging in as **eva**, the next hint pointed toward a file that hadn't been modified in decades - specifically May 1, 1968.
+```
+################
+# MISSION 0x17 #
+################
 
+## EN ##
+The password of the clara user is found in a file modified on May 1, 1968.
+```
+
+To locate files based on modification date, the `find` command provides a useful option: `-mtime`.
+
+Quick breakdown of its behavior:
+* `-mtime N` → files modified roughly N days ago (between N and N+1).
+* `-mtime +N` → modified more than N days ago.
+* `-mtime -N` → modified within the last N days.
+
+Since 1968 is extremely far back - roughly **20000 days** - files modified that long ago should fall under `-mtime +20000`.
+Running the search:
+```
+eva@venus:~$ find / -mtime +20000 2>/dev/null
+/usr/lib/cmdo
+```
+
+Only one result appeared. 
+Checking it confirmed it contained what looked like a password:
+```
+eva@venus:~$ cat /usr/lib/cmdo 
+39YziWp5gSvgQN9
+```
+
+Using that as a credential allowed an SSH login as **clara**:
+```
+ssh clara@venus.hackmyvm.eu -p 5000
+```
+
+Once inside, the flag was waiting:
+```
+clara@venus:~$ cat flagz.txt 
+8===EJWmHDEQeEN1vIR7NYiH===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===EJWmHDEQeEN1vIR7NYiH===D~~`

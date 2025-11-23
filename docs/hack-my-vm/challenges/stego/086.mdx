@@ -1,0 +1,51 @@
+---
+tags: []
+---
+# 086
+
+## 🔎 Solution
+With the provided image file, the first step was checking its metadata. 
+Using `exiftool`, I noticed that the `Comment` field contained a suspicious Base64-encoded string:
+```
+> exiftool EZPZ.png 
+ExifTool Version Number         : 13.25
+File Name                       : EZPZ.png
+Comment                         : MDEwMDAwMDEgMDEwMDAwMTAgMDEwMDAxMTEgMDEwMTExMTEgMDEwMDExMTAgMDEwMTExMTEgMDEwMTAwMTEgMDEwMTEwMDEgMDEwMDExMTAgMDEwMTAxMDAgMDExMTEwMTEgMDEwMTEwMDEgMDEwMDAxMTAgMDEwMDExMTEgMDExMTExMDE=
+```
+
+After decoding the Base64 string, it revealed a binary sequence:
+```
+01000001 01000010 01000111 01011111 01001110 01011111 01010011 01011001 01001110 01010100 01111011 01011001 01000110 01001111 0111110
+```
+
+Decoding the binary string gave:
+```
+ABG_N_SYNT{YFO}
+```
+
+Using the cipher detection tool [Text Identifier](https://www.dcode.fr/cipher-identifier), it was identified as a **ROT13** cipher. 
+Running it through a [ROT13 decoder](https://www.dcode.fr/rot-cipher) resulted in:
+```
+NOT_A_FLAG{LSB}
+```
+
+As expected from the string, this wasn't the actual flag - just a hint. 
+The message clearly points toward **LSB steganography** (Least Significant Bit), a technique used to hide data within the least significant bits of image pixel values.
+
+One commonly used tool for detecting and extracting LSB-based hidden content is `zsteg`, so I ran it against the image. 
+This time, the actual flag appeared in the output:
+```
+> zsteg EZPZ.png                   
+meta Comment        .. text: "MDEwMDAwMDEgMDEwMDAwMTAgMDEwMDAxMTEgMDEwMTExMTEgMDEwMDExMTAgMDEwMTExMTEgMDEwMTAwMTEgMDEwMTEwMDEgMDEwMDExMTAgMDEwMTAxMDAgMDExMTEwMTEgMDEwMTEwMDEgMDEwMDAxMTAgMDEwMDExMTEgMDExMTExMDE="                                 
+imagedata           .. file: amd 29k coff noprebar executable
+b1,r,lsb,xy         .. text: "HMV{I7_w45_3a5y_R1GH7}"
+b1,rgb,msb,xy       .. file: OpenPGP Public Key
+b2,g,lsb,xy         .. file: VISX image file
+b3,bgr,lsb,xy       .. file: OpenPGP Secret Key
+b4,g,lsb,xy         .. text: "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUDDUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"                                                                               
+b4,b,lsb,xy         .. text: "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD33DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"                                                                               
+b4,b,msb,xy         .. text: ["\"" repeated 186 times]
+```
+
+## 🚩Flag
+> `HMV{I7_w45_3a5y_R1GH7}`

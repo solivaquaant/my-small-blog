@@ -3,10 +3,39 @@ tags: []
 ---
 # Mission 0x10
 
----
-
 ## 🔎 Solution
+After connecting via SSH as **isla**, the next objective was to locate the password stored inside the file `passy`. 
+According to the hint in `mission.txt`, the correct line starts with `a9HFX`, but those first 5 characters are not part of the actual password.
+
+To search for the required string inside the file, I used `grep`:
+```js
+isla@venus:~$ cat passy | grep "a9HFX"
+WKINVzNQLKLDVAca9HFX
+dWeFra9HFXzNQLKLDVAc
+kfRgNa9HFXzNQLKLDVAc
+zNQa9HFXfEtrgLKLDVAc
+WKINVzNQLa9HFXDwErfc
+WKINVa9HFXzDcceWeTfd
+//highlight-next-line
+a9HFXWKINVzNQLKLDVAc
+```
+
+Removing the first 5 characters gives the password:
+```
+WKINVzNQLKLDVAc
+```
+
+With the password recovered, I logged in as the user:
+```
+ssh violet@venus.hackmyvm.eu -p 5000
+```
+
+Once inside, reading the file revealed the final flag:
+```
+violet@venus:~$ cat flagz.txt
+8===LzErk0qFPYJj16mNnnYZ===D~~
+```
 
 
 ## 🚩Flag
-> `
+> `8===LzErk0qFPYJj16mNnnYZ===D~~`

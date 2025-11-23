@@ -3,10 +3,36 @@ tags: []
 ---
 # Mission 0x25
 
----
-
 ## 🔎 Solution
+After connecting via SSH as *freya*, the next task is to obtain the password for user *alexa*. 
+The challenge hints that the password is periodically written to a `.txt` file inside `/free`, but the file is deleted every minute.
+```
+freya@venus:~$ cat mission.txt 
+################
+# MISSION 0x25 #
+################
 
+## EN ##
+User alexa puts her password in a .txt file in /free every minute and then deletes it. 
+```
+
+Since the file is temporary, the approach is to continuously scan the directory and print the contents as soon as a matching `.txt` file appears. 
+A simple loop achieves this:
+```
+freya@venus:~$ while true; do find /free -name "*.txt" -exec cat {} \; ; sleep 1; done
+mxq9O3MSxxX9Q3S
+```
+
+Once the password is captured, a new SSH session is initiated with the discovered credential:
+```
+ssh alexa@venus.hackmyvm.eu -p 5000
+```
+
+Reading the file in the new user directory reveals the next flag:
+```
+alexa@venus:~$ cat flagz.txt 
+8===12ALP3eLlJ1GrTBxwJQM===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===12ALP3eLlJ1GrTBxwJQM===D~~`

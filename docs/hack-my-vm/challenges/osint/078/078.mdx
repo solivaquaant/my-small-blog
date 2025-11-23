@@ -1,0 +1,39 @@
+---
+tags: []
+---
+# 078
+
+## 🔎 Solution
+For this challenge, the goal was to collect information about the user **Alter**.
+
+On HackMyVM, user profiles can be accessed through:
+```
+https://hackmyvm.eu/profile/?user=<username>
+```
+
+Visiting `https://hackmyvm.eu/profile/?user=alter`, I noticed the profile used a Discord-style avatar along with a numeric string: `1262786228110229630`.
+<div style={{ width: '70%', margin: '0 auto' }}>
+  <img src={require("./profile.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+This looked like a Discord user ID. 
+Using [Discord ID lookup tool](https://discord.id/) to look it up returned the username `lokolwdf`.
+
+After opening Discord and checking the account details, I found references to other linked platforms such as YouTube and LinkedIn.
+<div style={{ width: '50%', margin: '0 auto' }}>
+  <img src={require("./dis.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Searching for `lokolwdf` on LinkedIn led to a matching profile:
+```
+https://www.linkedin.com/in/alter-ego-003280321/
+```
+
+The flag was located in the **About** section of that LinkedIn page.
+<div style={{ width: '70%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HMV{4lt3r_3g0s_d0nt_h1d3}`
+

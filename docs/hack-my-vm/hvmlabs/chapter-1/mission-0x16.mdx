@@ -3,10 +3,39 @@ tags: []
 ---
 # Mission 0x16
 
----
-
 ## 🔎 Solution
+Once logged in as **natalia**, the next objective was clearly defined in the mission file: find a password encoded in Base64.
+```
+################
+# MISSION 0x16 #
+################
 
+## EN ##
+The password of user eva is encoded in the base64.txt file
+```
+
+Checking the file revealed what looked like a Base64 string:
+```
+dXBzQ0EzVUZ1MTBmREFPCg==
+```
+
+Instead of copying it out to an external decoder, Linux provides a built-in way to decode Base64 using the `base64` utility:
+```
+natalia@venus:~$ cat base64.txt | base64 -d
+upsCA3UFu10fDAO
+```
+This decoded string turned out to be the password for the next user: **eva**.
+
+With the credential obtained, the next step was to SSH again:
+```
+ssh eva@venus.hackmyvm.eu -p 5000
+```
+
+Access was successful, and just like previous steps, a quick check in the home directory revealed the next flag:
+```
+eva@venus:~$ cat flagz.txt 
+8===22cqk3iGkGYVqnYrHiof===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===22cqk3iGkGYVqnYrHiof===D~~`

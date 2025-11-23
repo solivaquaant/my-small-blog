@@ -3,10 +3,32 @@ tags: []
 ---
 # Mission 0x11
 
----
-
 ## 🔎 Solution
+After logging in via SSH as **violet**, the objective was similar to the previous task: retrieve a password from a file based on a pattern. 
+This time, instead of the line starting with a specific string, the hint in `mission.txt` indicated that the password belongs to the line that ends with `0JuAZ`. 
+Those last five characters are not part of the password.
 
+To locate the correct line, I used `grep`:
+```
+violet@venus:~$ cat end | grep "0JuAZ"
+OCmMUjebG53giud0JuAZ
+```
+
+The matching line clearly ends with the marker, so removing the last five characters gives the password:
+```
+OCmMUjebG53giud
+```
+
+With the password recovered, I connected to the next user:
+```
+ssh lucy@venus.hackmyvm.eu -p 5000
+```
+
+Inside the account, reading the provided file revealed the next flag:
+```
+lucy@venus:~$ cat flagz.txt 
+8===AdCJ4wl8pmbhi770Xbd3===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===AdCJ4wl8pmbhi770Xbd3===D~~`

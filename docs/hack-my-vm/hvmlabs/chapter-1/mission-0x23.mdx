@@ -3,10 +3,43 @@ tags: []
 ---
 # Mission 0x23
 
----
-
 ## 🔎 Solution
+After connecting via SSH as *lucia*, the next task is to retrieve *isabel*'s password from a file located in `/etc/xdg`.
+```
+lucia@venus:~$ cat mission.txt 
+################
+# MISSION 0x23 #
+################
+
+## EN ##
+The user isabel has left her password in a file in the /etc/xdg folder but she does not remember the name, however she has dict.txt that can help her to remember.
+```
+
+To locate the correct file, each entry in `dict.txt` is checked to see if it exists in `/etc/xdg`, without reading the file itself. 
+Only the absolute path is displayed if the file exists:
+```
+lucia@venus:~$ while IFS= read -r line; do readlink -e /etc/xdg/$line ; done < dict.txt
+/etc/xdg
+/etc/xdg/readme
+```
+
+The file `readme` is present, and reading it reveals *isabel*'s password:
+```
+lucia@venus:~$ cat /etc/xdg/readme
+H5ol8Z2mrRsorC0
+```
+
+Using the recovered password, a new SSH session is established:
+```
+ssh isabel@venus.hackmyvm.eu -p 5000
+```
+
+Finally, reading the last file gives the flag:
+```
+isabel@venus:~$ cat flagz.txt 
+8===Md2CU83GtVfouhm9U0AS===D~~
+```
 
 
 ## 🚩Flag
-> `
+> `8===Md2CU83GtVfouhm9U0AS===D~~`

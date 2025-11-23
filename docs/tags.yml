@@ -1,45 +1,59 @@
 web:
   label: Web
   permalink: /web
-  description: Web tag description
+  description: Includes write-ups on the topic of Web
 
 android:
   label: Android
   permalink: /android
-  description: Android tag description
+  description: Includes write-ups on the topic of Android
 
-reverse-engineer:
-  label: Reverse Engineer
-  permalink: /reverse-engineer
-  description: Reverse engineering tag description
+reverse-engineering:
+  label: Reverse engineering
+  permalink: /reverse-engineering
+  description: Includes write-ups on the topic of Reverse engineering
 
 cryptography:
   label: Cryptography
   permalink: /cryptography
-  description: Cryptography tag description
+  description: Includes write-ups on the topic of Cryptography
 
 forensics:
   label: Forensics
   permalink: /forensics
-  description: Forensics tag description
+  description: Includes write-ups on the topic of Forensics
+
+windows:
+  label: Windows
+  permalink: /windows
+  description: Includes write-ups on the topic of Windows
+
+linux:
+  label: Linux
+  permalink: /linux
+  description: Includes write-ups on the topic of Linux
 
 binary-exploitation:
-  label: Binary Exploitation
+  label: Binary exploitation
   permalink: /binary-exploitation
-  description: Binary exploitation tag description
+  description: Includes write-ups on the topic of Binary exploitation
 
 steganography:
   label: Steganography
   permalink: /steganography
-  description: Steganography tag description
+  description: Includes write-ups on the topic of Steganography
 
 network:
   label: Network
   permalink: /network
-  description: Network tag description
+  description: Includes write-ups on the topic of Network
 
-picomini-by-cmu-africa:
-  label: picoMini by CMU-Africa
-  permalink: /picomini-by-cmu-africa
-  description: picoMini by CMU-Africa tag description
-  
+osint:
+  label: OSINT
+  permalink: /osint
+  description: Includes write-ups on the topic of OSINT
+
+scripting:
+  label: Scripting
+  permalink: /scripting
+  description: Includes write-ups on the topic of Scripting

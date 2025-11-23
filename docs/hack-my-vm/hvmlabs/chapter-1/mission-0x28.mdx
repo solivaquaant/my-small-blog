@@ -3,10 +3,45 @@ tags: []
 ---
 # Mission 0x28
 
----
-
 ## 🔎 Solution
+After connecting via SSH as *lola*, the next task is to locate a password hidden inside one of the `.html` files based on a provided list.
+```
+lola@venus:~$ cat mission.txt 
+################
+# MISSION 0x28 #
+################
 
+## EN ##
+The user celeste has left a list of names of possible .html pages where to find her password. 
+```
+
+The file `pages.txt` contains possible filenames that may include the password:
+```
+lola@venus:~$ cat pages.txt 
+
+new-servers
+server-updates
+SenSage_LEO
+1355485668
+```
+
+To automate the search, the plan is to iterate through each filename, request `http://localhost/<file>.html`, and only print results that don't return a 404. 
+Running the loop reveals the password:
+```
+lola@venus:~$ while read p; do code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost/$p.html"); [ "$code" -ne 404 ] && curl -s "http://localhost/$p.html"; done < pages.txt
+VLSNMTKwSV2o8Tn
+```
+
+Using the discovered password, access to the next user is gained via SSH:
+```
+ssh celeste@venus.hackmyvm.eu -p 5000
+```
+
+Finally, checking the contents of the target file reveals the flag:
+```
+celeste@venus:~$ cat flagz.txt 
+8===TrdsvMy99slFZtd4Cy4Q===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===TrdsvMy99slFZtd4Cy4Q===D~~`

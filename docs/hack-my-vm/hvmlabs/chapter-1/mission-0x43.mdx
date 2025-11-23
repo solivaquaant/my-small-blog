@@ -6,7 +6,58 @@ tags: []
 ---
 
 ## 🔎 Solution
+After logging in via SSH as the *mercy* user, the next objective is to retrieve *paula's* password.
+```
+mercy@venus:~$ cat mission.txt 
+################
+# MISSION 0x43 #
+################
 
+## EN ##
+User mercy is always wrong with the password of paula. 
+```
+
+Inside the home directory, there's a `.bash_history` file. 
+Since command history often reveals user mistakes, this is a good place to inspect.
+```
+mercy@venus:~$ ls -la
+total 36
+drwxr-x--- 2 root  mercy 4096 Apr  5  2024 .
+drwxr-xr-x 1 root  root  4096 Apr  5  2024 ..
+-rw-r----- 1 root  mercy  133 Apr  5  2024 .bash_history
+```
+
+Reading it exposes a command sequence showing a login attempt to the next user account, and the password appears to have been typed directly after `su paula`:
+```
+mercy@venus:~$ cat .bash_history 
+ls -A
+ls
+rm /
+ps
+sudo -l
+watch tv
+vi /etc/logs
+su paula
+dlHZ6cvX6cLuL8p
+history
+history -c
+logout
+ssh paula@localhost
+cat .
+ls
+ls -l
+```
+
+Using the leaked password, it's now possible to connect as *paula*:
+```
+ssh paula@venus.hackmyvm.eu -p 5000
+```
+
+Once logged in, reading the file reveals the next flag:
+```
+paula@venus:~$ cat flagz.txt 
+8===2pwlvMk65rw81lymKLJE===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===2pwlvMk65rw81lymKLJE===D~~`
