@@ -1,0 +1,24 @@
+---
+tags: [web]
+---
+# 020
+
+## 🔎 Solution
+When accessing the site, a message appears:
+```
+You are not coming from https://nepcodex.com/
+```
+
+HTTP requests use specific headers to indicate the source of a request:
+- The `Referer` header informs the server which webpage initiated the request.
+- The `Origin` header is also used in some APIs to validate the source domain.
+
+To satisfy this check, the request was modified in Burp Suite's Repeater by adding the `Referer` header.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./burp.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Resending the request with this header returns the flag.
+
+## 🚩Flag
+> `HMV{youareawelcome}`

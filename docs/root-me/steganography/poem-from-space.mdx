@@ -1,0 +1,40 @@
+---
+tags: [steganography]
+---
+# Poem from Space
+
+- **Description:** Deeply understand the meaning of this famous poem to validate this challenge.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+While reviewing the content of the text file, I noticed something unusual: at the end of many lines, there were trailing whitespace characters - specifically space (`0x20`) and tab (`0x09`) values. These looked harmless at first, but they were consistent enough to be suspicious, so I dumped the file with `xxd`:
+
+```
+> xxd ch19.txt
+00000000: 5468 6520 4368 6172 6765 206f 6620 7468  The Charge of th
+00000010: 6520 4c69 6768 7420 4272 6967 6164 6520  e Light Brigade 
+00000020: 2020 2009 2009 2020 0920 0a4c 6f72 6420     . .  . .Lord 
+00000030: 416c 6672 6564 2054 656e 6e79 736f 6e20  Alfred Tennyson 
+00000040: 0a31 3835 3420 090a 2020 2020 2020 0909  .1854 ..      ..
+00000050: 0920 090a 4861 6c66 2061 206c 6561 6775  . ..Half a leagu
+00000060: 652c 2068 616c 6620 6120 6c65 6167 7565  e, half a league
+00000070: 2c09 2020 2020 0a48 616c 6620 6120 6c65  ,.    .Half a le
+00000080: 6167 7565 206f 6e77 6172 642c 2009 0a41  ague onward, ..A
+00000090: 6c6c 2069 6e20 7468 6520 7661 6c6c 6579  ll in the valley
+000000a0: 206f 6620 4465 6174 6820 2020 2020 2020   of Death       
+000000b0: 0a52 6f64 6520 7468 6520 7369 7820 6875  .Rode the six hu
+000000c0: 6e64 7265 642e 0920 2020 200a 2246 6f72  ndred..    ."For
+000000d0: 7761 7264 2c20 7468 6520 4c69 6768 7420  ward, the Light 
+```
+
+Instead of focusing on the visible text, I removed everything except the trailing whitespace characters at the end of each line. 
+The pattern suggested the use of a whitespace encoding technique, commonly seen in steganography puzzles. 
+After extracting only the spaces and tabs, I fed the sequence into [a whitespace decoding tool](https://ideone.com/OZhpX6).
+
+The output revealed the final flag.
+
+
+## 🚩Flag
+> `RootMe{Wh1t3_Sp4c3}`

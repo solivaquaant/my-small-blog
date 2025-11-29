@@ -1,0 +1,39 @@
+---
+tags: [web]
+---
+# 050
+
+## 🔎 Solution
+When accessing the challenge website, only the basic interface is visible, and inspecting the HTML source reveals nothing of interest.
+
+However, examining the source of the `index.css` file uncovers a Base64 encoded string:
+```
+body #smoothkeyset
+{
+    position: absolute;
+    right: 45vw;
+    top: 45vh;
+
+    color: white;
+    font-family: "Lucida Sans", "dGhpc2lzbXlrZXkuY3NzLnR4dA==", sans-serif;
+    font-size: large;
+    font-style: italic;
+    text-decoration: white underline solid 6px;
+    cursor: default;
+}
+```
+
+Decoding this string reveals a filename:
+```
+> echo "dGhpc2lzbXlrZXkuY3NzLnR4dA==" | base64 -d
+thisismykey.css.txt
+```
+
+Accessing this file directly returns the flag:
+```
+> curl http://momo.hackmyvm.eu/0r1g04szt0p/thisismykey.css.txt                                                
+HMV{wonderfulltext}
+```
+
+## 🚩Flag
+> `HMV{wonderfulltext}s`

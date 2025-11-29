@@ -1,5 +1,5 @@
 ---
-tags: []
+tags: [forensics, steganography]
 ---
 # So Meta
 
@@ -11,7 +11,7 @@ tags: []
 ## 🔎 Solution
 The challenge provides an image file. By examining its metadata, we find that the flag is hidden in the image's **Artist** field.
 ```js
-└─$ exiftool pico_img.png 
+> exiftool pico_img.png 
 ExifTool Version Number         : 13.00
 File Name                       : pico_img.png
 Directory                       : .

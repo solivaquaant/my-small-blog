@@ -1,5 +1,5 @@
 ---
-tags: []
+tags: [steganography]
 ---
 # 040
 
@@ -10,7 +10,7 @@ After checking the content of the text file, I noticed it was filled with patter
 [][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]][([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][
 ```
 
-To identify the format, I used an online [text identifier](https://www.dcode.fr/cipher-identifier), and it quickly pointed to **JSFuck**, a JavaScript-based obfuscated encoding that only uses six characters.
+To identify the format, I used an online [text identifier](https://www.dcode.fr/cipher-identifier), and it quickly pointed to **JSFuck**, a JavaScript-based obfuscated encoding that only uses 6 characters.
 
 Once identified, I ran the content through [a JSFuck decoder](https://www.dcode.fr/jsfuck-language), and it successfully revealed the flag.
 

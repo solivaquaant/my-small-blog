@@ -1,0 +1,52 @@
+---
+tags: [cryptography, windows]
+---
+# Hash - DCC
+
+- **Description:** Retrieve the password of the Administrator user from the information output by the secretsdump tool of the Impacket suite.
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The provided challenge file contains output from the Impacket tool `secretsdump.py`. 
+Our task is to find the password for the `Administrator` account.
+
+We can see this information:
+```
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+```
+
+This is a **SAM** hash in the format `username : RID : LM hash : NT hash`. However:
+* `aad3b435b51404eeaad3b435b51404ee` → This is the empty LM hash (indicating LM hashes are disabled in Windows).
+* `31d6cfe0d16ae931b73c59d7e0c089c0` → This is the default NT hash for an empty password.
+
+All users in the list have identical hashes, strongly suggesting they use a blank password.
+
+Further down, we find **Cached Domain Credentials** (msCache / DCC2 Hashes). 
+These are offline cached domain credentials used when the domain controller is unreachable. 
+The format is DCC2 ($DCC2$):
+```
+ROOTME.LOCAL/Administrator:15a57c279ebdfea574ad1ff91eb6ef0c:Administrator
+```
+
+Save this string to a file:
+```
+echo "Administrator:15a57c279ebdfea574ad1ff91eb6ef0c" > hash.txt
+```
+
+Use `john` to crack the hash using the `rockyou` wordlist:
+```
+> john --format=mscash hash.txt --wordlist=rockyou.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (mscash, MS Cache Hash (DCC) [MD4 32/64])
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+ilikethat        (Administrator)     
+1g 0:00:00:00 DONE (2025-11-27 09:12) 50.00g/s 7577Kp/s 7577Kc/s 7577KC/s mckinley1..armenio
+```
+
+The password for the `Administrator` user is `ilikethat`.
+
+## 🚩Flag
+> `ilikethat`

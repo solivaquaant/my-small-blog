@@ -1,0 +1,39 @@
+---
+tags: [web]
+---
+# Javascript - Authentication
+
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The challenge website contains a login form. 
+Reviewing the HTML source code reveals that clicking the button executes the `Login()` function:
+```
+<input onclick="Login()" type="button" value="login" name="button">
+```
+
+The website exposes the source code of the `login.js` file. 
+Examining this source code reveals the login credentials:
+```
+/* <![CDATA[ */
+
+function Login(){
+	var pseudo=document.login.pseudo.value;
+	var username=pseudo.toLowerCase();
+	var password=document.login.password.value;
+	password=password.toLowerCase();
+	if (pseudo=="4dm1n" && password=="sh.org") {
+	    alert("Password accepté, vous pouvez valider le challenge avec ce mot de passe.\nYou an validate the challenge using this password.");
+	} else { 
+	    alert("Mauvais mot de passe / wrong password"); 
+	}
+}
+/* ]]> */
+```
+
+The flag for this challenge is the password `sh.org`.
+
+## 🚩Flag
+> `sh.org`

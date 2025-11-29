@@ -1,0 +1,26 @@
+---
+tags: [web]
+---
+# 018
+
+## 🔎 Solution
+The website content contains a hint that the flag is located in `aaAxghuyrtlksd.php`:
+```
+Maybe the flag is in aaAxghuyrtlksd.php
+```
+
+Accessing `http://momo.hackmyvm.eu/ZiP004JfyGh/aaAxghuyrtlksd.php` returns the following response:
+```
+Yes, I have the flag! :)
+```
+
+However, inspecting the page source does not reveal any hidden flag. 
+This suggests the need to change the HTTP request method.
+
+Sending this request to the Repeater in Burp Suite and changing the method to POST successfully retrieves the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HMV{postpostpost}`

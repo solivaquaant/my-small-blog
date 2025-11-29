@@ -1,0 +1,28 @@
+---
+tags: [cryptography]
+---
+# Shift cipher
+
+- **Description:** Recover the password
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The challenge provides the following string:
+```
+L|ky+*^*zo*kvsno|*kom*vo*zk}}*cyvksr
+```
+
+I will use its hexadecimal representation to facilitate decoding:
+```
+4c7c 6b80 792b 2a5e 7f2a 7a6f 7f82 2a806b76736e 6f7c 2a6b 806f 6d2a 766f 2a7a6b7d 7d2a 6379 766b 7372 7f14 0a
+```
+
+Using [this tool](https://www.dcode.fr/ascii-shift-cipher) to brute force the shift, a shift of **+10** reveals the readable string:
+```
+Bravo! Tu peux valider avec le pass Yolaihu
+```
+
+## 🚩Flag
+> `Yolaihu`

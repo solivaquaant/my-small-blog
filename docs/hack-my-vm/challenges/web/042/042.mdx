@@ -1,0 +1,31 @@
+---
+tags: [web]
+---
+# 042
+
+## 🔎 Solution
+When accessing the challenge website, there are 8 links pointing to `/index.php?user=<num>`, where `<num>` ranges from 1-4 and 6-9.
+
+However, clicking these links directly results in an error because they lead to `http://momo.hackmyvm.eu/index.php?user=<num>`. T
+o access them correctly, the URL must be changed to `http://momo.hackmyvm.eu/n1lsfr4hm/index.php?user=<num>`.
+
+Visiting each link sequentially reveals the following information:
+*   1: Hello
+*   2: Where
+*   3: Are
+*   4: Your
+*   5: o_O
+*   6: Super
+*   7: Easy
+*   8: Flag
+*   9: ?
+
+Testing other IDs like 0, 10,..., yields no results.
+
+However, using the ID `-1` returns the flag.
+<div style={{ width: '80%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HMV{fcknumbers}`

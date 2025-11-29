@@ -1,0 +1,15 @@
+---
+tags: [web]
+---
+# 024
+
+## 🔎 Solution
+Upon initially accessing the website, the flag was briefly visible before the page quickly redirected to `/error.php`.
+
+Reviewing the HTTP history in Burp Suite reveals the flag in the initial GET request to the website.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./burp.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HMV{fastredirect}`

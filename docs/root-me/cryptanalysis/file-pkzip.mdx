@@ -1,0 +1,42 @@
+---
+tags: [cryptography]
+---
+# File - PKZIP
+
+- **Description:** A protected ZIP file, you have to find what's inside.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+The challenge provides a password-protected ZIP file.
+
+To crack the ZIP file's password, first extract its hash:
+```
+> zip2john ch5.zip > hash          
+ver 2.0 efh 5455 efh 7855 ch5.zip/readme.txt PKZIP Encr: TS_chk, cmplen=99, decmplen=111, crc=EE166206 ts=005C cs=005c type=8
+```
+
+Using John The Ripper with the `rockyou` wordlist reveals the password `14535`:
+```
+> john --wordlist=rockyou.txt hash    
+Using default input encoding: UTF-8
+Loaded 1 password hash (PKZIP [32/64])
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+14535            (ch5.zip/readme.txt)     
+1g 0:00:00:01 DONE (2025-11-27 09:28) 0.7633g/s 10105Kp/s 10105Kc/s 10105KC/s 1480700115476..144969
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+```
+
+Extracting the ZIP file with this password produces `readme.txt`. 
+Viewing the file's content confirms that the password `14535` is the challenge flag:
+```
+> cat readme.txt 
+Use ZIP password to validate this challenge.
+Utiliser le mot de passe de l'archive pour valider le challenge.
+```
+
+## 🚩Flag
+> `14535`

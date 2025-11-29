@@ -1,0 +1,33 @@
+---
+tags: [web]
+---
+# HTML - disabled buttons
+
+- **Description:** This form is disabled and can not be used. It's up to you to find a way to use it.
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The challenge website contains a form with an input field and a button, but both are disabled.  
+```
+<form action method="post" name="authform">
+    <div>
+        <input disabled type="text" name="auth-login" value="">
+        <input disabled type="submit" value="Member access" name="authbutton">
+    </div>
+</form>
+```
+
+By inspecting the source code and removing the `disabled` attribute from these two elements, the form becomes functional.  
+<div style={{ width: '70%', margin: '0 auto' }}>
+  <img src={require("./disable.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Entering a random name and clicking the submit button returns the flag.  
+<div style={{ width: '70%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HTMLCantStopYou`

@@ -1,0 +1,33 @@
+---
+tags: [web]
+---
+# Javascript - Source
+
+- **Description:** You know javascript ?
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+Upon accessing the website, a pop-up appears requesting a password.
+
+However, when inspecting the web page's source code, the script containing the password is revealed:
+```
+<script type="text/javascript">
+	/* <![CDATA[ */
+	    function login(){
+		pass=prompt("Entrez le mot de passe / Enter password");
+		if ( pass == "123456azerty" ) {
+		    alert("Mot de passe accepté, vous pouvez valider le challenge avec ce mot de passe.\nYou can validate the challenge using this password.");  }
+		else {
+		    alert("Mauvais mot de passe / wrong password !");
+		}
+	    }
+	/* ]]> */
+</script>
+```
+
+The flag for this challenge is the password `123456azerty`.
+
+## 🚩Flag
+> `123456azerty`

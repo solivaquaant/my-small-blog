@@ -1,5 +1,5 @@
 ---
-tags: [steganography, forensics]    
+tags: [forensics, steganography] 
 ---
 # hideme
 
@@ -10,7 +10,8 @@ The SOC analyst saw one image been sent back and forth between two people. They 
 ---
 
 ## 🔎 Solution
-With the provided image file, we utilized `binwalk` to extract embedded data. The analysis revealed a hidden file located at `secret/flag.png`.
+With the provided image file, we utilized `binwalk` to extract embedded data. 
+The analysis revealed a hidden file located at `secret/flag.png`.
 ```bash
 > binwalk -e flag.png                       
 
@@ -27,7 +28,6 @@ Upon opening `flag.png`, we successfully retrieved the flag content.
 <div style={{ width: '100%', margin: '0 auto' }}>
   <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
 </div>
- 
 
 ## 🚩Flag
 > `picoCTF{Hiddinng_An_imag3_within_@n_ima9e_82101824}`

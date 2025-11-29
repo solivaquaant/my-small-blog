@@ -1,0 +1,21 @@
+---
+tags: [web]
+---
+# 002
+
+## 🔎 Solution
+The challenge website provides a form with an input field and a button, requiring a password to be entered.
+
+Inspecting the web page's source code reveals a commented section:
+```
+<form class="form-signin" action="passcheck.php" method="post">
+      <input type="password" name="password" id="password" placeholder="Password" required="">
+      <input type="submit" value="Send">
+      <!-- isthisthepassword? -->
+</form>
+```
+
+I entered `isthisthepassword` as the password and clicked the submit button, which successfully returned the flag.
+
+## 🚩Flag
+> `HMV{thatwasreallyeazy}`

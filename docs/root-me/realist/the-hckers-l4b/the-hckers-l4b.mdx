@@ -1,0 +1,92 @@
+---
+tags: [web]
+---
+# The h@ckers l4b
+
+- **Description:** An intelligence agency got in touch with us. 
+It seems like a group of hackers are hosting their most valuable tools and exploits online. 
+It also appears that they have have a bunch of very interesting ones, we need to steal them.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+After accessing the website, the interface looks like this:
+<div style={{ width: '70%', margin: '0 auto' }}>
+  {<img src={require("./dash.png").default} style={{ width: '100%', height: 'auto' }} />}
+</div>
+
+I selected **"Pas encore inscrit ?"** to create a new account and logged in using my freshly created one. In my case, the username is `tndt`.
+
+On the right side of the UI, there are several navigation options like *accueil*, *news*, etc. 
+The `membre` section shows the active session status of 2 accounts: `administrateur` and `tndt`, both marked as **online**.
+<div style={{ width: '70%', margin: '0 auto' }}>
+  {<img src={require("./membre.png").default} style={{ width: '100%', height: 'auto' }} />}
+</div>
+
+When opening the `contact` section, it displays the message prompt **"Envoyer un message à administrateur"**, meaning *"Send a message to the administrator"*. 
+This raises an interesting question - could this feature be exploited to access the administrator account?
+<div style={{ width: '70%', margin: '0 auto' }}>
+  {<img src={require("./contact.png").default} style={{ width: '100%', height: 'auto' }} />}
+</div>
+
+To investigate further, I ran a directory scan using `feroxbuster` to see if there were hidden or interesting paths available:
+```
+feroxbuster -q -u "http://challenge01.root-me.org/realiste/ch7/" -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -x php,txt,html,zip,db,bak,js -t 64
+```
+
+One of the discovered paths was `/log/log.php`, which required authentication via a username and password.
+<div style={{ width: '70%', margin: '0 auto' }}>
+  {<img src={require("./log.png").default} style={{ width: '100%', height: 'auto' }} />}
+</div>
+
+Capturing this request using Burp Suite revealed a **401 Unauthorized** response. 
+Based on information from [this](https://blog.vidocsecurity.com/blog/401-and-403-bypass-how-to-do-it-right), one possible bypass method for this error is changing the HTTP request method. 
+After switching from **GET** to **PUT** and resending the request, the server responded with a full list of usernames and passwords - including the credentials for `administrateur`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  {<img src={require("./put.png").default} style={{ width: '100%', height: 'auto' }} />}
+</div>
+
+However, attempting to log in using `administrateur:4Dm1N_de_site` resulted in the message: **"Erreur : user already logged in !"**. 
+The `membre` section confirmed that the account was still active, preventing another login session.
+
+At this point, the goal was to force the administrator account offline - and the `contact` feature seemed like the best way to do it. 
+The page indicated that only the following BBCode tags were allowed:
+```
+[b] [u] [i] [s] [img]
+```
+
+Sending a message like `[b]Bonjour[/b]` confirmed the message formatting behavior.
+<div style={{ width: '70%', margin: '0 auto' }}>
+  {<img src={require("./bb.png").default} style={{ width: '100%', height: 'auto' }} />}
+</div>
+
+To disconnect the admin, I needed to replicate the same request the platform performs when a user logs out. 
+For normal users, logout triggers a request to:
+```
+/realiste/ch7/hackers.php?page=deconnect
+```
+<div style={{ width: '100%', margin: '0 auto' }}>
+  {<img src={require("./disconnect.png").default} style={{ width: '100%', height: 'auto' }} />}
+</div>
+
+Since the `[img]` tag forces the server to fetch an external resource, I crafted the message payload so the admin's browser would unknowingly send the logout request on page load:
+
+```
+[img]http://challenge01.root-me.org/realiste/ch7/hackers.php?page=deconnect[/img]
+```
+
+After submitting the payload and returning to the `membre` section, the administrator status changed to offline - success.
+<div style={{ width: '70%', margin: '0 auto' }}>
+  {<img src={require("./offline.png").default} style={{ width: '100%', height: 'auto' }} />}
+</div>
+
+Finally, using the credentials `administrateur:4Dm1N_de_site`, I logged in, navigated to the `exploit` section, and retrieved the flag.
+<div style={{ width: '70%', margin: '0 auto' }}>
+  {<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />}
+</div>
+
+Mission accomplished.
+
+## 🚩Flag
+> `Ho5M6UPkLJMncnW`

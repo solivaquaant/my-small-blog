@@ -1,0 +1,15 @@
+---
+tags: []
+---
+# 027
+
+## 🔎 Solution
+When accessing the website and inspecting the page source, no useful information is found.
+
+However, examining the server's response in Burp Suite reveals the flag contained within the HTTP headers.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./burp.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HMV{flaginmyheader}`

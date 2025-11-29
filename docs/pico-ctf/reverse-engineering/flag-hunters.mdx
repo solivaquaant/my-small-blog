@@ -1,5 +1,5 @@
 ---
-tags: [reverse-engineer]
+tags: [reverse-engineering]
 ---
 # Flag Hunters
 
@@ -53,7 +53,7 @@ we realize something clever: each line can be split into multiple sub - commands
 So, if we craft our input as **;RETURN 0**, the RETURN 0 becomes a standalone command during parsing.
 This allows us to inject a valid jump command through the CROWD prompt, redirecting execution to the very top of the lyrics where the flag resides - effectively bypassing the normal flow and revealing the hidden flag.
 ```js
-tndt@tndt:~/Desktop$ nc verbal-sleep.picoctf.net 50812
+> nc verbal-sleep.picoctf.net 50812
 Command line wizards, we're starting it right,
 Spawning shells in the terminal, hacking all night.
 Scripts and searches, grep through the void,
