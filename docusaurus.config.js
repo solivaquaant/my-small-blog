@@ -39,6 +39,19 @@ const config = {
     locales: ['en'],
   },
 
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'labs', // id duy nhất cho mục mới
+        path: 'labs', // đường dẫn đến thư mục chứa tài liệu
+        routeBasePath: 'labs', // URL gốc: /labs/
+        sidebarPath: require.resolve('./sidebars-labs.js'),
+        // editUrl: 'https://github.com/your-username/your-repo/edit/main/',
+      },
+    ],
+  ],
+
   presets: [
     [
       'classic',
@@ -80,11 +93,18 @@ const config = {
         items: [
           {
             type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
+            sidebarId: 'writeupsSidebar',
             position: 'left',
             label: '  Write-ups',
           },
-          
+          {
+            type: 'docSidebar',
+            sidebarId: 'labsSidebar',
+            docId: 'intro', // tương ứng với file intro.md trong tryhackme
+            position: 'left',
+            label: 'Labs',
+            docsPluginId: 'labs',
+          },
           {
             to: '/blog', 
             label: 'Blogs', 
@@ -157,6 +177,8 @@ const config = {
         }),
       ],
     ]
+
+    
     
 };
 

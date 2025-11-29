@@ -4,16 +4,6 @@ import styles from "./styles.module.css";
 
 const FeatureList = [
   {
-    title: "My projects",
-    Svg: require("@site/static/img/my-project.svg").default,
-    description: (
-      <>
-        A showcase of personal projects, tools, and experiments I've built along
-        my cybersecurity learning journey.
-      </>
-    ),
-  },
-  {
     title: "CTF write-ups",
     Svg: require("@site/static/img/ctf.svg").default,
     description: (
@@ -23,6 +13,18 @@ const FeatureList = [
         learned.
       </>
     ),
+    href: "/my-small-blog/docs/about-me/"
+  },
+  {
+    title: "My projects",
+    Svg: require("@site/static/img/my-project.svg").default,
+    description: (
+      <>
+        A showcase of personal projects, tools, and experiments I've built along
+        my cybersecurity learning journey.
+      </>
+    ),
+    href: "/my-small-blog/labs/intro", 
   },
   {
     title: "Blogs",
@@ -33,21 +35,24 @@ const FeatureList = [
         that inspire me - shared to help others grow along with me.
       </>
     ),
+    href: "/my-small-blog/blog",
   },
 ];
 
-function Feature({ Svg, title, description }) {
+function Feature({ Svg, title, description, href }) {
   return (
     <div className={clsx("col col--4", styles.featureCard)}>
-      <div className={styles.featureInner}>
-        <div className="text--center">
-          <Svg className={styles.featureSvg} role="img" />
+      <a href={href} className={styles.featureLink}>
+        <div className={styles.featureInner}>
+          <div className="text--center">
+            <Svg className={styles.featureSvg} role="img" />
+          </div>
+          <div className="text--center padding-horiz--md">
+            <Heading as="h3">{title}</Heading>
+            <p>{description}</p>
+          </div>
         </div>
-        <div className="text--center padding-horiz--md">
-          <Heading as="h3">{title}</Heading>
-          <p>{description}</p>
-        </div>
-      </div>
+      </a>
     </div>
   );
 }
