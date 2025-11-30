@@ -7,12 +7,12 @@ import Typewriter from 'typewriter-effect';
 import { motion } from 'framer-motion';
 import styles from './index.module.css';
 
-// import t1 from '@site/static/img/personal-pic/t1.jpg';
-// import ces from '@site/static/img/personal-pic/ces.jpg';
-// import love from '@site/static/img/personal-pic/love.jpg';
-// import ball from '@site/static/img/personal-pic/ball.jpg';
+import t1 from '@site/static/img/t1.jpg';
+import ces from '@site/static/img/ces.jpg';
+import love from '@site/static/img/love.jpg';
+import ball from '@site/static/img/ball.jpg';
 
-import myAvatar from '@site/static/img/real-avt.jpg';
+// import myAvatar from '@site/static/img/real-avt.jpg';
 
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
@@ -21,7 +21,7 @@ export default function Home() {
   const photos = [
     {
       id: 1,
-      src: myAvatar,
+      src: ces,
       text: "con oi esports thi dung",
       rotate: -12, 
       x: -50,      
@@ -30,7 +30,7 @@ export default function Home() {
     },
     {
       id: 2,
-      src: myAvatar,
+      src: ball,
       text: "(●'◡'●)",
       rotate: 8,   
       x: 60,       
@@ -39,7 +39,7 @@ export default function Home() {
     },
     {
       id: 3,
-      src: myAvatar, 
+      src: love, 
       text: "( •̀ ω •́ )✧",
       rotate: -5,
       x: 0,
@@ -48,7 +48,7 @@ export default function Home() {
     },
     {
       id: 4,
-      src: myAvatar, 
+      src: t1, 
       text: "DORANNNNNNN",
       rotate: -10,
       x: -90,
