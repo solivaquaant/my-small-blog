@@ -7,10 +7,10 @@ import Typewriter from 'typewriter-effect';
 import { motion } from 'framer-motion';
 import styles from './index.module.css';
 
-import t1 from '@site/static/img/t1.jpg';
-import ces from '@site/static/img/ces.jpg';
-import love from '@site/static/img/love.jpg';
-import ball from '@site/static/img/ball.jpg';
+import t1 from '@site/static/img/personal-pic/t1.jpg';
+import ces from '@site/static/img/personal-pic/ces.jpg';
+import love from '@site/static/img/personal-pic/love.jpg';
+import ball from '@site/static/img/personal-pic/ball.jpg';
 
 // import myAvatar from '@site/static/img/real-avt.jpg';
 
