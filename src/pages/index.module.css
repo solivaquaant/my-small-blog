@@ -1,23 +1,160 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
+/* src/pages/index.module.css */
 
-.heroBanner {
-  padding: 4rem 0;
+/* --- Layout Chung --- */
+.hackerContainer {
+  background-color: #050505; /* Nền siêu tối */
+  color: #e0e0e0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+
+.sectionTitle {
   text-align: center;
+  font-size: 2.5rem;
+  margin: 4rem 0 2rem;
+  color: #00ff00;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  border-bottom: 2px solid #00ff00;
+  display: inline-block;
+  padding-bottom: 10px;
+}
+
+/* --- Phần 1: Hero Section (Glitch + Typewriter) --- */
+.heroHeader {
+  padding: 4rem 1rem;
+  text-align: center;
+  background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+  border-bottom: 1px solid #333;
+}
+
+.glitchTitle {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 2px 2px #ff00de, -2px -2px #00ff00; /* Hiệu ứng Cyberpunk */
+  margin-bottom: 1rem;
+}
+
+.typewriterText {
+  font-size: 1.8rem;
+  color: #00ff00;
+  min-height: 3rem;
+  margin-bottom: 2rem;
+}
+
+/* --- Phần 2: Terminal Wrapper --- */
+.terminalWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: -50px; /* Đẩy terminal lên đè nhẹ vào header */
+  padding: 0 20px;
+}
+
+
+.featuresSection {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.featureCard {
+  flex: 1;
+  min-width: 280px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #00ff00;
+  padding: 2rem;
+  text-align: left;
   position: relative;
   overflow: hidden;
+  transition: background 0.3s;
+  cursor: pointer;
+  text-decoration: none !important;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.featureCard:hover {
+  background: rgba(0, 255, 0, 0.1);
 }
 
-.buttons {
+.featureCard h3 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.featureCard p {
+  color: #ccc;
+}
+
+.cornerMark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  border-top: 2px solid #00ff00;
+  border-right: 2px solid #00ff00;
+}
+
+.messyDesk {
+  position: relative;
+  min-height: 500px; 
+  background-color: transparent;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  overflow: hidden; 
+  perspective: 1000px;
+}
+
+.polaroidCard {
+  background: #fff;
+  padding: 15px 15px 50px 15px; 
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+  width: 280px;
+  position: absolute; 
+  cursor: grab; 
+  transition: box-shadow 0.3s;
+  z-index: 1; 
+}
+
+.polaroidCard:active {
+  cursor: grabbing; 
+  box-shadow: 10px 10px 30px rgba(0,0,0,0.4);
+}
+
+.polaroidImg {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  background-color: #333;
+  pointer-events: none;
+  border: 1px solid #eee;
+}
+
+.handWrittenText {
+  color: #333;
+  margin-top: 15px;
+  font-size: 1.2rem;
+  transform: rotate(-2deg);
+  text-align: center;
+}
+
+.tape {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-left: 1px dashed rgba(0,0,0,0.1);
+  border-right: 1px dashed rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 10;
 }

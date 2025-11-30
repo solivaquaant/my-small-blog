@@ -1,72 +1,279 @@
-import clsx from 'clsx';
+import React, { useRef } from 'react';
+import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
-
-import Heading from '@theme/Heading';
+import Terminal from 'react-console-emulator';
+import Typewriter from 'typewriter-effect';
+import { motion } from 'framer-motion';
 import styles from './index.module.css';
 
-function HomepageHeader() {
-  const { siteConfig } = useDocusaurusContext();
-  return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '2rem' }}>
-          {/* Left Column: Avatar */}
-          <div style={{ flex: '1 1 300px', textAlign: 'center' }}>
-            <img 
-              src={require('@site/static/img/real-avt.jpg').default} 
-              alt="Avatar" 
-              style={{ 
-                maxWidth: '300px', 
-                objectFit: 'cover',     
-                borderRadius: '0',      
-                boxShadow: '0 4px 10px rgba(0,0,0,0.2)' 
-              }} 
-            />
-          </div>
 
-          {/* Right Column: Text Content */}
-          <div style={{ flex: '2 1 500px' }}>
-            <Heading as="h1" className="hero__title">
-              {/* {siteConfig.title} */}
-              Thái Ngọc Diễm Trinh
-            </Heading>
-            <p className="hero__subtitle">{siteConfig.tagline}</p>
-            <p style={{ lineHeight: '1.6' }}>
-              Hi there! I'm currently a student majoring in Information Security, passionate about cybersecurity and everything that comes with it. 
-              <br /><br />
-              This site is my personal space to document what I'm learning - from CTF write-ups and study notes, to thoughts and experiments as I dive deeper into the field. 
-              It's both a knowledge base for myself and a place to share with others who are also on this path. 
-              <br /><br />
-              Thanks for stopping by - I hope you find something helpful here!
-            </p>
-            <div className={styles.buttons}>
-              <Link
-                className="button button--secondary button--lg"
-                to="/docs/about-me">
-                Know more about me (❁´◡`❁)
-              </Link>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </header>
-  );
-}
+import t1 from '@site/static/img/personal-pic/t1.jpg';
+import ces from '@site/static/img/personal-pic/ces.jpg';
+import love from '@site/static/img/personal-pic/love.jpg';
+import ball from '@site/static/img/personal-pic/ball.jpg';
 
 
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
+  const constraintsRef = useRef(null);
+
+  const photos = [
+    {
+      id: 1,
+      src: ces,
+      text: "con oi esports thi dung",
+      rotate: -12, 
+      x: -50,      
+      y: 20,
+      zIndex: 1
+    },
+    {
+      id: 2,
+      src: ball,
+      text: "(●'◡'●)",
+      rotate: 8,   
+      x: 60,       
+      y: -30,
+      zIndex: 2
+    },
+    {
+      id: 3,
+      src: love, 
+      text: "( •̀ ω •́ )✧",
+      rotate: -5,
+      x: 0,
+      y: 80, 
+      zIndex: 3
+    },
+    {
+      id: 4,
+      src: t1, 
+      text: "DORANNNNNNN",
+      rotate: -10,
+      x: -90,
+      y: 100, 
+      zIndex: 4
+    }
+  ];
+
+  const commands = {
+    whoami: {
+      description: 'Display current user profile.',
+      fn: () => (
+        "USER: Thai Ngoc Diem Trinh (Thai Trinh)\n" +
+        "YEAR: 2004\n" +
+        "GENDER: Female\n" +
+        "ROLE: CTF Player | Security researcher | Blogger\n" +
+        "STATUS: Active & learning "
+      ),
+    },
+    ls: {
+      description: 'List directory contents.',
+      fn: () => 'secret.txt\nflag.txt',
+    },
+    cat: {
+      description: 'Read file content. Usage: cat <filename>.',
+      fn: (...args) => {
+        const filename = args[0];
+        if (!filename) return "Usage: cat <filename>.";
+        if (filename === 'secret.txt') {
+          return (
+            "FACT: I am an Esports fan O.O\n" +
+            "MY FAVORITE TEAMS:\n" +
+            "   > FINHAY Cerberus Esports (PUBG PC)\n" +
+            "   > T1 (League of Legends)\n\n" +
+            "MESSAGE: Please give them your biggest cheers <3"
+          );
+        }
+        if (filename === 'flag.txt') {
+          return "MESSAGE: \"Good things take time. Great things take a bit longer.\"";
+        }
+        return `cat: ${filename}: No such file or directory.`;
+      },
+    },
+    sudo: {
+      description: 'Execute a command as another user.',
+      fn: () => "Permission denied: You are not in the sudoers file. Nice try ^^",
+    },
+    date: {
+      description: 'Display current date and time.',
+      fn: () => new Date().toString(),
+    },
+    coffee: {
+      description: 'Order a coffee.',
+      fn: () => {
+        const art = `
+          ( (
+           ) )
+        .______.
+        |      |]
+        \\      /
+         '----'
+
+Here is your coffee! Now go write some exploits ^^`;
+        return art.replace(/ /g, '\u00A0'); 
+      }
+    },
+  };
+
   return (
     <Layout
-      title={`Welcome to my little site!`}
-      description="Description will go into a meta tag in <head />">
-      <HomepageHeader />
-      <main>
-        <HomepageFeatures />
+      title={`Home`}
+      description="Welcome to solivaquaant's little corner of the Internet">
+      
+      <main className={styles.hackerContainer}>
+        
+        {/* 1. Hero & typewriter */}
+        <div className={styles.heroHeader}>
+          <h1 className={styles.glitchTitle}>
+            Thái Ngọc Diễm Trinh
+          </h1>
+          <div className={styles.typewriterText}>
+            <span>Running process: </span>
+            <span style={{color: '#fff', fontWeight: 'bold'}}>
+              <Typewriter
+                options={{
+                  strings: [
+                    'SOC Analyst...',
+                    'CTF player...', 
+                    'Writing exploits...', 
+                    'Sharing knowledge...',
+                    'Threat hunting...',
+                    'Digital forensics...',
+                  ],
+                  autoStart: true,
+                  loop: true,
+                  delay: 50,
+                  deleteSpeed: 30,
+                }}
+              />
+            </span>
+          </div>
+        </div>
+
+        {/* 2. Terminal Interface */}
+        <div className={styles.terminalWrapper}>
+            <Terminal
+              commands={commands}
+              welcomeMessage={
+                "Initializing system...\n" +
+                "Welcome to " + siteConfig.title + ".\n" +
+                "Enter 'help' to view available commands."
+              }
+              promptLabel={'soli@vaquaant:~# '}
+              style={{ 
+                  borderRadius: '0 0 10px 10px', 
+                  minHeight: '400px', 
+                  width: '100%', 
+                  maxWidth: '900px',
+                  boxShadow: '0 10px 30px rgba(0, 255, 0, 0.1)',
+                  border: '1px solid #333',
+                  fontFamily: '"Consolas", "Courier New", monospace',
+              }}
+              contentStyle={{
+                  color: '#00ff00', 
+                  fontSize: '1.1em', 
+                  fontFamily: 'monospace',
+                  whiteSpace: 'pre',
+              }}
+              inputTextStyle={{
+                  color: '#ffffff',
+                  fontWeight: 'bold'
+              }}
+            />
+        </div>
+
+        {/* 3. Profile images*/}
+        <div style={{textAlign: 'center', marginTop: '4rem'}}>
+            <h2 style={{fontSize: '2rem', color: '#00ff00'}}>
+              &lt; EVIDENCE_BOARD /&gt;
+            </h2>
+            <p style={{color: '#ccc'}}>
+              The data is being scrambled. 
+              Drag and drop to rearrange the evidence!
+            </p>
+        </div>
+
+        <div className={styles.messyDesk} ref={constraintsRef}>
+          {photos.map((photo) => (
+            <motion.div
+              key={photo.id}
+              className={styles.polaroidCard}
+              
+              initial={{ x: photo.x, y: photo.y, rotate: photo.rotate }}
+              
+              drag 
+              dragConstraints={constraintsRef}
+              dragElastic={0.2}
+              
+              whileHover={{ 
+                scale: 1.1,         
+                rotate: 0,          
+                zIndex: 100,        
+                cursor: "grab" 
+              }}
+              whileTap={{ 
+                scale: 1.2, 
+                cursor: "grabbing",
+                zIndex: 100 
+              }}
+            >
+              <div className={styles.tape}></div>
+              <img src={photo.src} alt="Evidence" className={styles.polaroidImg} />
+              <div className={styles.handWrittenText}>
+                {photo.text}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        {/* End of Profile Images */}
+
+        {/* 4. Navigation categories */}
+        <div style={{marginTop: '4rem'}}>
+            <h2 style={{fontSize: '2rem', color: '#00ff00'}}>
+              &lt; DATABASE_ACCESS /&gt;
+            </h2>
+            <div className={styles.featuresSection}>
+                
+                <Link to="/docs/about-me/" className={styles.featureCard}>
+                    <div className={styles.cornerMark}></div>
+                    <h3>01. WRITE-UPS</h3>
+                    <p>
+                        Comprehensive guides for CTF challenges, machines, 
+                        and puzzles.
+                    </p>
+                    <span style={{color: '#00ff00', marginTop: '10px', display: 'block'}}>
+                        &gt; Execute access
+                    </span>
+                </Link>
+
+                <Link to="/labs/intro" className={styles.featureCard}>
+                    <div className={styles.cornerMark}></div>
+                    <h3>02. LABS & PROJECTS</h3>
+                    <p>
+                        Personal research, malware analysis labs, and security tools 
+                        development environment.
+                    </p>
+                    <span style={{color: '#00ff00', marginTop: '10px', display: 'block'}}>
+                        &gt; Execute access
+                    </span>
+                </Link>
+
+                {/* Cột 3: Blog */}
+                <Link to="/blog" className={styles.featureCard}>
+                    <div className={styles.cornerMark}></div>
+                    <h3>03. KNOWLEDGE BASE</h3>
+                    <p>
+                        Articles on cybersecurity concepts, tutorials, and personal 
+                        thoughts on the industry.
+                    </p>
+                    <span style={{color: '#00ff00', marginTop: '10px', display: 'block'}}>
+                        &gt; Execute access
+                    </span>
+                </Link>
+            </div>
+        </div>
       </main>
     </Layout>
   );
