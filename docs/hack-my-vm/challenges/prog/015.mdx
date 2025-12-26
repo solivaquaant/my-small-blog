@@ -1,0 +1,35 @@
+---
+tags: [reverse-engineering]
+---
+# 015
+
+- **Description:** 
+```
+push 7d616579
+push 74696874
+push 726f7773
+push 696d7361
+push 7b766d68
+```
+
+---
+
+## 🔎 Solution
+The challenge provides a sequence of commands resembling x86 assembly code. 
+The values pushed onto the stack are hexadecimal numbers representing strings, but they are pushed in reverse byte order (little-endian).
+
+Here, we will decode each hex value into its corresponding character pairs. 
+For example, the value `7d616579` is decoded as follows:
+- `7d` = `}`
+- `61` = `a`
+- `65` = `e`
+- `79` = `y`
+
+When arranged in little-endian order, this becomes `yea}`.
+
+Performing the same process for the remaining four hex strings yields the results in order: `thit`, `swor`, `amsi`, `hmv{`.
+
+Due to the stack's LIFO (Last In, First Out) nature, the actual assembled string in the correct order is the flag.
+
+## 🚩Flag
+> `HMV{asmisworthityea}`

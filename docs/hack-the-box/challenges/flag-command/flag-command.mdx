@@ -1,0 +1,89 @@
+---
+tags: [web]
+---
+# Flag Command
+
+- **Description:** Embark on the "Dimensional Escape Quest" where you wake up in a mysterious forest maze that's not quite of this world. 
+Navigate singing squirrels, mischievous nymphs, and grumpy wizards in a whimsical labyrinth that may lead to otherworldly surprises. 
+Will you conquer the enchanted maze or find yourself lost in a different dimension of magical challenges? 
+The journey unfolds in this mystical escape!
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+When accessing the website, the interface appears as follows, prompting us to enter **START** to begin the game.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./dash.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+The game presents four options, requiring a selection. 
+After choosing an option, the game continues, prompting for further selections, ultimately leading to a **GAME OVER** screen.
+<div style={{ width: '60%', margin: '0 auto' }}>
+	<img src={require("./game.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Inspecting the page source allows access to JavaScript files like `commands.js` and `game.js`, with the most critical being `main.js`.
+
+Inside `main.js`, a condition checks if the player's input is a valid command (within either `availableOptions[currentStep]` or `availableOptions['secret']`). 
+The `availableOptions[currentStep]` refers to options for each game step. 
+The question is: what is `availableOptions['secret']`?
+```js
+if (availableOptions[currentStep].includes(currentCommand) || availableOptions['secret'].includes(currentCommand)) {
+        await fetch('/api/monitor', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'command': currentCommand })
+        })
+            .then((res) => res.json())
+            .then(async (data) => {
+                console.log(data)
+                await displayLineInTerminal({ text: data.message });
+
+                if(data.message.includes('Game over')) {
+                    playerLost();
+                    fetchingResponse = false;
+                    return;
+                }
+                //highlight-start
+                if(data.message.includes('HTB{')) {
+                    playerWon();
+                    fetchingResponse = false;
+
+                    return;
+                }
+                //highlight-end
+                if (currentCommand == 'HEAD NORTH') {
+                    currentStep = '2';
+                }
+                else if (currentCommand == 'FOLLOW A MYSTERIOUS PATH') {
+                    currentStep = '3'
+                }
+                else if (currentCommand == 'SET UP CAMP') {
+                    currentStep = '4'
+                }
+
+                let lineBreak = document.createElement("br");
+
+
+                beforeDiv.parentNode.insertBefore(lineBreak, beforeDiv);
+                displayLineInTerminal({ text: '<span class="command">You have 4 options!</span>' })
+                displayLinesInTerminal({ lines: availableOptions[currentStep] })
+                fetchingResponse = false;
+            });
+```
+
+Reviewing the network requests in Burp Suite reveals a request to `/api/options` that contains command lists, including a `secret` section.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./burp.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Entering the secret command **Blip-blop, in a pickle with a hiccup! Shmiggity-shmack** into the game yields the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HTB{D3v3l0p3r_t00l5_4r3_b35t__t0015_wh4t_d0_y0u_Th1nk??}`

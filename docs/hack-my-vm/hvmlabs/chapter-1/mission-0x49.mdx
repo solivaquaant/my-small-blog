@@ -3,10 +3,82 @@ tags: [linux]
 ---
 # Mission 0x49
 
----
-
 ## 🔎 Solution
+After establishing an SSH connection as the user `leona`, the next task is to search for information about the DNS of `venus.hmv`.
+```
+leona@venus:~$ cat mission.txt 
+################
+# MISSION 0x49 #
+################
 
+## EN ##
+User ava plays a lot with the DNS of venus.hmv lately...
+```
+
+Listing the contents of the `/etc` directory-which contains system and application configuration files-reveals the `bind` service, a DNS server service.
+```
+leona@venus:~$ ls -la /etc | grep "bind"
+drwxr-sr-x 2 root bind    4096 Apr  5  2024 bind
+-rw-r--r-- 1 root root     367 Sep 22  2022 bindresvport.blacklist
+```
+
+Accessing the `/etc/bind/` directory shows several `db` files, which are configuration files for DNS zones.
+```
+leona@venus:~$ ls -la /etc/bind/
+total 60
+drwxr-sr-x 2 root bind 4096 Apr  5  2024 .
+drwxr-xr-x 1 root root 4096 Aug 14 06:42 ..
+-rw-r--r-- 1 root root 2403 Feb 12  2024 bind.keys
+-rw-r--r-- 1 root root  255 Feb 12  2024 db.0
+-rw-r--r-- 1 root root  271 Feb 12  2024 db.127
+-rw-r--r-- 1 root root  237 Feb 12  2024 db.255
+-rw-r--r-- 1 root root  353 Feb 12  2024 db.empty
+-rw-r--r-- 1 root root  270 Feb 12  2024 db.local
+-rw-r--r-- 1 root bind  613 Apr  5  2024 db.venus.hmv
+-rw-r--r-- 1 root bind  458 Feb 12  2024 named.conf
+-rw-r--r-- 1 root bind  498 Feb 12  2024 named.conf.default-zones
+-rw-r--r-- 1 root bind  307 Apr  5  2024 named.conf.local
+-rw-r--r-- 1 root bind  219 Apr  5  2024 named.conf.options
+-rw-r----- 1 bind bind  100 Apr  5  2024 rndc.key
+-rw-r--r-- 1 root root 1317 Feb 12  2024 zones.rfc1918
+```
+
+Examining the contents of the `venus.hmv` zone file reveals the password:
+```
+leona@venus:~$ cat /etc/bind/db.venus.hmv 
+
+;
+; BIND data file for local loopback interface
+;
+    604800
+@       IN      SOA     ns1.venus.hmv. root.venus.hmv. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+
+;@      IN      NS      localhost.
+;@      IN      A       127.0.0.1
+;@      IN      AAAA    ::1
+@       IN      NS      ns1.venus.hmv.
+
+;IP address of Name Server
+
+ns1     IN      A       127.0.0.1
+ava IN      TXT     oCXBeeEeYFX34NU
+```
+
+Using the obtained password, SSH into the user `ava`:
+```
+ssh ava@venus.hackmyvm.eu -p 5000
+```
+
+Viewing the contents of the specified file reveals the flag:
+```
+ava@venus:~$ cat flagz.txt 
+8===7XsGiUHUZNouh6K6CyY2===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===7XsGiUHUZNouh6K6CyY2===D~~`

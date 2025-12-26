@@ -3,10 +3,34 @@ tags: [linux]
 ---
 # Mission 0x47
 
----
-
 ## 🔎 Solution
+After establishing an SSH connection as the user `zora`, the next task is to find the password for `belen` located at `venus.hmv`.
+```
+zora@venus:~$ cat mission.txt 
+################
+# MISSION 0x47 #
+################
 
+## EN ##
+The user belen has left her password in venus.hmv
+```
+
+In this context, `venus.hmv` is not a filename but a domain or address. Performing a query to it retrieves the password:
+```
+zora@venus:~$ curl http://venus.hmv
+2jA0E8bQ4WrGwWZ
+```
+
+Using the obtained password, SSH into the user `belen`:
+```
+ssh belen@venus.hackmyvm.eu -p 5000
+```
+
+Viewing the contents of the specified file reveals the flag:
+```
+belen@venus:~$ cat flagz.txt 
+8===FzDIkqJtVgyQYfRVGH1r===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===FzDIkqJtVgyQYfRVGH1r===D~~`

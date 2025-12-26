@@ -1,0 +1,99 @@
+---
+tags: [cryptography, scripting]
+---
+# 094
+
+- **Description:** Dr. Helena Morrison Vance, a renowned cryptographer, has left behind an encrypted message before her mysterious disappearance. 
+She was last seen working late in her laboratory, muttering something about "rotating shields" and "the key to everything lies in who I am."
+
+---
+
+## 🔎 Solution
+The challenge provides an assembly file with the following code:
+```
+> cat challenge.asm     
+global _start
+
+section .data
+  ; Cipher
+  msg db '0 0 0 153 82 76 202 3 123 126 241 17 0 12 206 189 108 86', 10
+  msg_len equ $ - msg
+
+section .text
+_start:
+  mov rax, 1  ; sys_write
+  mov rdi, 1  ; stdout
+  mov rsi, msg
+  mov rdx, msg_len
+  syscall
+
+  mov rax, 60   ; sys_exit
+  xor rdi, rdi
+  syscall
+```
+
+The string `0 0 0 153 82 76 202 3 123 126 241 17 0 12 206 189 108 86` is the ciphertext, and our task is to decrypt it to find the flag.
+
+Analyzing the challenge description:
+* **Dr. Helena Morrison Vance** is a character's name.
+* **The key to everything lies in who I am**: The encryption key is related to this character.
+* **Rotating shields**: "Shields" often hints at the XOR operation (due to its symmetric property); "Rotating" hints at a bitwise rotation (ROL/ROR) or a rotating key.
+
+Determining the challenge key:
+* Observe the first three bytes of the ciphertext: `0 0 0`.
+* In XOR, if `A ^ B = 0`, then `A = B`.
+* This implies the first three characters of the plaintext (the flag) are identical to the first three characters of the key.
+* If the key is "HMV", then the flag would start with "HMV...", which aligns perfectly with the expected flag format.
+* Therefore, we conclude: **Key = "HMV"**.
+
+Next, we need to determine the encryption algorithm:
+* Knowing that the first three `0` values correspond to **HMV**, the next character (index 3) is `153`, which could be `{` (ASCII 123).
+* Additional hints: the key rotates. The key character for index 3 is 'H' (ASCII 72).
+* Performing `123 ^ 72 = 51` (plaintext ^ key).
+* Relationship between 51 and 153:
+  * 51 (Binary): `00110011`
+  * 153 (Binary): `10011001`
+  * If we rotate 51 left (ROL) by 3 bits:
+    ```
+    00110011 << 3 = 10011000 (152) | 1 (bit shifted out) = 10011001 (153)
+    ```
+* Therefore, the encryption algorithm could be: `Cipher = ROL(Plaintext ^ Key, n)`.
+* Analyzing the next character (index 4): `82` (`01010010`), key 'M' (ASCII 77):
+  * To find the plaintext: `Plaintext = ROR(Cipher, n) ^ Key`.
+  * If `n` were fixed at 3, we wouldn't get a meaningful character.
+  * For index 3, we used ROL by 3 bits. For indices 0, 1, 2 (Cipher = 0), ROL by any amount still yields 0.
+  * Hypothesis: **The number of bits to rotate equals the character's index**.
+
+With the algorithm deduced, we write a short decryption script:
+1. Iterate through each byte of the ciphertext (call it `c`) at position `i`.
+2. Rotate the value `c` right (ROR) by `i` bits (for an 8-bit byte, we use `i % 8`).
+3. XOR the result with the corresponding character from the key "HMV".
+
+```python
+def ror(val, r_bits, max_bits=8):
+  r_bits %= max_bits
+  return ((val >> r_bits) | (val << (max_bits - r_bits))) & ((1 << max_bits) - 1)
+
+cipher = [0, 0, 0, 153, 82, 76, 202, 3, 123, 126, 241, 17, 0, 12, 206, 189, 108, 86]
+key_str = "HMV"
+key = [ord(c) for c in key_str]
+
+flag = ""
+
+for i, c in enumerate(cipher):
+  rotated_val = ror(c, i) # Rotate right by i bits
+  k = key[i % len(key)]
+  p = rotated_val ^ k
+  flag += chr(p)
+
+print(f"Flag: {flag}")
+```
+
+Running the script reveals the flag:
+```
+> python script.py  
+Flag: HMV{h4cK-w1tH-m3!}
+```
+
+## 🚩Flag
+> `HMV{h4cK-w1tH-m3!}`

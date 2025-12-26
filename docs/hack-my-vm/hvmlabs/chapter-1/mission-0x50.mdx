@@ -3,10 +3,45 @@ tags: [linux]
 ---
 # Mission 0x50
 
----
-
 ## 🔎 Solution
+After establishing an SSH connection as the user `ava`, the next task is to find Maria's password, which is "somewhere."
+```
+ava@venus:~$ cat mission.txt 
+################
+# MISSION 0x50 #
+################
 
+## EN ##
+The password of maria is somewhere...
+```
+
+Actually, Maria's password was discovered in a previous challenge, specifically [**Mission 0x40**](https://solivaquaant.github.io/my-small-blog/docs/hack-my-vm/hvmlabs/chapter-1/mission-0x40). 
+The password is the Morse code string found in the `wtf` file obtained from the user adela:
+```
+.--. .- .--. .- .--. .- .-. .- -.. .. ... .
+```
+
+Using this password, SSH into the user `maria`:
+```
+ssh maria@venus.hackmyvm.eu -p 5000
+```
+
+Viewing the contents of the specified file reveals the flag:
+```
+maria@venus:~$ cat flagz.txt  
+8===ZLNu1CHYSYf0PvkK2iqS===D~~
+```
+
+This completes the first chapter, Venus, successfully:
+```
+maria@venus:~$ cat mission.txt 
+################
+# MISSION 0x51 #
+################
+
+## EN ##
+Congrats!
+```
 
 ## 🚩Flag
-> `
+> `8===ZLNu1CHYSYf0PvkK2iqS===D~~`

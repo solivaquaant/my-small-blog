@@ -3,6 +3,10 @@ tags: [forensics, steganography]
 ---
 # 086
 
+- **Description:** Format: `HMV{_FLAG_}`
+
+---
+
 ## 🔎 Solution
 With the provided image file, the first step was checking its metadata. 
 Using `exiftool`, I noticed that the `Comment` field contained a suspicious Base64-encoded string:

@@ -1,0 +1,49 @@
+---
+tags: [reverse-engineering]
+---
+# SpookyPass
+
+- **Description:** All the coolest ghosts in town are going to a Haunted Houseparty - can you prove you deserve to get in?
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The challenge provides an executable file. 
+After granting execution permissions and running it, the program prompts for a password. 
+Entering an incorrect password results in an error message stating the user is not a "real ghost."
+```
+> ./pass       
+Welcome to the SPOOKIEST party of the year.
+Before we let you in, you'll need to give us the password: hackthebox
+You're not a real ghost; clear off!
+```
+
+The true password must be located elsewhere. 
+Using the `strings` command on the file reveals the string `s3cr3t_p455_f0r_gh05t5_4nd_gh0ul5`.
+```js
+> strings pass             
+/lib64/ld-linux-x86-64.so.2
+....
+Welcome to the 
+[1;3mSPOOKIEST
+[0m party of the year.
+Before we let you in, you'll need to give us the password: 
+//highlight-next-line
+s3cr3t_p455_f0r_gh05t5_4nd_gh0ul5
+Welcome inside!
+You're not a real ghost; clear off!
+...
+```
+
+Running the executable again and using this string as the password reveals the flag.
+```
+> ./pass                                                               
+Welcome to the SPOOKIEST party of the year.
+Before we let you in, you'll need to give us the password: s3cr3t_p455_f0r_gh05t5_4nd_gh0ul5
+Welcome inside!
+HTB{un0bfu5c4t3d_5tr1ng5}
+```
+
+## 🚩Flag
+> `HTB{un0bfu5c4t3d_5tr1ng5}`

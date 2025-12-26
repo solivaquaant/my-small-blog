@@ -3,10 +3,49 @@ tags: [linux]
 ---
 # Mission 0x48
 
----
-
 ## 🔎 Solution
+After establishing an SSH connection as the user `belen`, the next task reveals that `belen` has obtained the password for the user `leona`.
+```
+belen@venus:~$ cat mission.txt 
+################
+# MISSION 0x48 #
+################
 
+## EN ##
+It seems that belen has stolen the password of the user leona...
+```
+
+However, the current password is not in its original form.
+```
+$1$leona$lhWp56YnWAMz6z32Bw53L0
+belen@venus:~$ cat stolen.txt 
+```
+
+Using `john` to crack the hash reveals the password **freedom**:
+```
+> john --wordlist=rockyou.txt stolen.txt
+Warning: detected hash type "md5crypt", but the string is also recognized as "md5crypt-long"
+Use the "--format=md5crypt-long" option to force loading these as that type instead
+Using default input encoding: UTF-8
+Loaded 1 password hash (md5crypt, crypt(3) $1$ (and variants) [MD5 128/128 AVX 4x3])
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+freedom          (?)     
+1g 0:00:00:00 DONE (2025-12-01 07:38) 100.0g/s 38400p/s 38400c/s 38400C/s alyssa..michael1
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+```
+
+Using the cracked password, SSH into the user `leona`:
+```
+ssh leona@venus.hackmyvm.eu -p 5000
+```
+
+Viewing the contents of the specified file reveals the flag:
+```
+leona@venus:~$ cat flagz.txt 
+8===jObs3nfIJG4dDtxhWuKg===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===jObs3nfIJG4dDtxhWuKg===D~~`

@@ -3,10 +3,38 @@ tags: [linux]
 ---
 # Mission 0x46
 
----
-
 ## 🔎 Solution
+After establishing an SSH connection as the user `denise`, the next task relates to the `doas` command.
+```
+denise@venus:~$ cat mission.txt 
+################
+# MISSION 0x46 #
+################
 
+## EN ##
+The user zora is screaming doas!
+```
+
+`doas` is a command in Linux/Unix similar to `sudo`, used to execute commands with the privileges of the superuser (root) or another user.
+
+Checking the doas configuration file reveals that the current user `denise` is permitted to run commands as `zora`:
+```
+denise@venus:~$ cat /etc/doas.conf
+permit denise as zora
+```
+
+Using `doas` to execute a bash shell results in obtaining a shell for the user `zora`:
+```
+denise@venus:~$ doas -u zora bash    
+doas (denise@venus) password: 
+zora@venus:/pwned/denise$
+```
+
+Viewing the contents of a specific file reveals the password:
+```
+zora@venus:~$ cat flagz.txt 
+8===hhp0gFTIaedSX3faXDqP===D~~
+```
 
 ## 🚩Flag
-> `
+> `8===hhp0gFTIaedSX3faXDqP===D~~`

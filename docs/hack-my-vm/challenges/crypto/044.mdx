@@ -1,0 +1,23 @@
+---
+tags: []
+---
+# 044
+
+- **Description:** What type of format corresponds to the following address: `bc1qspg3vsx3pphrf[...]`
+Flag: `HMV{format}`
+
+---
+
+## 🔎 Solution
+This challenge requires identifying the format of the string `bc1qspg3vsx3pphrf[...]`.
+
+Observing its characteristics:
+- It begins with `bc1`
+- It contains only lowercase letters, no uppercase letters.
+- It contains only digits and characters from the Bech32 character set (`qpzry9x8gf2tvdw0s3jn54khce6mua7l`).
+- Its typical length is between 42 and 62 characters.
+
+Based on these features, this is a **Bitcoin Bech32 address (SegWit format)**.
+
+## 🚩Flag
+> `HMV{Bech32}`

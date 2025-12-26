@@ -1,0 +1,40 @@
+---
+tags: [cryptography]
+---
+# 007
+
+- **Description:** `=0Xd0ʞƐMOqWMςЯzɘWƖƎƧ`
+
+---
+
+## 🔎 Solution
+The challenge provides a rather unusual string:
+```
+=0Xd0ʞƐMOqWMςЯzɘWƖƎƧ
+```
+
+In this string, some characters like `ʞ` and `Ƨ` are flipped versions of `k` and `S`.
+
+Using [a reverse text generator](https://www.textfixer.com/tools/reverse-text-generator.php) to reverse the string yields:
+```
+SEƖWezRςMWpOMƐk0bX0=
+```
+
+This appears to be a Base64 string, but it still contains special characters that need to be corrected to their standard forms. 
+- Ɩ → l
+- ς → 2
+- Ɛ → 3
+
+After correction, the string becomes:
+```
+SE1WezR2MWpOM3k0bX0=
+```
+
+Decoding it reveals the flag:
+```
+> echo "SE1WezR2MWpOM3k0bX0=" | base64 -d            
+HMV{4v1jN3y4m}
+```
+
+## 🚩Flag
+> `HMV{4v1jN3y4m}`

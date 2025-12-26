@@ -1,0 +1,19 @@
+---
+tags: [cryptography]
+---
+# 013
+
+- **Description:** `MXV{BNRNKWPCEUSEX}`
+k:FLAG
+
+---
+
+## 🔎 Solution
+Given the provided ciphertext and key, this appears to be a Vigenère cipher, where each ciphertext letter is determined by `(plaintext + shift_from_key) mod 26`.
+
+Using [Vigenère cipher decoder](https://www.dcode.fr/vigenere-cipher) with the key `FLAG` reveals the plaintext.
+
+## 🚩Flag
+> `HMV{VIGNERECYPHER}`
+
+

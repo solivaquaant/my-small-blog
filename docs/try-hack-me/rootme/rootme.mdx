@@ -58,6 +58,10 @@ Finished
 ```
 
 The `/panel` route exposed a file upload function. 
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./panel.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
 Since the web application was running PHP, I attempted to upload a PHP reverse shell ([Pentestmonkey's script](https://github.com/pentestmonkey/php-reverse-shell)). 
 The payload was modified to use my machine's IP, then uploaded through the panel. 
 The server blocked `.php` extensions, so I renamed the file to a bypass extension such as `.php5` or `.phtml`.

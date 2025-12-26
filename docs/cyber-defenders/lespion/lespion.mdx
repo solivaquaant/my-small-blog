@@ -1,0 +1,93 @@
+---
+tags: []
+---
+# Lespion
+
+- **Description:** Investigate an insider threat by analyzing GitHub repositories for exposed credentials, using OSINT tools to correlate online accounts, and performing image analysis to identify locations.
+- **Difficulty:** Easy
+- **Scenario:** You have been tasked by a client whose network was compromised and brought offline to investigate the incident and determine the attacker's identity.
+Incident responders and digital forensic investigators are currently on the scene and have conducted a preliminary investigation. 
+Their findings show that the attack originated from a single user account, probably, an insider. Investigate the incident, find the insider, and uncover the attack actions.
+
+---
+
+## 🔎 Solution
+This challenge provides a file named `Github.txt` and two image files.
+
+Accessing `Github.txt` reveals a GitHub profile URL. Visiting [this link](https://github.com/EMarseille99) leads to the user's repository page.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./profile.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Searching for `API` within this user's repositories to find potential API key leaks, we find sensitive information in the file `Login Page.js` within the `Project-Build---Custom-Login-Page` repository.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./API.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Examining this file's source code reveals hardcoded username and password. 
+The password `UGljYXNzb0JhZ3VldHRlOTk=` is Base64 encoded. Decoding it yields `PicassoBaguette99`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./pw.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Additionally, reviewing the user's list of repositories shows they forked the `xmrig` repository, a cryptocurrency mining software.
+
+Using the username `EMarseille99` for further online searches reveals associated Instagram and Steam accounts using the same handle.
+<div style={{ width: '60%', margin: '0 auto' }}>
+	<img src={require("./name.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Visiting the user's Instagram profile at [here](https://www.instagram.com/emarseille99/) shows a post from May 24, 2020, where the user shared about being on holiday. 
+The photo features the *Marina Bay Sands* in **Singapore**.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./holiday.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+In the final post on the profile, the user shared about visiting family and relatives. 
+The two images in this post can be analyzed using AI tools like ChatGPT or Gemini to identify the location, which is determined to be **Dubai**.
+
+Next, we analyze the provided file `office.jpg`. 
+The image contains a sign pointing to the *Hippodrome Theatre Alexandra Theatre*. 
+This area is located in **Birmingham**.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./office.jpg").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+The final image is a webcam screenshot. 
+AI analysis suggests the location: *"Based on the pointed church tower on the right and the campus layout, this appears to be the University of Notre Dame in Indiana, USA. 
+The church in the image is the Basilica of the Sacred Heart, a prominent landmark of the university."*
+<div style={{ width: '80%', margin: '0 auto' }}>
+	<img src={require("./cam.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## ✏️ Task answers
+**Q1: File -> Github.txt: What API key did the insider add to his GitHub repositories?**
+> `aJFRaLHjMXvYZgLPwiJkroYLGRkNBW`
+
+**Q2: File -> Github.txt: What plaintext password did the insider add to his GitHub repositories?**
+> `PicassoBaguette99`
+
+**Q3: File -> Github.txt: What cryptocurrency mining tool did the insider use?**
+> XMRig
+
+**Q4: On which gaming website did the insider have an account?**
+> Steam
+
+**Q5: What is the link to the insider Instagram profile?**
+> `https://www.instagram.com/emarseille99/`
+
+**Q6: Which country did the insider visit on her holiday?**
+> Holiday
+
+**Q7: Which city does the insider family live in?**
+> Dubai
+
+**Q8: File -> office.jpg: You have been provided with a picture of the building in which the company has an office. 
+Which city is the company located in?**
+> Birmingham
+
+**Q9: File -> Webcam.png: With the intel, you have provided, our ground surveillance unit is now overlooking the person of interest suspected address. 
+They saw them leaving their apartment and followed them to the airport. Their plane took off and landed in another country. 
+Our intelligence team spotted the target with this IP camera. 
+Which state is this camera in?**
+> Indiana

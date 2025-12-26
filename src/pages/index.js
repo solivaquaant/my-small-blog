@@ -12,8 +12,6 @@ import ces from '@site/static/img/personal-pic/ces.jpg';
 import love from '@site/static/img/personal-pic/love.jpg';
 import ball from '@site/static/img/personal-pic/ball.jpg';
 
-// import myAvatar from '@site/static/img/real-avt.jpg';
-
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   const constraintsRef = useRef(null);

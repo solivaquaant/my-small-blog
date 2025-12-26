@@ -1,0 +1,45 @@
+---
+tags: [cryptography]
+---
+# 046
+
+- **Description:** Flag inside the file.
+
+---
+
+## 🔎 Solution
+The provided file contains the following information:
+```
+x=W0oyRmlZMlJsWm1kb2FXcHJiRzF1YjNCeGNuTjBkWFozZUhsNlFVSkRSRVZHUjBoSlNrdE1UVTVQVUZGU1UxUlZWbGRZV1ZvbklDZDZlWGgzZG5WMGMzSnhjRzl1Yld4cm;
+y=FtbG9aMlpsWkdOaVlWcFpXRmRXVlZSVFVsRlFUMDVOVEV0S1NVaEhSa1ZFUTBKQkp3bz0sIEhWMUR2M1FvQjNFYngyb2V5bTBQXQo=;
+x+y
+```
+
+Combining the two strings `x` and `y` yields:
+```
+W0oyRmlZMlJsWm1kb2FXcHJiRzF1YjNCeGNuTjBkWFozZUhsNlFVSkRSRVZHUjBoSlNrdE1UVTVQVUZGU1UxUlZWbGRZV1ZvbklDZDZlWGgzZG5WMGMzSnhjRzl1Yld4cmFtbG9aMlpsWkdOaVlWcFpXRmRXVlZSVFVsRlFUMDVOVEV0S1NVaEhSa1ZFUTBKQkp3bz0sIEhWMUR2M1FvQjNFYngyb2V5bTBQXQo=
+```
+
+Decoding this Base64 string results in:
+```
+[J2FiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVonICd6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYVpZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBJwo=, HV1Dv3QoB3Ebx2oeym0P]
+```
+
+The result is divided into two parts. 
+Decoding the first part reveals:
+```
+'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' 'zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA'
+```
+
+This shows that if the first string is the plaintext alphabet, the second string is its reverse. 
+This defines an **Atbash cipher**, where each letter is replaced by its symmetrical counterpart in the alphabet.
+
+Therefore, the remaining string `HV1Dv3QoB3Ebx2oeym0P` is the ciphertext that needs to be decrypted.
+
+Using CyberChef to perform the Atbash decryption yields the flag.
+<div style={{ width: '70%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `HMV{recursion}`

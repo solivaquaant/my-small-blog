@@ -1,0 +1,26 @@
+---
+tags: [cryptography]
+---
+# 023
+
+- **Description:** 022E296D100B1622455D0A16031B130C11
+
+---
+
+## 🔎 Solution
+The challenge provides the following string:
+```
+022E296D100B1622455D0A16031B130C11
+```
+
+This string is 32 characters long, suggesting it could be various formats such as an MD5 hash, hexadecimal, or base64.
+
+For this challenge, the string is a **Cisco Type 7** password.
+
+Using [a Cisco Type 7 password cracker](https://www.firewall.cx/cisco/cisco-routers/cisco-type7-password-crack.html) reveals the password:
+```
+HMV{myciscoflag}
+```
+
+## 🚩Flag
+> `HMV{myciscoflag}`
