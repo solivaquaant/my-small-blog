@@ -1,65 +1,72 @@
 # My little site
 
-Welcome to **my little site**, a personal website built with [Docusaurus](https://docusaurus.io/) - a modern static site generator.  
-This site is where I share a bit about myself, write technical blog posts, CTF write-ups, and anything else I find interesting.
+This is a personal website and technical repository built with Docusaurus 3, a modern static site generator. The platform serves as a central hub for sharing cybersecurity research, technical documentation, and write-ups.
 
-## 🌐 Website features
+## Content overview
 
-- 🧑‍💻 **About Me** – Learn more about who I am and what I do
-- 🔐 **CTF Write-ups** – Walkthroughs of Capture The Flag challenges I've solved
-- 🧠 **Blog** – Articles and thoughts on tech, cybersecurity, programming, and more
+The repository is structured to host several types of content:
 
-- 🛠️ Built with **Docusaurus 3** – Fast, responsive, and easy to maintain.
+- **Write-ups**: Detailed walkthroughs and solutions for various CTF challenges.
+- **Labs**: Documentation and guides related to cybersecurity laboratory environments.
+- **Technical blog**: Articles focusing on programming, cybersecurity trends, and personal project updates.
 
-## 🚀 Getting Started
+## Core technologies
 
-To run this project locally:
+- **Framework**: Docusaurus 3.
+- **Frontend**: React and MDX for interactive documentation.
 
-1. **Clone the repository:**
-```bash
+## Local development
+
+To set up the project on your local machine, follow these steps:
+
+1. **Clone the repository**
+
+```
 git clone https://github.com/solivaquaant/my-small-blog.git
 cd my-small-blog
 ```
-2. **Install dependencies:**
-```bash
+
+2. **Install required dependencies**
+
+```
 npm install
 ```
-3. **Start the development server:**
-```bash
+
+3. **Start the development server**
+
+```
 npm run start
 ```
-Your site will be available at `http://localhost:3000/my-small-blog`.
 
-## 📦 Build
-To create an optimized production build:
-```bash
+Once started, the site will be accessible at `http://localhost:3333/`.
+
+## Production and deployment
+
+To generate a production-ready build:
+
+```
 npm run build
 ```
-Then, to preview the site:
-```bash
+
+To preview the production build locally:
+
+```
 npm run serve
 ```
 
-## 📁 Project Structure
-```perl
+## Project structure
+
+```
 my-own-blog/
 ├── blog/                # Blog posts in Markdown
 ├── docs/                # Documentation or write-ups
+├── labs/                # Labs and related content
 ├── src/                 # Custom React components and pages
 ├── static/              # Static assets like images and files
 ├── docusaurus.config.js # Main configuration file
 └── ...
 ```
 
-## 🧩 Technologies Used
-- Docusaurus 3
-- React
-- Markdown, MDX
+## License
 
-## 🙌 Contributing
-This is a personal project, but feel free to fork or suggest improvements by opening issues or pull requests!
-
-## 📄 License
-This project is licensed under the MIT License.
-
-> Thanks for stopping by! 👋Feel free to explore, learn, and connect.
+This project is open-source and available under the MIT License.
