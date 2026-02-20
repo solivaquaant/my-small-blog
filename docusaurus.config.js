@@ -49,6 +49,8 @@ const config = {
         // editUrl: 'https://github.com/your-username/your-repo/edit/main/',
       },
     ],
+
+    "docusaurus-plugin-image-zoom",
   ],
 
   presets: [
@@ -80,6 +82,17 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      zoom: {
+        selector: ".markdown :not(em) > img, .markdown div > img",
+        background: {
+          light: "rgba(255, 255, 255, 0.9)",
+          dark: "rgba(15, 23, 42, 0.75)",
+        },
+        config: {
+          margin: 20,
+          scrollOffset: 0,
+        },
+      },
       // Replace with your project's social card
       image: "img/avt.png",
       navbar: {
