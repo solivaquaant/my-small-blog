@@ -145,7 +145,7 @@ const config = {
             items: [
               {
                 label: "LinkedIn",
-                href: "https://www.linkedin.com/in/trinh-thai-ngoc-diem-a53571208/",
+                href: "https://www.linkedin.com/in/trinhtnd/",
               },
               {
                 label: "Facebook",
