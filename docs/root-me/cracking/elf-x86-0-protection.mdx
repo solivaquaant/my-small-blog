@@ -1,0 +1,86 @@
+---
+tags: [reverse-engineering, linux]
+---
+# ELF x86 - 0 protection
+
+- **Description:** First challenge of cracking, writen in C with vi and compiled with GCC32
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+For this challenge, we are provided with a Linux executable file.
+```
+> file ch1.bin                                                                                             
+ch1.bin: ELF 32-bit LSB executable, Intel i386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.9, not stripped
+```
+
+After granting execute permission to the file (`chmod +x ch1.bin`) and running it, the program prompts for a password. 
+Entering an arbitrary value results in an incorrect password message and the program exits.
+```
+> ./ch1.bin       
+############################################################
+##        Bienvennue dans ce challenge de cracking        ##
+############################################################
+
+Veuillez entrer le mot de passe : password
+Dommage, essaye encore une fois.
+```
+
+At this point, we can make a simple assumption: the program is comparing our input against a hardcoded password inside the binary. 
+To confirm this behavior, we can use `ltrace` for analysis. 
+`ltrace` is a Linux debugging tool that traces library calls made by a program during execution.
+
+From the `ltrace` output below, after entering an arbitrary password, we can clearly see that the program compares our input string with the string `123456789`. 
+This strongly suggests that `123456789` is the correct password.
+```
+> ltrace ./ch1.bin 
+__libc_start_main(["./ch1.bin"] <unfinished ...>
+puts("################################"...############################################################
+)                            = 61
+puts("##        Bienvennue dans ce cha"...##        Bienvennue dans ce challenge de cracking        ##
+)                            = 61
+puts("################################"...############################################################
+
+)                            = 62
+printf("Veuillez entrer le mot de passe "...)                          = 34
+malloc(2)                                                              = 0x92b55f0
+//highlight-next-line
+getchar(2, 0xf7f02c60, 0xffcec328, 0xf7cc52f5Veuillez entrer le mot de passe : password
+)                         = 112
+realloc(0x92b55f0, 2)                                                  = 0x92b55f0
+getchar(0x92b55f0, 2, 0xffcec328, 0xf7cc52f5)                          = 97
+realloc(0x92b55f0, 3)                                                  = 0x92b55f0
+getchar(0x92b55f0, 3, 0xffcec328, 0xf7cc52f5)                          = 115
+realloc(0x92b55f0, 4)                                                  = 0x92b55f0
+getchar(0x92b55f0, 4, 0xffcec328, 0xf7cc52f5)                          = 115
+realloc(0x92b55f0, 5)                                                  = 0x92b55f0
+getchar(0x92b55f0, 5, 0xffcec328, 0xf7cc52f5)                          = 119
+realloc(0x92b55f0, 6)                                                  = 0x92b55f0
+getchar(0x92b55f0, 6, 0xffcec328, 0xf7cc52f5)                          = 111
+realloc(0x92b55f0, 7)                                                  = 0x92b55f0
+getchar(0x92b55f0, 7, 0xffcec328, 0xf7cc52f5)                          = 114
+realloc(0x92b55f0, 8)                                                  = 0x92b55f0
+getchar(0x92b55f0, 8, 0xffcec328, 0xf7cc52f5)                          = 100
+realloc(0x92b55f0, 9)                                                  = 0x92b55f0
+getchar(0x92b55f0, 9, 0xffcec328, 0xf7cc52f5)                          = 10
+//highlight-next-line
+strcmp("password", "123456789")                                        = 1
+puts("Dommage, essaye encore une fois."...Dommage, essaye encore une fois.
+)                            = 33
++++ exited (status 0) +++
+```
+
+Running the program again and entering the identified string confirms that it is indeed the correct password.
+```
+> ./ch1.bin       
+############################################################
+##        Bienvennue dans ce challenge de cracking        ##
+############################################################
+
+Veuillez entrer le mot de passe : 123456789
+Bien joue, vous pouvez valider l'epreuve avec le pass : 123456789!
+```
+
+## 🚩Flag
+> `123456789`

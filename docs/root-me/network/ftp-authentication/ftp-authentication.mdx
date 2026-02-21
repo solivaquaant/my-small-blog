@@ -1,0 +1,22 @@
+---
+tags: [network, forensics]
+---
+# FTP - authentication
+
+- **Description:** An authenticated file exchange achieved through FTP. 
+Recover the password used by the user.
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The provided pcap file captures an FTP connection between `10.20.144.150` and `10.20.144.151`.
+
+In packet number 11, we can clearly observe that it contains the password we are looking for.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+## 🚩Flag
+> `cdts3500`

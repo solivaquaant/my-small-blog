@@ -1,0 +1,24 @@
+---
+tags: [network, forensics]
+---
+# TELNET - authentication
+
+- **Description:** Find the user password in this TELNET session capture.
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+The pcap file provided in this challenge contains a Telnet connection between `192.168.0.1` and `192.168.0.2`. 
+Telnet is a network protocol used to remotely access and control a computer via a command-line interface. 
+Its major drawback is the lack of encryption, which means all transmitted data can be viewed in plaintext.
+
+To analyze the traffic more easily, we can use the **Follow TCP Stream** feature. 
+From the reconstructed stream, we can see that when the client enters the password `user`, the Telnet connection is successfully authenticated.
+<div style={{ width: '60%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+## 🚩Flag
+> `user`

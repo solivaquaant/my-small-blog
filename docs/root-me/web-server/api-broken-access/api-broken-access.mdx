@@ -1,0 +1,41 @@
+---
+tags: [web]
+---
+# API - Broken Access
+
+- **Description:** Your friend has set up a platform where you can register and post a private note. 
+Everything is based on an API. 
+Before setting up the Front-End, he asked you to check that everything was secure.
+- **Difficulty:** Easy 
+
+---
+
+## 🔎 Solution
+The challenge provides a website that exposes 4 API endpoints:
+- POST `/api/signup`: allows creating a new user
+-  POST `/api/login`: handles user authentication
+- GET `/api/user`: retrieves user information
+- PUT `/api/note`: updates the user's note
+
+I created a user and logged in using the first two endpoints, and everything worked as expected with no obvious issues.
+
+While observing the GET `/api/user` API, it is clear that user information is fetched based on `user_id`, which is defined as an integer. 
+However, when supplying any arbitrary numeric value as `user_id`, the response always returns my own account information, with `user_id` fixed to 3.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./id.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+At this point, I sent the request to Burp Suite Intruder to perform brute forcing on the `user_id` parameter.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./intruder.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+As a result, when querying `/api/user/1`, the response contains the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+The vulnerability in this application is an **IDOR (Insecure Direct Object Reference)**.
+This is an access control flaw that occurs when an application directly references internal objects (such as IDs, files, or records) without properly verifying whether the user is authorized to access them.
+
+## 🚩Flag
+> `RM{E4sy_1d0r_0n_API}`

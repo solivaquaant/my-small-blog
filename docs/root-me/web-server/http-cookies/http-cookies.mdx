@@ -1,0 +1,27 @@
+---
+tags: [web]
+---
+# HTTP - Cookies
+
+- **Description:** PS: Bob really love cookies!
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+Based on the challenge name and its description, it is reasonable to assume that this challenge is related to cookies.
+On the website, when clicking the **"Saved email addresses"** option, a message appears stating *"You need to be admin"*.
+
+By inspecting the request in Burp Suite, we can see that the `Cookie` header contains the value `ch7=visiteur`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./cookie.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+By modifying this cookie value to `ch7=admin` and resending the request, the server grants admin access and returns the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+## 🚩Flag
+> `ml-SYMPA`

@@ -1,0 +1,24 @@
+---
+tags: [network, forensics]
+---
+# Twitter authentication
+
+- **Description:** A twitter authentication session has been captured, you have to retrieve the password.
+- **Difficulty:** Very easy
+
+---
+
+## 🔎 Solution
+After opening the provided pcap file, we can see that it contains only a single packet. 
+This packet is an HTTP GET request to `/statuses/replies.xml`.
+
+By inspecting the packet details, we can extract the HTTP headers. 
+Among them is the `Authorization` header, which contains the credentials `usertest:password`. 
+This value directly reveals the password required for the challenge.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+## 🚩Flag
+> `password`

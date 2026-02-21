@@ -1,0 +1,28 @@
+---
+tags: [web]
+---
+# HTTP - Verb tampering
+
+- **Description:** Bypass the security establishment.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+When accessing the website, an alert box appears asking for login credentials. 
+Entering random information obviously does not grant access. 
+
+By inspecting the traffic in Burp Suite, we can see that the server responds with HTTP status code **401 Authorization Required**.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./401.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+One way to bypass this behavior is to change the HTTP method from GET to another method such as POST or PUT. 
+After modifying the request method to **PUT** and resending it, the server responds with the flag.ư
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+## 🚩Flag
+> `a23e$dme96d3saez$$prap`

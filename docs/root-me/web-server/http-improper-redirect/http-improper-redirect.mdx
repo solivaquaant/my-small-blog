@@ -1,0 +1,23 @@
+---
+tags: [web]
+---
+# HTTP - Improper redirect
+
+- **Description:** Get access to index.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+We are provided with a website where the entry point is `login.php?redirect`, which is a login page. 
+The goal is to access `index.php`, but attempting to visit this page directly simply redirects us back to the login page.
+
+By reviewing the request history in Burp Suite, we can observe that the request to `index.php` returns an HTTP status code **302**. 
+More importantly, the server's response to this redirect already contains the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+## 🚩Flag
+> `ExecutionAfterRedirectIsBad`

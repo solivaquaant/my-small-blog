@@ -1,0 +1,37 @@
+---
+tags: [web]
+---
+# HTTP - Directory indexing
+
+- **Description:** CTRL+U...
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+After accessing the provided website, there is nothing immediately interesting. 
+However, by viewing the page source, we can spot a comment that references `admin/pass.html`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./code.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Visiting that path results in a rickroll message, so the flag is clearly not located there.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./pass.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Since that endpoint is a dead end, we can try moving one directory up to `/admin/`. 
+Listing this directory reveals that, besides `pass.html`, there is also a `/backup` directory.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./backup.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Navigating into this directory, we find a file named `admin.txt`. 
+Opening this file reveals the password we are looking for.
+<div style={{ width: '80%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+## 🚩Flag
+> `LINUX`

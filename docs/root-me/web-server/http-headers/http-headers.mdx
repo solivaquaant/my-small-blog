@@ -1,0 +1,28 @@
+---
+tags: [web]
+---
+# HTTP - Headers
+
+- **Description:** Get an administrator access to the webpage.
+- **Difficulty:** Easy
+
+---
+
+## 🔎 Solution
+After accessing the website, we are presented with the message *"Content is not the only part of an HTTP response!"*.
+
+As we know, an HTTP response consists of 2 main parts: the header and the body. 
+By inspecting the HTTP response headers from the initial request, we can observe a custom header named `Header-RootMe-Admin: none`. 
+Notably, this header does not appear in the original HTTP request.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./header.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+By modifying the request and manually adding this header, then sending the request again, the server responds with the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+## 🚩Flag
+> `HeadersMayBeUseful`

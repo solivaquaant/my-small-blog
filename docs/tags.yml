@@ -57,3 +57,8 @@ scripting:
   label: Scripting
   permalink: /scripting
   description: Includes write-ups on the topic of Scripting
+
+ai-ml:
+  label: AI - ML
+  permalink: /ai-ml
+  description: Includes write-ups on the topic of AI - ML
