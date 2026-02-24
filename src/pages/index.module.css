@@ -1,115 +1,283 @@
 /* src/pages/index.module.css */
 
+:global(:root) {
+  --theme-color: #fca7db;
+  --theme-color-rgb: 252, 167, 219;
+}
+
 /* --- Layout Chung --- */
 .hackerContainer {
-  background-color: #050505; /* Nền siêu tối */
+  background: linear-gradient(180deg, #45446f 0%, #000000 100%);
   color: #e0e0e0;
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: 'JetBrains Mono', monospace;
   min-height: 100vh;
   padding-bottom: 50px;
 }
 
-.sectionTitle {
-  text-align: center;
-  font-size: 2.5rem;
-  margin: 4rem 0 2rem;
-  color: #00ff00;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  border-bottom: 2px solid #00ff00;
-  display: inline-block;
-  padding-bottom: 10px;
+/* Section Container Styles */
+.sectionContainer {
+  width: 100%;
+  padding: 0;
+  position: relative;
 }
 
-/* --- Phần 1: Hero Section (Glitch + Typewriter) --- */
+/* --- Phần 1: Hero Section --- */
 .heroHeader {
-  padding: 4rem 1rem;
+  padding: 6rem 1rem 4rem;
   text-align: center;
-  background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
-  border-bottom: 1px solid #333;
 }
 
-.glitchTitle {
-  font-size: 4rem;
+.heroTitleText {
+  font-size: 5rem;
   font-weight: 800;
+  font-family: var(--ifm-heading-font-family);
+  background: linear-gradient(to right, #a1b1fc, var(--theme-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.heroSubText {
+  font-family: 'JetBrains Mono', monospace;
   color: #fff;
-  text-shadow: 2px 2px #ff00de, -2px -2px #00ff00; /* Hiệu ứng Cyberpunk */
-  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.heroDivider {
+  border: none;
+  border-top: 2px solid var(--theme-color);
+  width: 50%;
+  max-width: 400px;
+  margin: 0 auto 2rem;
 }
 
 .typewriterText {
   font-size: 1.8rem;
-  color: #00ff00;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--theme-color);
   min-height: 3rem;
   margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.6);
+}
+
+.heroButtons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.btnPrimary {
+  font-family: var(--ifm-heading-font-family);
+  color: #fff;
+  background: linear-gradient(to right, var(--theme-color), #a1b1fc);
+  border: 1px solid #898989;
+  border-radius: 20px;
+  padding: 0.8rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.btnPrimary:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #e295c5, #919fe3);
+}
+
+.btnSecondary {
+  font-family: var(--ifm-heading-font-family);
+  color: #fff;
+  background: #353333;
+  border: 1px solid #898989;
+  border-radius: 20px;
+  padding: 0.8rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.btnSecondary:hover {
+  transform: scale(1.05);
+  background: #2a2828;
 }
 
 /* --- Phần 2: Terminal Wrapper --- */
 .terminalWrapper {
   display: flex;
   justify-content: center;
-  margin-top: -50px; /* Đẩy terminal lên đè nhẹ vào header */
-  padding: 0 20px;
+  padding: 4rem 20px;
+  position: relative;
 }
 
+.terminalWrapper::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 950px;
+  height: 500px;
+  background: linear-gradient(90deg, var(--theme-color) 0%, transparent 20%, transparent 80%, var(--theme-color) 100%);
+  opacity: 0.4;
+  filter: blur(20px);
+  z-index: 1;
+  pointer-events: none;
+}
 
-.featuresSection {
+.terminalContainer {
+  width: 100%;
+  max-width: 900px;
+  border-radius: 20px;
+  background-color: #161428;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.terminalHeader {
+  height: 40px;
+  background-color: #2a2f4f;
+  border-radius: 20px 20px 0 0;
   display: flex;
-  justify-content: center;
-  gap: 2rem;
-  padding: 2rem;
+  align-items: center;
+  padding: 0 20px;
+  position: relative;
+}
+
+.terminalDots {
+  display: flex;
+  gap: 8px;
+}
+
+.dotRed, .dotYellow, .dotGreen {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+.dotRed { background-color: #f16161; }
+.dotYellow { background-color: #f0bd4f; }
+.dotGreen { background-color: #58cc64; }
+
+.terminalTitle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--theme-color);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+}
+
+/* --- Terminal Theme Support --- */
+.terminalContainer :global(.react-console-emulator__input) {
+  position: relative;
+  vertical-align: baseline !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: inherit !important;
+  font-family: inherit !important;
+}
+
+.terminalContainer :global(.react-console-emulator__promptLabel) {
+  vertical-align: baseline !important;
+  line-height: inherit !important;
+  font-family: inherit !important;
+  margin-right: 10px !important;
+  color: var(--theme-color) !important; /* Forces previous prompts to stay pink */
+}
+
+/* Forces previous command inputs to stay pink, targeting the sibling of the prompt label */
+.terminalContainer :global(.react-console-emulator__line) > span:nth-child(2) {
+  color: var(--theme-color) !important;
+  font-weight: bold;
+}
+
+.terminalOutput {
+  color: #fff !important;
+}
+
+.terminalContainer :global(.react-console-emulator__input::after) {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  font-size: 0.7rem;
+  color: #666;
+  letter-spacing: 1px;
+  opacity: 0.5;
+}
+
+.terminalContainer :global(.react-console-emulator__content) {
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* --- Phần 3: Tags Container --- */
+.tagsContainer {
+  display: flex;
   flex-wrap: wrap;
-  max-width: 1200px;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem 2rem 4rem;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
-.featureCard {
-  flex: 1;
-  min-width: 280px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid #00ff00;
-  padding: 2rem;
-  text-align: left;
-  position: relative;
-  overflow: hidden;
-  transition: background 0.3s;
-  cursor: pointer;
-  text-decoration: none !important;
-}
-
-.featureCard:hover {
-  background: rgba(0, 255, 0, 0.1);
-}
-
-.featureCard h3 {
+.tagBtn {
+  background-color: #130f1b;
+  border: 1px solid #898989;
+  border-radius: 25px;
   color: #fff;
-  font-size: 1.5rem;
+  padding: 0.6rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tagBtn:hover {
+  border-color: var(--theme-color);
+  box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.3);
+}
+
+.tagHash {
+  color: var(--theme-color);
+}
+
+/* --- Phần 4: Evidence Board --- */
+.evidenceTitle {
+  font-family: var(--ifm-heading-font-family);
+  color: var(--theme-color);
+  font-size: 3rem;
   margin-bottom: 1rem;
 }
 
-.featureCard p {
-  color: #ccc;
-}
-
-.cornerMark {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
-  border-top: 2px solid #00ff00;
-  border-right: 2px solid #00ff00;
+.evidenceSubtitle {
+  font-family: 'JetBrains Mono', monospace;
+  color: #fff;
+  font-size: 1rem;
 }
 
 .messyDesk {
   position: relative;
-  min-height: 500px; 
-  background-color: transparent;
+  min-height: 600px; 
+  background-color: #2a2f4f;
+  border: 1px dashed var(--theme-color);
+  border-radius: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden; 
   perspective: 1000px;
+  padding: 2rem 1rem 4rem;
+  margin: 0 auto;
+  /* max-width: 1000px; */
+  width: 90%;
 }
 
 .polaroidCard {
@@ -159,139 +327,147 @@
   z-index: 10;
 }
 
-/* --- Donation CTA (Scratch-off) --- */
-.donateSection {
-  margin: 5rem auto 0;
-  padding: 0 2rem;
-  max-width: 1200px;
-  position: relative;
-}
-
-.donateHeader {
+/* --- Phần 5: Database access --- */
+.dbContainer {
   text-align: center;
-  margin-bottom: 2rem;
+  padding: 4rem 2rem;
 }
 
-.donateTitle {
-  font-size: 2rem;
-  color: #00ff00;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin: 0;
+.dbTitle {
+  font-family: var(--ifm-heading-font-family);
+  color: var(--theme-color);
+  font-size: 3rem;
+  margin-bottom: 3rem;
 }
 
-.donateBody {
-  position: relative;
-  display: block;
+.featuresSection {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.donatePanel {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid #00ff00;
+.featureCard {
+  flex: 1;
+  min-width: 250px;
+  background-color: #2a2f4f;
+  border: 1px solid var(--theme-color);
+  border-radius: 20px;
   padding: 2rem;
+  text-align: left;
   position: relative;
   overflow: hidden;
+  transition: transform 0.3s;
+  cursor: pointer;
+  text-decoration: none !important;
 }
 
-.donatePanel::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at top left,
-    rgba(0, 255, 120, 0.12),
-    transparent 55%
-  );
-  pointer-events: none;
-  opacity: 0.6;
+.featureCard:hover {
+  transform: translateY(-5px);
 }
 
-.donatePanelInner {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 2rem;
-  align-items: center;
-  z-index: 1;
-}
-
-.donateQrWrap {
+.featureIcon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--theme-color) 0%, #a1b1fc 100%);
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 1.5rem;
 }
 
-.donateCopy {
-  color: #c8f5d4;
-  line-height: 1.7;
-  font-size: 1.05rem;
-  max-width: 520px;
+.featureCard h3 {
+  color: #fff;
+  font-size: 1.5rem;
+  font-family: var(--ifm-heading-font-family);
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.donateQrFrame {
+.featureCard h3::after {
+  content: '>';
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: normal;
+}
+
+.featureCard p {
+  color: var(--theme-color);
+  font-family: var(--ifm-heading-font-family);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* --- Phần 6: Support My Channel --- */
+.supportSection {
+  text-align: center;
+  padding: 4rem 2rem;
   position: relative;
-  width: 100%;
-  max-width: 320px;
-  aspect-ratio: 1 / 1;
+  z-index: 1;
+  background:
+    radial-gradient(circle at top right, rgba(var(--theme-color-rgb), 0.15), transparent 25%),
+    radial-gradient(circle at bottom left,  rgba(var(--theme-color-rgb), 0.15), transparent 25%);
+  max-width: 1100px;
+  margin: 0 auto 4rem auto;
+  border-radius: 40px;
+}
+
+.supportTitle {
+  font-family: var(--ifm-heading-font-family);
+  color: var(--theme-color);
+  font-size: 3rem;
+  margin-bottom: 3rem;
+}
+
+.supportContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+  max-width: 1000px;
   margin: 0 auto;
-  border-radius: 16px;
-  border: 1px solid rgba(0, 255, 120, 0.7);
-  background: #0b0f0d;
+  position: relative;
+}
+
+.supportLeft {
+  text-align: left;
+}
+
+.supportText {
+  font-family: 'JetBrains Mono', monospace;
+  color: #fff;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.supportRight {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 12px 30px rgba(0, 255, 120, 0.18);
+  background-color: transparent;
 }
 
 .donateQrImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
+  object-fit: contain;
+  cursor: pointer;
 }
 
-.scratchCanvas {
+.scratchCanvas2 {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  cursor: crosshair;
+  cursor: pointer;
   touch-action: none;
-}
-
-.scratchHint {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  padding: 0.35rem 0.6rem;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #00ff7a;
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(0, 255, 120, 0.5);
-  border-radius: 8px;
-  pointer-events: none;
-}
-
-/* --- Terminal Theme Support --- */
-.terminalWrapper :global(.react-console-emulator__input) {
-  position: relative;
-}
-
-.terminalWrapper :global(.react-console-emulator__input::after) {
-  content: "";
-  position: absolute;
-  bottom: -12px;
-  left: 0;
-  font-size: 0.7rem;
-  color: #666;
-  letter-spacing: 1px;
-  opacity: 0.5;
-}
-
-/* Easter Egg: Hack command styling */
-.terminalWrapper :global(.react-console-emulator__content) {
-  word-break: break-word;
-  white-space: pre-wrap;
 }
 
 /* --- Malware Cleanup Minigame --- */
@@ -341,10 +517,32 @@
   box-shadow: 0 0 30px rgba(0, 255, 120, 0.8), inset 0 0 30px rgba(0, 255, 120, 0.2);
 }
 
+.trashTooltip {
+  position: absolute;
+  bottom: 100px;
+  right: 0;
+  width: max-content;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border: 1px solid #00ff7a;
+  box-shadow: 0 0 10px rgba(0, 255, 120, 0.4);
+  pointer-events: none;
+  z-index: 1003;
+  animation: tooltipFadeIn 0.3s ease;
+}
+
+@keyframes tooltipFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .successMessage {
   position: fixed;
   bottom: 140px;
-  right: 40px;
+  right: 40px; /* Centers over trashBin (right: 30px + width/2: 45px) */
   transform: translateX(50%);
   font-size: 0.9rem;
   font-weight: bold;
@@ -370,24 +568,6 @@
   text-shadow: 0 0 6px rgba(0, 255, 0, 0.5);
 }
 
-.victoryMessage {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  font-size: 3rem;
-  font-weight: bold;
-  color: #00ff00;
-  background: rgba(0, 255, 120, 0.1);
-  padding: 2rem 3rem;
-  border: 3px solid #00ff00;
-  border-radius: 16px;
-  pointer-events: none;
-  z-index: 1003;
-  text-shadow: 0 0 30px rgba(0, 255, 120, 1);
-  backdrop-filter: blur(10px);
-}
-
 .confetti {
   position: fixed;
   width: 8px;
@@ -398,34 +578,8 @@
 }
 
 @media (max-width: 900px) {
-  .donateSection {
-    margin: 3.5rem auto 0;
-    padding: 0 1.5rem;
-  }
-
-  .donateTitle {
-    font-size: 2rem;
-  }
-
-  .trashBin {
-    bottom: 20px;
-    right: 20px;
-    width: 70px;
-    height: 70px;
-    font-size: 2.5rem;
-  }
-
-  .virus {
-    font-size: 2rem;
-  }
-
-  .victoryMessage {
-    font-size: 2rem;
-    padding: 1.5rem 2rem;
-  }
-
-  .virusCounter {
-    top: 20px;
-    font-size: 1rem;
+  .supportContainer {
+    flex-direction: column;
+    gap: 2rem;
   }
 }

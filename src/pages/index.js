@@ -5,6 +5,8 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Terminal from "react-console-emulator";
 import Typewriter from "typewriter-effect";
 import { motion } from "framer-motion";
+import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
 import styles from "./index.module.css";
 
 import personalPic1 from "@site/static/img/personal-pic/personal-pic-1.jpg";
@@ -20,13 +22,52 @@ export default function Home() {
   const scratchCanvasRef = useRef(null);
   const scratchContainerRef = useRef(null);
   const isScratchingRef = useRef(false);
-  const [terminalTheme, setTerminalTheme] = React.useState("green");
+
+  const SITE_THEMES = {
+    pink: { hex: "#fca7db", rgb: "252, 167, 219" },
+    red: { hex: "#aa1313", rgb: "170, 19, 19" },
+    cyan: { hex: "#3dffff", rgb: "61, 255, 255" },
+    green: { hex: "#00bf63", rgb: "0, 191, 99" },
+    yellow: { hex: "#ffec3d", rgb: "255, 236, 61" },
+  };
+
+  const [terminalTheme, setTerminalTheme] = React.useState("pink");
+
+  useEffect(() => {
+    const t = SITE_THEMES[terminalTheme] || SITE_THEMES.pink;
+    document.documentElement.style.setProperty("--theme-color", t.hex);
+    document.documentElement.style.setProperty("--theme-color-rgb", t.rgb);
+  }, [terminalTheme]);
   const [viruses, setViruses] = React.useState([]);
   const [virusCount, setVirusCount] = React.useState(0);
   const [successMessage, setSuccessMessage] = React.useState("");
   const [showConfetti, setShowConfetti] = React.useState(false);
+  const [fadeConfetti, setFadeConfetti] = React.useState(false);
+  const [showTooltip, setShowTooltip] = React.useState(false);
+  const { width: windowWidth, height: windowHeight } = useWindowSize();
   const virusSpawnRef = useRef(null);
   const trashBinRef = useRef(null);
+  const hoverTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (virusCount > 0) setShowTooltip(false);
+  }, [virusCount]);
+
+  const tags = [
+    { name: "Web", link: "/docs/tags/web" },
+    { name: "Android", link: "/docs/tags/android" },
+    { name: "Reverse engineering", link: "/docs/tags/reverse-engineering" },
+    { name: "Cryptography", link: "/docs/tags/cryptography" },
+    { name: "Forensics", link: "/docs/tags/forensics" },
+    { name: "Windows", link: "/docs/tags/windows" },
+    { name: "Linux", link: "/docs/tags/linux" },
+    { name: "Binary exploitation", link: "/docs/tags/binary-exploitation" },
+    { name: "Steganography", link: "/docs/tags/steganography" },
+    { name: "Network", link: "/docs/tags/network" },
+    { name: "OSINT", link: "/docs/tags/osint" },
+    { name: "Scripting", link: "/docs/tags/scripting" },
+    { name: "AI - ML", link: "/docs/tags/ai-ml" },
+  ];
 
   const photos = [
     {
@@ -88,16 +129,16 @@ export default function Home() {
     },
     ls: {
       description: "List directory contents.",
-      fn: () => "secret.txt\nflag.txt",
+      fn: () => "hobby.txt\nflag.txt",
     },
     cat: {
       description: "Read file content. Usage: cat <filename>.",
       fn: (...args) => {
         const filename = args[0];
         if (!filename) return "Usage: cat <filename>.";
-        if (filename === "secret.txt") {
+        if (filename === "hobby.txt") {
           return (
-            "FACT: I am an Esports fan O.O\n" +
+            "FACT: I am an Esports fan >O.O<\n" +
             "MY FAVORITE TEAMS:\n" +
             "   > FINHAY Cerberus Esports (PUBG PC)\n" +
             "   > T1 (League of Legends)\n\n" +
@@ -105,7 +146,7 @@ export default function Home() {
           );
         }
         if (filename === "flag.txt") {
-          return 'MESSAGE: "Good things take time. Great things take a bit longer."';
+          return "SOLIVAQUAANT{g00d_7h1ng5_74k3_71m3_gr347_7h1ng5_74k3_4_817_l0ng3r}";
         }
         return `cat: ${filename}: No such file or directory.`;
       },
@@ -134,47 +175,18 @@ Here is your coffee! Now go write some exploits ^^`;
         return art.replace(/ /g, "\u00A0");
       },
     },
-    donate: {
-      description: "Buy me a coffee.",
-      fn: () => {
-        const art = `
- ▄▄▄▄▄ █ ▄ ▀ ▄ ▄▀█▀▄▀█ ▄▄▄▄▄ 
- █   █ █ ▄ ▄██▄ ▀▄▀▄██ █   █ 
- █▄▄▄█ █▀██▄ ▀███ ▄  █ █▄▄▄█ 
-▄▄▄▄▄▄▄█▄▀ ▀▄▀▄█▄▀▄█ █▄▄▄▄▄▄▄
- ▄▀█ ▄▄▀▀▀█▄▀  █ ▀▀█▄█▀▄█ ▄▄▄
-▄▄█ ▄ ▄▄ █▀▄ ██ █▄ █▄▀  ██▄  
- ▀▀█ ▄▄ ▄█▄█ ▄ ▄▀▀▀ ▀██▄ █▀▄▀
-▄█▀▄  ▄▄▄█▄▀█▀▄█  ███    ▀▀▄▄
-▀ █  █▄▄█ ▀▄ ▄▄▄ ▄█ ▀██▀ ▀▄██
-██ ▄██▄  █▀▀█▀  ▀█▄▄▄   ███  
-▄▄█▄▄▄▄█ ▀▀▀▄▄ ▄ ▄█▄ ▄▄▄ █ ██
- ▄▄▄▄▄ █▀▄▀▄▀ ▀▀▀ █▄ █▄█ ▀▄▄ 
- █   █ █▄█▀▄▀ ▄█▀▄▀  ▄▄▄   ▄█
- █▄▄▄█ █▀ █ █ █  ▀▄▀▀▄█▄█▀█▄ 
-▄▄▄▄▄▄▄█▄█▄██▄██▄█▄█▄▄██▄█▄██
-
-If you enjoy my content (or just like me), feel free to support me ^^`;
-        return art.replace(/ /g, "\u00A0");
-      },
-    },
     theme: {
-      description: "Change terminal theme: [green|amber|cyan|pink]",
+      description: "Change site theme: [red|cyan|green|yellow|pink]",
       fn: (...args) => {
         const themeColor = args[0]?.toLowerCase();
-        const validThemes = ["green", "amber", "cyan", "pink"];
 
-        if (!themeColor) {
+        if (!themeColor || !SITE_THEMES[themeColor]) {
           return (
             "Current theme: " +
             terminalTheme +
             "\nAvailable themes: " +
-            validThemes.join(", ")
+            Object.keys(SITE_THEMES).join(", ")
           );
-        }
-
-        if (!validThemes.includes(themeColor)) {
-          return `Invalid theme. Available: ${validThemes.join(", ")}`;
         }
 
         setTerminalTheme(themeColor);
@@ -212,17 +224,27 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
   // Minigame: Virus spawning
   useEffect(() => {
     const spawnVirus = () => {
-      if (virusCount >= 10) return; // Stop spawning at 10
-      const isBomb = Math.random() < 0.2;
+      if (virusCount >= 5) return; // Stop spawning at 5
+      const rand = Math.random();
+      let type, icon;
+      if (rand < 0.2) {
+        type = "bomb";
+        icon = "💣";
+      } else if (rand < 0.5) {
+        type = "fruit";
+        const fruits = ["🍌", "🍓", "🥑"];
+        icon = fruits[Math.floor(Math.random() * fruits.length)];
+      } else {
+        type = "virus";
+        const viruses = ["🐛", "☠️", "🦠", "⚠️", "👾", "👹", "👻"];
+        icon = viruses[Math.floor(Math.random() * viruses.length)];
+      }
+
       const id = Math.random();
       const newItem = {
         id,
-        icon: isBomb
-          ? "💣"
-          : ["🐛", "☠️", "🦠", "⚠️", "👾", "👹", "👻"][
-              Math.floor(Math.random() * 7)
-            ],
-        type: isBomb ? "bomb" : "virus",
+        icon,
+        type, 
         x: Math.random() * (window.innerWidth - 60),
         y: Math.random() * (window.innerHeight * 0.6),
       };
@@ -236,7 +258,7 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
       return timeout;
     };
 
-    if (virusCount < 10) {
+    if (virusCount < 5) {
       virusSpawnRef.current = setInterval(spawnVirus, 5000);
     }
 
@@ -245,12 +267,17 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
     };
   }, [virusCount]);
 
-  // Confetti effect when 10 viruses caught
+  // Confetti effect when 5 viruses caught
   useEffect(() => {
-    if (virusCount === 10) {
+    if (virusCount === 5) {
       setShowConfetti(true);
-      const timer = setTimeout(() => setShowConfetti(false), 4000);
-      return () => clearTimeout(timer);
+      setFadeConfetti(false);
+      const timerFade = setTimeout(() => setFadeConfetti(true), 7000);
+      const timerDelete = setTimeout(() => setShowConfetti(false), 8000);
+      return () => {
+        clearTimeout(timerFade);
+        clearTimeout(timerDelete);
+      };
     }
   }, [virusCount]);
 
@@ -261,15 +288,21 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
       // Bomb resets counter to 0
       setVirusCount(0);
       setSuccessMessage("💥 Reset!");
-    } else {
+      setTimeout(() => setSuccessMessage(""), 1000);
+    } else if (type === "virus") {
       // Virus increments counter
-      setVirusCount((prev) => prev + 1);
-      const messages = ["Patched!", "Quarantined!", "Blocked!", "Eliminated!"];
-      const msg = messages[Math.floor(Math.random() * messages.length)];
-      setSuccessMessage(msg);
+      const nextCount = virusCount + 1;
+      setVirusCount(nextCount);
+      if (nextCount >= 5) {
+        setSuccessMessage("Completed!");
+      } else {
+        const messages = ["Patched!", "Quarantined!", "Blocked!", "Eliminated!"];
+        const msg = messages[Math.floor(Math.random() * messages.length)];
+        setSuccessMessage(msg);
+      }
+      setTimeout(() => setSuccessMessage(""), 1000);
     }
-
-    setTimeout(() => setSuccessMessage(""), 1000);
+    // If type === "fruit", do nothing (no score change, no message)
   };
 
   const themeColors = getThemeColors();
@@ -296,18 +329,42 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
       ctx.scale(dpr, dpr);
 
       ctx.globalCompositeOperation = "source-over";
-      ctx.fillStyle = "rgba(10, 10, 10, 1)";
+      const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
+      const t = SITE_THEMES[terminalTheme] || SITE_THEMES.pink;
+      gradient.addColorStop(0, t.hex);
+      gradient.addColorStop(1, "#a1b1fc");
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, rect.width, rect.height);
 
-      ctx.fillStyle = "rgba(0, 255, 120, 0.08)";
-      for (let x = 0; x < rect.width; x += 22) {
-        ctx.fillRect(x, 0, 1, rect.height);
-      }
+      ctx.fillStyle = "white";
+      const starsInfo = [
+        { x: 250 - 20 - 40 / 2, y: 20 + 40 / 2, w: 40, r: 15 },
+        { x: 30 + 70 / 2, y: 80 + 70 / 2, w: 70, r: -10 },
+        { x: 250 - 30 - 100 / 2, y: 100 + 100 / 2, w: 100, r: 5 },
+        { x: 40 + 50 / 2, y: 250 - 30 - 50 / 2, w: 50, r: -20 },
+        { x: 250 - 80 - 30 / 2, y: 250 - 20 - 30 / 2, w: 30, r: 25 },
+      ];
 
-      ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
-      for (let y = 0; y < rect.height; y += 18) {
-        ctx.fillRect(0, y, rect.width, 1);
-      }
+      starsInfo.forEach((s) => {
+        ctx.save();
+        ctx.translate(s.x, s.y);
+        ctx.rotate((s.r * Math.PI) / 180);
+        const scale = s.w / 24;
+        ctx.scale(scale, scale);
+        ctx.translate(-12, -12); // Move origin to center of star 24x24 path
+        const p = new Path2D(
+          "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+        );
+        ctx.fill(p);
+        ctx.restore();
+      });
+
+      // Draw "Scratch to reveal" instruction text
+      ctx.fillStyle = "rgba(255, 255, 255, 0.90)";
+      ctx.font = "bold 20px 'JetBrains Mono', monospace";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("Scratch to reveal", rect.width / 2, rect.height/1.1);
 
       ctx.globalCompositeOperation = "destination-out";
     };
@@ -317,7 +374,7 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
     observer.observe(container);
 
     return () => observer.disconnect();
-  }, []);
+  }, [terminalTheme]);
 
   const scratchAt = (event) => {
     const canvas = scratchCanvasRef.current;
@@ -331,6 +388,7 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
 
     ctx.beginPath();
     ctx.arc(x, y, 24, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
     ctx.fill();
   };
 
@@ -359,20 +417,27 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
     >
       <main className={styles.hackerContainer}>
         {/* 1. Hero & typewriter */}
-        <div className={styles.heroHeader}>
-          <h1 className={styles.glitchTitle}>Thái Ngọc Diễm Trinh</h1>
-          <div className={styles.typewriterText}>
-            <span>Running process: </span>
-            <span style={{ color: "#fff", fontWeight: "bold" }}>
+        <div className={styles.sectionContainer}>
+          <div className={styles.heroHeader}>
+            <h1 className={styles.heroTitleText}>solivaquaant</h1>
+            <p className={styles.heroSubText}>
+              Final-year student majoring in Information Security at University
+              of Information Technology - Vietnam National University.
+              <br />
+              Currently working as a SOC Analyst.
+            </p>
+            <hr className={styles.heroDivider} />
+            <div className={styles.typewriterText}>
               <Typewriter
                 options={{
                   strings: [
-                    "SOC Analyst...",
-                    "CTF player...",
-                    "Writing exploits...",
-                    "Sharing knowledge...",
-                    "Threat hunting...",
-                    "Digital forensics...",
+                    "W3lc0m3 70 my c0zy 5p4c3!_",
+                    "H4v3 4 n1c3 d4y </3_",
+                    "1nf0m4710n 53cur17y 57ud3n7 @ U17-VNU_",
+                    "50C 4n4ly57_",
+                    "Blu3 734m_",
+                    "7hr347 hun71n6_",
+                    "d16174l f0r3n51c5_",
                   ],
                   autoStart: true,
                   loop: true,
@@ -380,189 +445,251 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
                   deleteSpeed: 30,
                 }}
               />
-            </span>
+            </div>
+            <div className={styles.heroButtons}>
+              <button
+                className={styles.btnPrimary}
+                onClick={() => {
+                  const dbSection = document.getElementById("database-section");
+                  if (dbSection)
+                    dbSection.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Discover now
+              </button>
+              <button
+                className={styles.btnSecondary}
+                onClick={() => (window.location.href = "/about-me/")}
+              >
+                About me
+              </button>
+            </div>
           </div>
         </div>
 
         {/* 2. Terminal Interface */}
-        <div className={styles.terminalWrapper}>
-          <Terminal
-            commands={commands}
-            welcomeMessage={
-              "Initializing system...\n" +
-              "Welcome to " +
-              siteConfig.title +
-              ".\n" +
-              "Enter 'help' to view available commands."
-            }
-            promptLabel={"soli@vaquaant:~# "}
-            style={{
-              borderRadius: "0 0 10px 10px",
-              minHeight: "400px",
-              width: "100%",
-              maxWidth: "900px",
-              boxShadow: `0 10px 30px ${themeColors.glow}`,
-              border: `1px solid ${themeColors.border}`,
-              fontFamily: '"Consolas", "Courier New", monospace',
-            }}
-            contentStyle={{
-              color: themeColors.text,
-              fontSize: "1.1em",
-              fontFamily: "monospace",
-              whiteSpace: "pre",
-              lineHeight: "1",
-            }}
-            inputTextStyle={{
-              color: "#ffffff",
-              fontWeight: "bold",
-            }}
-          />
-        </div>
-
-        {/* 3. Profile images*/}
-        <div style={{ textAlign: "center", marginTop: "4rem" }}>
-          <h2 style={{ fontSize: "2rem", color: "#00ff00" }}>
-            &lt; EVIDENCE_BOARD /&gt;
-          </h2>
-          <p style={{ color: "#ccc" }}>
-            The data is being scrambled. Drag and drop to rearrange the
-            evidence!
-          </p>
-        </div>
-
-        <div className={styles.messyDesk} ref={constraintsRef}>
-          {photos.map((photo) => (
-            <motion.div
-              key={photo.id}
-              className={styles.polaroidCard}
-              initial={{ x: photo.x, y: photo.y, rotate: photo.rotate }}
-              drag
-              dragConstraints={constraintsRef}
-              dragElastic={0.2}
-              whileHover={{
-                scale: 1.1,
-                rotate: 0,
-                zIndex: 100,
-                cursor: "grab",
-              }}
-              whileTap={{
-                scale: 1.2,
-                cursor: "grabbing",
-                zIndex: 100,
-              }}
-            >
-              <div className={styles.tape}></div>
-              <img
-                src={photo.src}
-                alt="Evidence"
-                className={styles.polaroidImg}
-              />
-              <div className={styles.handWrittenText}>{photo.text}</div>
-            </motion.div>
-          ))}
-        </div>
-        {/* End of Profile Images */}
-
-        {/* 4. Navigation categories */}
-        <div style={{ marginTop: "4rem", textAlign: "center" }}>
-          <h2 style={{ fontSize: "2rem", color: "#00ff00" }}>
-            &lt; DATABASE_ACCESS /&gt;
-          </h2>
-          <div className={styles.featuresSection}>
-            <Link to="/docs/about-me/" className={styles.featureCard}>
-              <div className={styles.cornerMark}></div>
-              <h3>01. WRITE-UPS</h3>
-              <p>
-                Comprehensive guides for CTF challenges, machines, and puzzles.
-              </p>
-              <span
-                style={{
-                  color: "#00ff00",
-                  marginTop: "10px",
-                  display: "block",
-                }}
-              >
-                &gt; Execute access
-              </span>
-            </Link>
-
-            <Link to="/labs/intro" className={styles.featureCard}>
-              <div className={styles.cornerMark}></div>
-              <h3>02. LABS & PROJECTS</h3>
-              <p>
-                Personal research, malware analysis labs, and security tools
-                development environment.
-              </p>
-              <span
-                style={{
-                  color: "#00ff00",
-                  marginTop: "10px",
-                  display: "block",
-                }}
-              >
-                &gt; Execute access
-              </span>
-            </Link>
-
-            {/* Cột 3: Blog */}
-            <Link to="/blog" className={styles.featureCard}>
-              <div className={styles.cornerMark}></div>
-              <h3>03. KNOWLEDGE BASE</h3>
-              <p>
-                Articles on cybersecurity concepts, tutorials, and personal
-                thoughts on the industry.
-              </p>
-              <span
-                style={{
-                  color: "#00ff00",
-                  marginTop: "10px",
-                  display: "block",
-                }}
-              >
-                &gt; Execute access
-              </span>
-            </Link>
-          </div>
-        </div>
-
-        {/* 5. Donation CTA */}
-        <section className={styles.donateSection}>
-          <div className={styles.donateHeader}>
-            <h2 className={styles.donateTitle}>&lt; SUPPORT_CHANNEL /&gt;</h2>
-          </div>
-          <div className={styles.donateBody}>
-            <div className={styles.donatePanel}>
-              <div className={styles.donatePanelInner}>
-                <div>
-                  <p className={styles.donateCopy}>
-                    Keep the research flowing~
-                    <br></br>
-                    Every coffee helps fund lab gear, challenge fees, and long
-                    nights of packet captures.
-                  </p>
+        <div className={styles.sectionContainer}>
+          <div className={styles.terminalWrapper}>
+            <div className={styles.terminalContainer}>
+              <div className={styles.terminalHeader}>
+                <div className={styles.terminalDots}>
+                  <span className={styles.dotRed}></span>
+                  <span className={styles.dotYellow}></span>
+                  <span className={styles.dotGreen}></span>
                 </div>
-                <div className={styles.donateQrWrap} ref={scratchContainerRef}>
-                  <div className={styles.donateQrFrame}>
-                    <img
-                      src={donateQr}
-                      alt="Donation QR code"
-                      className={styles.donateQrImage}
-                    />
-                    <canvas
-                      ref={scratchCanvasRef}
-                      className={styles.scratchCanvas}
-                      onPointerDown={handleScratchStart}
-                      onPointerMove={handleScratchMove}
-                      onPointerUp={handleScratchEnd}
-                      onPointerLeave={handleScratchEnd}
-                    />
-                    <div className={styles.scratchHint}>scratch to reveal</div>
-                  </div>
+                <div className={styles.terminalTitle}>
+                  Initializing system...
                 </div>
               </div>
+              <Terminal
+                commands={commands}
+                welcomeMessage={
+                  "Welcome to solivaquaant.\n" +
+                  "Enter 'help' to view available commands."
+                }
+                promptLabel={"soliva@quaant:~# "}
+                style={{
+                  borderRadius: "0 0 20px 20px",
+                  minHeight: "400px",
+                  width: "100%",
+                  backgroundColor: "transparent",
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "1.1em",
+                  padding: "20px",
+                  boxShadow: "none",
+                }}
+                contentStyle={{
+                  color: (SITE_THEMES[terminalTheme] || SITE_THEMES.pink).hex,
+                  fontFamily: '"JetBrains Mono", monospace',
+                  whiteSpace: "pre",
+                  lineHeight: "1.5",
+                  fontWeight: "bold",
+                }}
+                messageClassName={styles.terminalOutput}
+                promptLabelStyle={{
+                  color: (SITE_THEMES[terminalTheme] || SITE_THEMES.pink).hex,
+                  fontWeight: "bold",
+                  fontSize: "1em",
+                  paddingTop: "0",
+                }}
+                inputTextStyle={{
+                  color: (SITE_THEMES[terminalTheme] || SITE_THEMES.pink).hex,
+                  fontWeight: "bold",
+                  fontSize: "1em",
+                }}
+              />
             </div>
           </div>
-        </section>
+        </div>
+
+        {/* 3. Tags List */}
+        <div className={styles.sectionContainer}>
+          <div className={styles.tagsContainer}>
+            {tags.map((tag, i) => (
+              <button
+                key={i}
+                className={styles.tagBtn}
+                onClick={() => (window.location.href = tag.link)}
+              >
+                <span className={styles.tagHash}>#</span> {tag.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 4. Profile images*/}
+        <div className={styles.sectionContainer}>
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: "2rem",
+              marginBottom: "2rem",
+            }}
+          >
+            <h2 className={styles.evidenceTitle}>Evidence board</h2>
+            <p className={styles.evidenceSubtitle}>
+              The data is being scrambled. Drag and drop to rearrange the
+              evidence!
+            </p>
+          </div>
+
+          <div className={styles.messyDesk} ref={constraintsRef}>
+            {photos.map((photo) => (
+              <motion.div
+                key={photo.id}
+                className={styles.polaroidCard}
+                initial={{ x: photo.x, y: photo.y, rotate: photo.rotate }}
+                drag
+                dragConstraints={constraintsRef}
+                dragElastic={0.2}
+                whileHover={{
+                  scale: 1.1,
+                  rotate: 0,
+                  zIndex: 100,
+                  cursor: "grab",
+                }}
+                whileTap={{ scale: 1.2, cursor: "grabbing", zIndex: 100 }}
+              >
+                <div className={styles.tape}></div>
+                <img
+                  src={photo.src}
+                  alt="Evidence"
+                  className={styles.polaroidImg}
+                />
+                <div className={styles.handWrittenText}>{photo.text}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* 5. Navigation categories */}
+        <div className={styles.sectionContainer} id="database-section">
+          <div className={styles.dbContainer}>
+            <h2 className={styles.dbTitle}>Database access</h2>
+            <div className={styles.featuresSection}>
+              <Link to="/docs/intro" className={styles.featureCard}>
+                <div className={styles.featureIcon}>
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                  </svg>
+                </div>
+                <h3>Write-ups</h3>
+                <p>
+                  Comprehensive guides for CTF challenges, machines, and
+                  puzzles.
+                </p>
+              </Link>
+
+              <Link to="/labs/intro" className={styles.featureCard}>
+                <div className={styles.featureIcon}>
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                  </svg>
+                </div>
+                <h3>Labs & Projects</h3>
+                <p>
+                  Personal research, malware analysis labs, and security tools
+                  development environment.
+                </p>
+              </Link>
+
+              <Link to="/blog" className={styles.featureCard}>
+                <div className={styles.featureIcon}>
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                  </svg>
+                </div>
+                <h3>Knowledge Base</h3>
+                <p>
+                  Articles on cybersecurity concepts, tutorials, and personal
+                  thoughts on the industry.
+                </p>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* 6. Donation CTA */}
+        <div className={styles.sectionContainer}>
+          <section className={styles.supportSection}>
+            <h2 className={styles.supportTitle}>Support my channel</h2>
+            <div className={styles.supportContainer}>
+              <div className={styles.supportLeft}>
+                <p className={styles.supportText}>
+                  Keep the research flowing~
+                  <br />
+                  If my work helped you,
+                  <br />
+                  consider supporting me to keep the labs running and
+                  <br />
+                  the coffee brewing.
+                </p>
+              </div>
+              <div className={styles.supportRight} ref={scratchContainerRef}>
+                <img
+                  src={donateQr}
+                  alt="Donation QR code"
+                  className={styles.donateQrImage}
+                />
+                <canvas
+                  ref={scratchCanvasRef}
+                  className={styles.scratchCanvas2}
+                  onPointerDown={handleScratchStart}
+                  onPointerMove={handleScratchMove}
+                  onPointerUp={handleScratchEnd}
+                  onPointerLeave={handleScratchEnd}
+                />
+              </div>
+            </div>
+          </section>
+        </div>
 
         {/* Malware Cleanup Minigame */}
         <div className={styles.minigameContainer}>
@@ -619,22 +746,38 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
           <motion.div
             ref={trashBinRef}
             className={styles.trashBin}
+            onMouseEnter={() => {
+              if (virusCount === 0) {
+                hoverTimeoutRef.current = setTimeout(() => setShowTooltip(true), 1000);
+              }
+            }}
+            onMouseLeave={() => {
+              if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+              setShowTooltip(false);
+            }}
             animate={{
-              y: virusCount >= 10 ? [0, -20, 0] : 0,
+              y: virusCount >= 5 ? [0, -20, 0] : 0,
             }}
             transition={{
               duration: 0.5,
-              repeat: virusCount >= 10 ? Infinity : 0,
+              repeat: virusCount >= 5 ? Infinity : 0,
             }}
             onClick={() => {
-              if (virusCount >= 10) {
+              if (virusCount >= 5) {
                 setShowConfetti(true);
-                setTimeout(() => setShowConfetti(false), 3000);
+                setFadeConfetti(false);
+                setTimeout(() => setFadeConfetti(true), 7000);
+                setTimeout(() => setShowConfetti(false), 8000);
               }
             }}
-            style={{ cursor: virusCount >= 10 ? "pointer" : "default" }}
+            style={{ cursor: virusCount >= 5 ? "pointer" : "default" }}
           >
             🗑️
+            {showTooltip && (
+              <div className={styles.trashTooltip}>
+                Drag and drop items to receive a gift
+              </div>
+            )}
           </motion.div>
 
           {/* Success Message */}
@@ -656,31 +799,29 @@ If you enjoy my content (or just like me), feel free to support me ^^`;
             animate={{ scale: [1, 1.1, 1] }}
             transition={{ duration: 0.5 }}
           >
-            🦠 {virusCount} / 10
+            🦠 {virusCount} / 5
           </motion.div>
 
           {/* Confetti */}
           {showConfetti && (
-            <>
-              {[...Array(150)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className={styles.confetti}
-                  style={{
-                    left: Math.random() * 100 + "%",
-                    backgroundColor: [
-                      "#00ff00",
-                      "#ffb900",
-                      "#00ffff",
-                      "#ff006e",
-                    ][i % 4],
-                  }}
-                  initial={{ y: -10, opacity: 1 }}
-                  animate={{ y: window.innerHeight + 50, opacity: 0 }}
-                  transition={{ duration: 3, delay: Math.random() * 0.5 }}
-                />
-              ))}
-            </>
+            <div
+              style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 9999,
+                pointerEvents: "none",
+                opacity: fadeConfetti ? 0 : 1,
+                transition: "opacity 1s ease-out",
+              }}
+            >
+              <Confetti
+                width={windowWidth}
+                height={windowHeight}
+                numberOfPieces={500}
+                gravity={0.05}
+                recycle={false}
+              />
+            </div>
           )}
         </div>
       </main>

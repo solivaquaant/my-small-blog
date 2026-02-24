@@ -27,9 +27,11 @@
     "gh-pages": "^6.3.0",
     "prism-react-renderer": "^2.3.0",
     "react": "^19.0.0",
+    "react-confetti": "^6.4.0",
     "react-console-emulator": "^5.0.2",
     "react-dom": "^19.0.0",
     "react-parallax-tilt": "^1.7.314",
+    "react-use": "^17.6.0",
     "three": "^0.181.2",
     "typewriter-effect": "^2.22.0"
   },
