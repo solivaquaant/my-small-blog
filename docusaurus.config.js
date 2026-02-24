@@ -1,12 +1,4 @@
-// @ts-check
-// `@type` JSDoc annotations allow editor autocompletion and type checking
-// (when paired with `@ts-check`).
-// There are various equivalent ways to declare your Docusaurus config.
-// See: https://docusaurus.io/docs/api/docusaurus-config
-
 import { themes as prismThemes } from "prism-react-renderer";
-
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
 /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
@@ -15,24 +7,13 @@ const config = {
   title: "solivaquaant",
   tagline:
     "Cybersecurity Student | University of Information Technology - VietNam National University, Ho Chi Minh City",
-
   favicon: "img/avt-trans.png",
-
-  // Set the production url of your site here
   url: "http://blog.solivaquaant.site/",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "solivaquaant", // Usually your GitHub org/user name.
-  projectName: "my-small-blog", // Usually your repo name.
-
+  organizationName: "solivaquaant",
+  projectName: "my-small-blog",
   onBrokenLinks: "throw",
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
+
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -42,11 +23,19 @@ const config = {
     [
       "@docusaurus/plugin-content-docs",
       {
-        id: "labs", // id duy nhất cho mục mới
-        path: "labs", // đường dẫn đến thư mục chứa tài liệu
-        routeBasePath: "labs", // URL gốc: /labs/
+        id: "labs",
+        path: "labs",
+        routeBasePath: "labs",
         sidebarPath: require.resolve("./sidebars-labs.js"),
-        // editUrl: 'https://github.com/your-username/your-repo/edit/main/',
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "about",
+        path: "about-me",
+        routeBasePath: "about-me",
+        sidebarPath: require.resolve("./sidebars-about.js"),
       },
     ],
 
@@ -93,7 +82,6 @@ const config = {
           scrollOffset: 0,
         },
       },
-      // Replace with your project's social card
       image: "img/avt.png",
       navbar: {
         title: "Welcome",
@@ -104,6 +92,14 @@ const config = {
         items: [
           {
             type: "docSidebar",
+            sidebarId: "aboutSidebar",
+            docId: "index.md",
+            position: "left",
+            label: "About me",
+            docsPluginId: "about",
+          },
+          {
+            type: "docSidebar",
             sidebarId: "writeupsSidebar",
             position: "left",
             label: "  Write-ups",
@@ -111,7 +107,7 @@ const config = {
           {
             type: "docSidebar",
             sidebarId: "labsSidebar",
-            docId: "intro", // tương ứng với file intro.md trong tryhackme
+            docId: "intro",
             position: "left",
             label: "Labs",
             docsPluginId: "labs",
@@ -136,7 +132,7 @@ const config = {
             items: [
               {
                 label: "Self Introduction",
-                to: "/docs/about-me",
+                to: "/about-me",
               },
             ],
           },
@@ -171,7 +167,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} @tndt, built with Docusaurus on April 25, 2025.`,
+        copyright: `Copyright © ${new Date().getFullYear()} @solivaquaant, built with Docusaurus on April 25, 2025.`,
       },
       prism: {
         theme: prismThemes.github,
