@@ -28,7 +28,8 @@
 }
 
 .heroTitleText {
-  font-size: 5rem;
+  font-size: clamp(2.1rem, 9vw, 5rem);
+  white-space: nowrap;
   font-weight: 800;
   font-family: var(--ifm-heading-font-family);
   background: linear-gradient(to right, #a1b1fc, var(--theme-color));
@@ -397,7 +398,7 @@
 
 .featureCard p {
   color: var(--theme-color);
-  font-family: var(--ifm-heading-font-family);
+  font-family: 'JetBrains Mono', monospace;
   font-size: 0.95rem;
   margin: 0;
 }

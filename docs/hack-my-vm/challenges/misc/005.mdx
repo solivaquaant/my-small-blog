@@ -1,5 +1,5 @@
 ---
-tags: []
+tags: [linux, cryptography]
 ---
 # 005
 
@@ -9,7 +9,39 @@ I think it is the flag in `HMV{rootpassword}` format.
 ---
 
 ## 🔎 Solution
+This challenge provides a file named `shadow.txt`. 
+On Linux systems, `/etc/shadow` is a critical file related to user security, used to store hashed passwords along with password aging and policy information.
 
+Each line in this file corresponds to a single user and consists of 9 fields separated by a colon (`:`):
+```
+username:password:lastchg:min:max:warn:inactive:expire:reserved
+```
+
+The `password` field follows the structure:
+```
+$algo$salt$hash
+```
+
+Where the hashing algorithms are identified as:
+- `$1$` → MD5
+- `$2y$` → Blowfish
+- `$5$` → SHA-256
+- `$6$` → SHA-512
+
+In this case, the `john` tool is used together with the `rockyou.txt` wordlist to perform the crack. 
+The result reveals that the password for the `root` user is `reddragon`.
+```
+> john --wordlist=rockyou.txt shadow.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (sha512crypt, crypt(3) $6$ [SHA512 128/128 AVX 2x])
+Cost 1 (iteration count) is 5000 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+reddragon        (root)     
+1g 0:00:00:05 DONE (2026-02-21 23:23) 0.1814g/s 1765p/s 1765c/s 1765C/s krystal1..20072007
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed.
+```
 
 ## 🚩Flag
-> ``
+> `HMV{reddragon}`

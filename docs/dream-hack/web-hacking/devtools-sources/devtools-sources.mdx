@@ -1,0 +1,23 @@
+---
+tags: [web]
+---
+# devtools-sources
+
+- **Description:** 개발자 도구의 Sources 탭 기능을 활용해 플래그를 찾아보세요.
+플래그 형식은 `DH{...}` 입니다.
+- **Difficulty:** Beginner
+
+## 🔎 Solution
+We are given the web application's source code. 
+First, open the `index.html` file using any web browser.
+
+Next, open the **Sources** tab in the browser's DevTools and search for the string `DH{` across all files. 
+The search result shows that the string appears in `webpack://styles/main.scss`.
+<div style={{ width: '80%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+## 🚩 Flag
+> `DH{2ed07940b6fd9b0731ef698a5f0c065be9398f7fa00f03ed9da586c3ed1d54d5}`
+

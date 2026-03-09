@@ -1,0 +1,47 @@
+---
+sidebar_position: 1
+---
+
+# Reflections on the competition
+At the end of January, I took part in an internal Information Security drill at my company. 
+The competition followed an "attack - defense" style format: 
+each team was responsible for defending its own website while simultaneously attacking the systems of other teams.
+
+Each team was supposed to have five members, and the exercise ran continuously for around eight hours. 
+Due to a few constraints, my team ended up competing with only four people. 
+Even so, we managed to perform extremely well and ultimately secured first place, which was both surprising and rewarding.
+
+On the defensive side, every team had to build its own Web Application Firewall (WAF). 
+The goal was to design effective whitelist and blacklist rules that could block malicious attacks without disrupting legitimate user behavior. 
+Striking this balance turned out to be more challenging than it initially sounded.
+
+On the offensive side, teams were tasked with exploiting five vulnerabilities across 30 rounds, each round requiring us to capture a flag. 
+We were also provided with the source code for each level. 
+Because of this, the attacking teams needed to move quickly and proactively - analyze the code fast, identify the right payloads, and exploit the vulnerabilities before the WAF rules could adapt and block them.
+
+Although the source code was available, in this write-up I will approach the first two levels using a black-box perspective, focusing on how an attacker might discover and exploit the vulnerabilities without relying directly on the source code.  
+For the remaining three levels, I will switch to a white-box approach, analyzing the vulnerabilities based on the provided source code.
+
+If you are interested in exploring the first two levels from a white-box perspective as well, feel free to leave your feedback or suggestions - I may consider adding that analysis later.
+
+For this series, the focus will mainly be on the attacker's perspective and the exploitation process.  
+As for the defensive side, I plan to cover it separately in the [**Labs section**](https://blog.solivaquaant.site/labs/intro).  
+There, I will walk through how to build a simple WAF using ModSecurity, as well as how to write and customize your own rules. 
+Stay tuned for that content.
+
+For these write-ups, I recreated the web applications locally using Docker, while modifying sensitive company-related information and flag values in accordance with the organizers' requirements.
+
+Before the competition began, my assigned role was to manage the WAF and design appropriate whitelist and blacklist rules. 
+However, once the competition was underway, I realized that relying on a single pentester could significantly slow down the vulnerability discovery process. 
+As a result, I shifted my focus to supporting the pentester directly and contributed to finding and exploiting several vulnerabilities myself.
+
+Most importantly, I would like to give a special shout-out to the other three members of my team. 
+Thank you to P, our team leader, for building such a strong and well-balanced team; 
+to A, for constantly pushing and motivating me to research and prepare ahead of the competition; 
+and to N, for sharing great ideas and useful tools that made log analysis much easier.
+
+Although there were still a few moments I wish had gone better, overall this competition was a genuinely valuable and enjoyable experience.
+
+And now, let's take a look at the write-ups I've put together.
+
+> If you have any feedback, questions, or suggestions, please don't hesitate to reach out and discuss them with me ^^

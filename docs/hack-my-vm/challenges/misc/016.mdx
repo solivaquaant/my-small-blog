@@ -1,0 +1,24 @@
+---
+tags: []
+---
+# 016
+
+- **Description:** `HMV{\033[31mw\033[31mh\033[31my\033[31m i\033[31mm \033[31mn\033[31mo\033[31mt \033[39m m\033[39ma\033[39my\033[39mb\033[39me \033[39mu\033[39ms\033[39me \033[32m g\033[32mr\033[32me\033[32me\033[32mn\033[32mt\033[32mh\033[32me\033[32mf\033[32ml\033[32ma\033[32mg\033[39m}`
+
+---
+
+## 🔎 Solution
+From the character sequences inside the brackets, it can be observed that the strings starting with `\033[` or `\x1b[` are ANSI escape codes used for terminal text formatting:
+- `\033[31m`: Switch text color to Red.
+- `\033[32m`: Switch text color to Green.
+- `\033[39m`: Reset the color back to the system default.
+
+By stripping out these control characters, the remaining plain text becomes:
+```
+why im not  maybe use  greentheflag
+```
+
+From this cleaned output, the correct flag is the string `greentheflag`.
+
+## 🚩Flag
+> `HMV{greentheflag}`

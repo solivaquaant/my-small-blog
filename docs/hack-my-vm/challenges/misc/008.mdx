@@ -1,0 +1,45 @@
+---
+tags: [linux, cryptography]
+---
+# 008
+
+- **Description:** Flag inside the zip file.
+
+---
+
+## 🔎 Solution
+After extracting the downloaded ZIP file, it prompts for a password. 
+Since the challenge does not provide any credentials, this indicates that the ZIP password needs to be cracked.
+
+The first step is to use `zip2john` to extract the hash from the ZIP file.
+```
+> zip2john 008.zip > hash.txt           
+                                                                                                        
+> cat hash.txt   
+008.zip/flag.txt:$zip2$*0*3*0*751e06905814ebe63a63c72e8755d887*d807*e*25e3c7613e997071cd21a2163883*ba4cf18e59493b2515da*$/zip2$:flag.txt:008.zip:008.zip
+```
+
+Next, `john` is used with the `rockyou.txt` wordlist to crack the hash. 
+This reveals that the ZIP file password is `survivor`.
+```
+> john --wordlist=rockyou.txt hash.txt  
+Using default input encoding: UTF-8
+Loaded 1 password hash (ZIP, WinZip [PBKDF2-SHA1 128/128 AVX 4x])
+Cost 1 (HMAC size) is 14 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+survivor         (008.zip/flag.txt)     
+1g 0:00:00:00 DONE (2026-02-21 23:28) 6.666g/s 27306p/s 27306c/s 27306C/s 123456..oooooo
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed.
+```
+
+With the recovered password, the ZIP file can be extracted successfully:
+```
+7z x 008.zip -psurvivor
+```
+
+Finally, opening `flag.txt` reveals the flag.
+
+## 🚩Flag
+> `HMV{cromiphi}`

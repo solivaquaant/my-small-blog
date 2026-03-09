@@ -1,0 +1,75 @@
+---
+tags: [web]
+---
+
+# Level 4
+
+---
+
+Now let's move on to the next challenge, where the vulnerability is **XML External Entity (XXE) injection**. 
+I remember that during the competition, when we reached the round that exposed this vulnerability, I was assigned to review and exploit previously discovered issues. 
+The analysis and flag exploitation for this specific vulnerability were handled by one of my teammates. 
+Big shoutout to him.
+
+## Analysis
+When creating a service on the application, it sends a `POST /core/items/create` request with an XML body like the following:
+<div style={{ width: "100%", margin: "0 auto" }}>
+  <img src={require("./create.png").default} style={{ width: "100%", height: "auto" }} />
+</div>
+
+This endpoint accepts XML input. 
+A custom XML converter is registered in `WebConfig.java`, so all XML requests are processed by `XMLConverter` before reaching the controller.
+```
+@PostMapping(value = "/create",
+	consumes = MediaType.APPLICATION_XML_VALUE,
+	produces = MediaType.APPLICATION_XML_VALUE
+)
+public ResponseDTO createItem(@RequestBody ItemDTO itemDTO) {
+	return itemService.createItem(itemDTO);
+}
+```
+
+`XMLConverter` uses `XmlParser.createDocumentBuilder()` to parse the XML. 
+At this point, we can observe that `XmlParser` enables external entity processing and disables secure processing. 
+As a result, the parser will attempt to read local files if the XML contains something like `<!ENTITY ... SYSTEM "file://...">`.
+
+```
+factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
+factory.setFeature("http://xml.org/sax/features/external-general-entities", true);
+factory.setFeature("http://xml.org/sax/features/external-parameter-entities", true);
+factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", true);
+factory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, false);
+factory.setXIncludeAware(true);
+factory.setExpandEntityReferences(true);
+```
+
+When `builder.parse(...)` is executed, the external entity is already resolved and replaced with the actual file content in the DOM. 
+The `getTextContent()` method simply reads the resolved string, so the file content is directly injected into the corresponding field of `ItemDTO`.
+```
+private String getText(Document doc, String tagName) {
+	NodeList nodes = doc.getElementsByTagName(tagName);
+	if (nodes == null || nodes.getLength() == 0) {
+		return null;
+	}
+	return nodes.item(0).getTextContent().trim();
+}
+```
+
+In this case, suitable fields for injection are `name` or `description` since they are strings. 
+Fields like `id` or `price` are cast to numeric types and would throw errors if they contained string data.
+```
+itemDTO.setId(Integer.valueOf(this.getText(doc, "id")));
+//highlight-next-line
+itemDTO.setName(this.getText(doc, "name"));
+Long price = Long.valueOf(this.getText(doc, "price"));
+itemDTO.setPrice(BigDecimal.valueOf(price));
+//highlight-next-line
+itemDTO.setDescription(this.getText(doc, "description"));
+```
+
+## Exploitation
+By sending a crafted request to read the flag file, we can see the flag content reflected in those two fields:
+
+<div style={{ width: "100%", margin: "0 auto" }}>
+  <img src={require("./flag.png").default} style={{ width: "100%", height: "auto" }} />
+</div>

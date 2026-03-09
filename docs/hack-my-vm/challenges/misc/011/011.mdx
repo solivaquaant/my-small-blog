@@ -1,0 +1,52 @@
+---
+tags: [cryptography]
+---
+# 011
+
+- **Description:** 
+```
+$$$$$$$$$$
+$_________$$
+$_$$$$$$$_$$
+$_$_____$_$$
+$_$_____$_$$
+$_$_____$_$$
+$_$_____$_$$
+$_$$$$$$$_$$
+$_________$$
+$$$$$$$$$$
+$_________$$
+$_1__2__3_$$$
+$_4__5__6_$$$
+$_7__8__9_$$$
+$_*__0__#_$$$
+$_________$$$
+$$$$$$$$$$$
+$$$$$$$$$
+
+FLAG: HMV{?}
+? = 3-1 2-1 8-1 2-1 7-4 3-2 2-3
+```
+
+---
+
+## 🔎 Solution
+Based on the characters provided in the challenge description, it resembles a classic flip phone, with a screen on top and a numeric keypad at the bottom. 
+This traditional keypad layout is commonly known as the **T9 keypad**.
+<div style={{ width: '30%', margin: '0 auto' }}>
+	<img src={require("./t9.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Given the numeric sequence below, it can be interpreted as follows: the first number represents the keypad digit, and the second number indicates the position of the letter on that key.
+- **3-1**: Key 3, first letter → D
+- **2-1**: Key 2, first letter → A
+- **8-1**: Key 8, first letter → T
+- **2-1**: Key 2, first letter → A
+- **7-4**: Key 7, fourth letter → S
+- **3-2**: Key 3, second letter → E
+- **2-3**: Key 2, third letter → C
+
+Combining all the decoded characters gives the final result: **DATASEC**.
+
+## 🚩Flag
+> `HMV{DATASEC}`

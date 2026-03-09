@@ -1,0 +1,25 @@
+---
+tags: [network]
+---
+# 033
+
+- **Description:** `HMV{WEP_KEY}`
+
+---
+
+## 🔎 Solution
+Opening the provided pcap file shows that it captures network traffic related to the 802.11 protocol. **
+IEEE 802.11** is the standard that defines how Wi-Fi operates at the Physical (PHY) layer and the Data Link (MAC) layer.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./pcap.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+To crack the key for this protocol, the `aircrack` tool can be used:
+```
+aircrack-ng 033.pcap 
+```
+
+The result reveals that the cracked key is `MYKEY`.
+
+## 🚩Flag
+> `HMV{MYKEY}`

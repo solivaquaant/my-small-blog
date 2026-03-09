@@ -1,0 +1,38 @@
+---
+tags: [web]
+---
+# JWT - Introduction
+
+- **Description:** To validate the challenge, connect as admin.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+The web application provides a login page, with an additional option labeled “Login as Guest!”.
+
+After logging in with the `guest` user, I inspected the traffic in Burp Suite and observed that the response returns a JWT token.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./burp.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Using [jwt.io](https://www.jwt.io/) to analyze this token, several details are revealed as shown below. 
+The algorithm in use is **HS256**, and the payload contains only a single claim: `username: guest`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./decode.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+
+A common and simple JWT vulnerability is when the server accepts `alg: none`, meaning it does not validate the signature portion of the token. 
+Switching to the Encoder tab, I generated a new token by changing `alg` to `none` and modifying the `username` to `admin`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./encode.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+After replacing the original token in the request with the newly crafted one, the application successfully logs in as the admin user, and the flag is displayed.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `S1gn4tuR3_v3r1f1c4t10N_1S_1MP0Rt4n7`
