@@ -228,6 +228,7 @@ This is incredibly valuable for:</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="conclusion">Conclusion<a href="http://blog.solivaquaant.site/blog/typed-paths#conclusion" class="hash-link" aria-label="Direct link to Conclusion" title="Direct link to Conclusion" translate="no">​</a></h2>
 <p>Typed Paths isn't a silver bullet, but it is an invaluable, intuitive, and fast source of intelligence-especially during initial triage or when other logging sources are incomplete.
 When collected, validated, and correlated properly, Typed Paths can significantly shorten your investigation time and expose specific, high-value suspicious behaviors left behind by an attacker.</p>]]></content:encoded>
+            <category>Forensics</category>
         </item>
         <item>
             <title><![CDATA[Exploring DLL Side Loading: A practical walkthrough using Notepad++]]></title>

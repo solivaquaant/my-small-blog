@@ -239,6 +239,7 @@ When collected, validated, and correlated properly, Typed Paths can significantl
             <name>Thai Trinh</name>
             <uri>https://github.com/solivaquaant</uri>
         </author>
+        <category label="Forensics" term="Forensics"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Exploring DLL Side Loading: A practical walkthrough using Notepad++]]></title>
