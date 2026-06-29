@@ -1,0 +1,73 @@
+---
+tags: [forensics, linux]
+---
+# Forensics Git 2
+
+- **Description:** The agents interrupted the perpetrator's disk deletion routine. Can you recover this git repo?
+
+## 🔎 Solution
+If you have already solved the [**Forensics Git 0**](https://blog.solivaquaant.site/docs/cylab/forensics/forensics-git-0) and [**Forensics Git 1**](https://blog.solivaquaant.site/docs/cylab/forensics/forensics-git-1) challenges, the approach for this challenge will be very similar.
+
+By listing files in the second Linux partition, we can see that the `.git` directory contains 21 objects.
+```
++++++++ r/r 65696:	b4a371ebd23e682ffebc7ec355690fdc94fbd1
++++++++ r/r 65698:	fd2fafcd5ebd62fbf857769c92a91225ab3954
++++++++ r/r 65730:	78644433e7cb6da3adf028f1c80d382a18e7b6
++++++++ r/r 65701:	b896e3ccd51175f66480cdb247fc45f3e8ac2d
++++++++ r/r 65703:	0a9b2b15dce92f800393d5030c7454efc278ae
++++++++ r/r 65714:	1cc01687b4ec94faf9916c3fc6efd83f23b816
++++++++ r/r 65716:	1ebe10826d5c1efc58ae475c0a0af10f580b77
++++++++ r/r 65726:	f83de540f7d12cc3b683a83d69432e03d84509
++++++++ r/r 65718:	1c707b43219a63c1d3499b29c7d539af079861
++++++++ r/r 65719:	b809e0c41d8421f1126ed3a4eb06ad66e6d90a
++++++++ r/r 65723:	50f0b963ab3ee95ba5656212abd76d7f2fed2e
++++++++ r/r 65725:	666b9472fad7cd75d05b641e402347d9aac605
++++++++ r/r 65727:	27632e046a80a1e0d7b4fc5c7800dd539baeaf
++++++++ r/r 65732:	f7d0c9bd045563ae33bfacfbe46fe406a5b318
++++++++ r/r 65734:	d27e2bd5a0fc22868ffb629a768f82dfcda11c
++++++++ r/r 65735:	0b38b3322a5ba32ac07076ef5eeb4a59449875
++++++++ r/r 65729:	51ef0ccc15aed1ab88e1afdc7484aaeff211c4
++++++++ r/r 65740:	273877d2ff3f51a14473b7200aae5a798ff64f
++++++++ r/r 65742:	c13fe974d95661f24e32bc0d79f54f05ea13c5
++++++++ r/r 65744:	31ae0868411e5f23656a2436e78a4c4699e18c
++++++++ r/r 65745:	533f718556a0e59f1467dae4fa462eed82c2a1
+```
+
+As in the previous challenges, we extract these objects using `icat`.
+```
+icat -o 0001140736 disk.img 65696 > obj1
+icat -o 0001140736 disk.img 65698 > obj2
+icat -o 0001140736 disk.img 65730 > obj3
+icat -o 0001140736 disk.img 65701 > obj4
+icat -o 0001140736 disk.img 65703 > obj5
+icat -o 0001140736 disk.img 65714 > obj6
+icat -o 0001140736 disk.img 65716 > obj7
+icat -o 0001140736 disk.img 65726 > obj8
+icat -o 0001140736 disk.img 65718 > obj9
+icat -o 0001140736 disk.img 65719 > obj10
+icat -o 0001140736 disk.img 65723 > obj11
+icat -o 0001140736 disk.img 65725 > obj12
+icat -o 0001140736 disk.img 65727 > obj13
+icat -o 0001140736 disk.img 65732 > obj14
+icat -o 0001140736 disk.img 65734 > obj15
+icat -o 0001140736 disk.img 65735 > obj16
+icat -o 0001140736 disk.img 65729 > obj17
+icat -o 0001140736 disk.img 65740 > obj18
+icat -o 0001140736 disk.img 65742 > obj19
+icat -o 0001140736 disk.img 65744 > obj20
+icat -o 0001140736 disk.img 65745 > obj21
+```
+
+After that, we inspect the raw contents of each object using `zlib-flate`. 
+In the third object, we can recover the flag.
+```
+> zlib-flate -uncompress < obj3
+blob 188Rex: Meet at the old arcade basement for the secret hideout.
+Jay: Ask Rusty at the door and use password picoCTF{g17_r35cu3_16ac6bf3}.
+Rex: Bring the decoder map so we can plan the route.
+
+```
+
+## 🚩 Flag
+> `picoCTF{g17_r35cu3_16ac6bf3}`
+

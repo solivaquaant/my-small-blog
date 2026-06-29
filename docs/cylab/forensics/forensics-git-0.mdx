@@ -1,0 +1,126 @@
+---
+tags: [forensics, linux]
+---
+# Forensics Git 0
+
+- **Description:** Can you find the flag in this disk image?
+
+## 🔎 Solution
+Start by analyzing the provided disk image using `mmls`. 
+The output shows several partitions, specifically two Linux partitions:
+```
+> mmls disk.img 
+DOS Partition Table
+Offset Sector: 0
+Units are in 512-byte sectors
+
+      Slot      Start        End          Length       Description
+000:  Meta      0000000000   0000000000   0000000001   Primary Table (#0)
+001:  -------   0000000000   0000002047   0000002048   Unallocated
+// highlight-next-line
+002:  000:000   0000002048   0000616447   0000614400   Linux (0x83)
+003:  000:001   0000616448   0001140735   0000524288   Linux Swap / Solaris x86 (0x82)
+// highlight-next-line
+004:  000:002   0001140736   0002097151   0000956416   Linux (0x83)
+```
+
+Next, list the files and directories in these partitions. In the second partition (starting at sector `1140736`), there is a directory named `secrets` belonging to the user. 
+Inside it, there is a Git repository (`.git`) and a file named `note.txt`.
+```
+> fls -o 0001140736 -r disk.img       
+d/d 64770:      home
++ d/d 64771:    ctf-player
+++ d/d 65663:   Code
+// highlight-start
++++ d/d 65664:  secrets
+++++ d/d 65665: .git
++++++ d/d 65666:        branches
++++++ r/r 65667:        description
++++++ d/d 65668:        hooks
+++++++ r/r 65669:       applypatch-msg.sample
+++++++ r/r 65670:       pre-commit.sample
+++++++ r/r 65671:       commit-msg.sample
+++++++ r/r 65672:       pre-push.sample
+++++++ r/r 65673:       pre-applypatch.sample
+++++++ r/r 65674:       post-update.sample
+++++++ r/r 65675:       sendemail-validate.sample
+++++++ r/r 65676:       pre-rebase.sample
+++++++ r/r 65677:       pre-receive.sample
+++++++ r/r 65678:       update.sample
+++++++ r/r 65679:       push-to-checkout.sample
+++++++ r/r 65680:       pre-merge-commit.sample
+++++++ r/r 65681:       prepare-commit-msg.sample
++++++ d/d 65682:        info
+++++++ r/r 65683:       exclude
++++++ d/d 65684:        refs
+++++++ d/d 65686:       heads
++++++++ r/r 65702:      master
+++++++ d/d 65687:       tags
++++++ r/r 65685:        config
++++++ d/d 65689:        objects
+++++++ d/d 65690:       pack
+++++++ d/d 65691:       info
+++++++ d/d 65694:       46
++++++++ r/r 65695:      064ac3ab7afd9a95bc1224aa8b4cef23741fcc
+++++++ d/d 65697:       18
++++++++ r/r 65698:      6ca660f488a4e4cdd92e7678fcfa3da478aee7
+++++++ d/d 65699:       32
++++++++ r/r 65700:      7681bb38cf467cec328eec9707b240e3e74ced
++++++ r/r 65688:        HEAD
++++++ r/r 65662:        index
++++++ r/r 65693:        COMMIT_EDITMSG
++++++ d/d 65703:        logs
+++++++ r/r 65704:       HEAD
+++++++ d/d 65705:       refs
++++++++ d/d 65706:      heads
+++++++++ r/r 65707:     master
+++++ r/r 65692: note.txt
+// highlight-end
+d/d 11: lost+found
+d/d 64769:      boot
+d/d 32385:      etc
++ d/d 32407:    zoneinfo
+++ r/r 32408:   UTC
++ r/r 32409:    hosts
+...
+```
+
+Extract the content of `note.txt` located at inode `65692`:
+```
+icat -o 0001140736 disk.img 65692 > note.txt
+```
+
+The file content is simply a basic hint:
+```
+> cat note.txt                
+The picoCTF flag format is 'picoCTF{}' where there is some leetspeak phrase in between the curly braces
+```
+
+Inside the `.git` directory, there are three Git object files:
+```
++++++++ r/r 65695:      064ac3ab7afd9a95bc1224aa8b4cef23741fcc
++++++++ r/r 65698:      6ca660f488a4e4cdd92e7678fcfa3da478aee7
++++++++ r/r 65700:      7681bb38cf467cec328eec9707b240e3e74ced
+```
+
+Similarly, extract these files from the disk image:
+```
+> icat -o 0001140736 disk.img 65695 > obj1 
+> icat -o 0001140736 disk.img 65698 > obj2
+> icat -o 0001140736 disk.img 65700 > obj3
+```
+
+To view the raw content of Git objects, use `zlib-flate` since Git objects are compressed using `zlib`. 
+The first two files do not contain anything particularly interesting, but the last one reveals the flag.
+```
+> zlib-flate -uncompress < obj3           
+commit 232tree 186ca660f488a4e4cdd92e7678fcfa3da478aee7
+author ctf-player <ctf-player@example.com> 1763542167 +0000
+committer ctf-player <ctf-player@example.com> 1763542167 +0000
+
+Wrap this phrase in the flag format: g17_1n_7h3_d15k_041217d8
+```
+
+## 🚩 Flag
+> `picoCTF{g17_1n_7h3_d15k_041217d8}`
+

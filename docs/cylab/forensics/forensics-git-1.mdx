@@ -1,0 +1,109 @@
+---
+tags: [forensics, linux]
+---
+# Forensics Git 1
+
+- **Description:** Can you find the flag in this disk image?
+
+## 🔎 Solution
+Similar to the previous challenge [**Forensics Git 0**](https://blog.solivaquaant.site/docs/cylab/forensics/forensics-git-0), start by analyzing the provided disk image using `mmls`. 
+The output shows several partitions, including two Linux partitions:
+```
+> mmls disk.img 
+DOS Partition Table
+Offset Sector: 0
+Units are in 512-byte sectors
+
+      Slot      Start        End          Length       Description
+000:  Meta      0000000000   0000000000   0000000001   Primary Table (#0)
+001:  -------   0000000000   0000002047   0000002048   Unallocated
+// highlight-next-line
+002:  000:000   0000002048   0000616447   0000614400   Linux (0x83)
+003:  000:001   0000616448   0001140735   0000524288   Linux Swap / Solaris x86 (0x82)
+// highlight-next-line
+004:  000:002   0001140736   0002097151   0000956416   Linux (0x83)
+```
+
+Next, list the files and directories in the second partition (starting at sector `1140736`). 
+Inside the user directory, there is a folder named `secrets` that contains a Git repository (`.git`).
+```
+> fls -o 0001140736 -r disk.img       
+d/d 64770:	home
++ d/d 64771:	ctf-player
+++ d/d 65663:	Code
++++ d/d 65664:	secrets
+++++ d/d 65665:	.git
++++++ d/d 65666:	branches
++++++ r/r 65667:	description
++++++ d/d 65668:	hooks
+++++++ r/r 65669:	applypatch-msg.sample
+++++++ r/r 65670:	pre-commit.sample
+++++++ r/r 65671:	commit-msg.sample
+++++++ r/r 65672:	pre-push.sample
+++++++ r/r 65673:	pre-applypatch.sample
+++++++ r/r 65674:	post-update.sample
+++++++ r/r 65675:	sendemail-validate.sample
+++++++ r/r 65676:	pre-rebase.sample
+++++++ r/r 65677:	pre-receive.sample
+++++++ r/r 65678:	update.sample
+++++++ r/r 65679:	push-to-checkout.sample
+++++++ r/r 65680:	pre-merge-commit.sample
+++++++ r/r 65681:	prepare-commit-msg.sample
++++++ d/d 65682:	info
+++++++ r/r 65683:	exclude
++++++ d/d 65684:	refs
+++++++ d/d 65686:	heads
++++++++ r/r 65711:	master
+++++++ d/d 65687:	tags
++++++ r/r 65685:	config
++++++ d/d 65689:	objects
+++++++ d/d 65690:	pack
+++++++ d/d 65691:	info
+++++++ d/d 65694:	f1
++++++++ r/r 65695:	50f47a5dabfb4397706aa18905df936595a86e
+++++++ d/d 65697:	a6
++++++++ r/r 65698:	2340e078686778969b9a555fc722147cf14e5a
+++++++ d/d 65699:	17
++++++++ r/r 65700:	7789af0b300e043ea8f54ea57d6cee352291ae
+++++++ d/d 65701:	4b
++++++++ r/r 65708:	825dc642cb6eb9a060e54bf8d69288fbee4904
+++++++ d/d 65692:	5f
++++++++ r/r 65709:	b8194539c770a830b8ba089a50778c07072b03
++++++ r/r 65688:	HEAD
++++++ r/r 65696:	index
++++++ r/r 65693:	COMMIT_EDITMSG
++++++ d/d 65703:	logs
+++++++ r/r 65704:	HEAD
+++++++ d/d 65705:	refs
++++++++ d/d 65706:	heads
+++++++++ r/r 65707:	master
+```
+
+Inside the `.git` directory, there are five Git object files:
+```
++++++++ r/r 65695:	50f47a5dabfb4397706aa18905df936595a86e
++++++++ r/r 65698:	2340e078686778969b9a555fc722147cf14e5a
++++++++ r/r 65700:	7789af0b300e043ea8f54ea57d6cee352291ae
++++++++ r/r 65708:	825dc642cb6eb9a060e54bf8d69288fbee4904
++++++++ r/r 65709:	b8194539c770a830b8ba089a50778c07072b03
+```
+
+Extract these object files from the disk image:
+```
+icat -o 0001140736 disk.img 65695 > obj1
+icat -o 0001140736 disk.img 65698 > obj2
+icat -o 0001140736 disk.img 65700 > obj3
+icat -o 0001140736 disk.img 65708 > obj4
+icat -o 0001140736 disk.img 65709 > obj5
+```
+
+To inspect the raw content of Git objects, use `zlib-flate` since Git stores objects compressed with `zlib`. 
+The flag appears in the first object.
+```
+> zlib-flate -uncompress < obj1             
+blob 31picoCTF{g17_r3m3mb3r5_d4ddf904} 
+```
+
+## 🚩 Flag
+> `picoCTF{g17_r3m3mb3r5_d4ddf904} `
+

@@ -1,0 +1,19 @@
+---
+tags: [network]
+---
+# Packets Primer
+
+- **Description:** Download the packet capture file and use packet analysis software to find the flag.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+Upon opening the pcap file in Wireshark, only a few packets were present, primarily TCP and ARP. 
+Given the small number of packets, a quick inspection led to the discovery of the flag in packet number 4.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{p4ck37_5h4rk_b9d53765}`

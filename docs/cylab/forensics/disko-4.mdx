@@ -1,0 +1,47 @@
+---
+tags: [forensics, linux]
+---
+# DISKO 4
+
+- **Description:** Can you find the flag in this disk image? 
+This time I deleted the file! Let see you get it now!
+
+## 🔎 Solution
+We are provided with a disk image file. 
+From the information below, we can determine that this disk image uses the FAT32 filesystem format:
+```
+> file disko-4.dd                                                                                               
+disko-4.dd: DOS/MBR boot sector, code offset 0x58+2, OEM-ID "mkfs.fat", Media descriptor 0xf8, sectors/track 32, heads 8, sectors 204800 (volumes > 32 MB), FAT (32 bit), sectors/FAT 1576, serial number 0x49838d0b, unlabeled
+```
+
+Based on the challenge description, the objective is to recover deleted files. 
+To achieve this, we can use the `fls` command to list files from the filesystem. 
+Deleted files are typically marked with a `*` prefix. 
+The result reveals the following two files:
+```
+> fls -r disko-4.dd | grep "*"
++ r/r * 522629: messages
++ r/r * 532021: dont-delete.gz
+```
+
+Next, we attempt to extract the contents of these files using `icat`. 
+When trying to recover the `messages` file, an error occurs:
+```
+> icat disko-4.dd 522629 > recovered_flag.txt 
+Error recovering deleted file (Invalid address in run (too large): 204800)
+```
+
+However, the file `dont-delete.gz`, located at inode `532021`, can be successfully recovered:
+```
+icat -r disko-4.dd 532021 > dont-delete.gz
+```
+
+After extracting and decompressing the archive, the flag file is revealed inside:
+```
+> cat dont-delete             
+Here is your flag
+picoCTF{d3l_d0n7_h1d3_w3ll_284686d1}
+```
+
+## 🚩 Flag
+> `picoCTF{d3l_d0n7_h1d3_w3ll_284686d1}`

@@ -1,0 +1,64 @@
+---
+tags: [linux]
+---
+# MY GIT
+
+- **Description:** I have built my own Git server with my own rules! You can clone the challenge repo using the command below.
+
+## 🔎 Solution
+First, clone the GitHub repository as required. 
+At this point, the directory contains a `README.md` file with the following content:
+````
+# MyGit
+
+### If you want the flag, make sure to push the flag!
+
+Only flag.txt pushed by ```root:root@picoctf``` will be updated with the flag.
+
+GOOD LUCK!
+````
+
+From this description, there are two requirements: (1) push a file named `flag.txt`, and (2) the push must appear to come from `root:root@picoctf`.
+
+Start by creating a `flag.txt` file and staging it:
+```
+echo "flag please" > flag.txt
+git add flag.txt 
+```
+
+Next, impersonate `root:root@picoctf` by modifying the Git configuration:
+```
+git config --global user.name "root"
+git config --global user.email "root@picoctf"
+```
+
+Create a commit with an appropriate message:
+```
+git commit -m "give me flag" 
+```
+
+Finally, push to the `master` branch of the repository. 
+The flag will be returned in the output:
+```
+> git push origin master      
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+git@foggy-cliff.picoctf.net's password: 
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 277 bytes | 277.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Author matched and flag.txt found in commit...
+remote: Congratulations! You have successfully impersonated the root user
+//highlight-next-line
+remote: Here's your flag: picoCTF{1mp3rs0n4t4_g17_345y_06835333}
+To ssh://foggy-cliff.picoctf.net:64777/git/challenge.git
+   293d811..503eb18  master -> maste
+```
+
+## 🚩 Flag
+> `picoCTF{1mp3rs0n4t4_g17_345y_06835333}`
+

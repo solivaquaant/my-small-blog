@@ -44,12 +44,12 @@ By inspecting the **Name** column, we can identify:
 - The SAM key: `\SystemRoot\System32\Config\SAM`  
 
 We then extract the corresponding **Virtual** addresses of these 2 entries and insert them into the following command to extract the password hashes:
-```bash
+```
 ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 hashdump -y 0x8b21c008 -s 0x9aad6148 > hash.txt
 ```
 
 This command outputs the hash data into a text file for easier analysis. 
-```bash
+```
 Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
 Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
 John Doe:1000:aad3b435b51404eeaad3b435b51404ee:b9f917853e3dbf6e6831ecce60725930:::
@@ -57,7 +57,7 @@ John Doe:1000:aad3b435b51404eeaad3b435b51404ee:b9f917853e3dbf6e6831ecce60725930:
 
 Each record in the file is structured using the following colon-separated format:
 
-```bash
+```
 <Username>:<User ID>:<LM hash>:<NT hash>:<Comment>:<Home Dir>:
 ```
 

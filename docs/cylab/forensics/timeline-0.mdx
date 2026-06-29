@@ -1,0 +1,50 @@
+---
+tags: []
+---
+# Timeline 0
+
+- **Description:** Can you find the flag in this disk image? Wrap what you find in the picoCTF flag format.
+
+## 🔎 Solution
+Based on the hint provided in the challenge ' *"Create a Sleuthkit MAC timeline!"* ' the goal is to reconstruct the system timeline. 
+The first step is to extract raw filesystem metadata using `fls`, which will generate an intermediate file (a **body file**) containing timestamp information for all files.
+```
+fls -r -m / partition4.img > body.txt
+```
+Here, `-m /` specifies a fake mount point of `/` so that the paths in the output resemble those of a real filesystem.
+
+The resulting file will look like this:
+```
+0|/home|64770|d/drwxr-xr-x|0|0|1024|1762891277|1762891277|1762891277|1762891277
+0|/home/ctf-player|64771|d/drwxr-sr-x|1000|1000|1024|1762891182|1762891182|1762891277|1762891277
+0|/lost+found|11|d/drwx------|0|0|12288|1762891277|1762891277|1762891277|1762891277
+0|/boot|64769|d/drwxr-xr-x|0|0|1024|1762891277|1762891277|1762891277|1762891277
+0|/etc|32385|d/drwxr-xr-x|0|0|3072|1762891277|1764621661|1764621661|1762891277
+...
+```
+
+Next, we convert this body file into a readable timeline format using `mactime`.
+```
+mactime -b body.txt -d > timeline.csv
+```
+
+By examining the generated file, we can easily notice that the first entry has a creation year of **1985**, which is completely different from the timestamps of the other files in the system.
+```
+Tue Jan 01 1985 12:00:00,41,macb,r/rrw-r--r--,0,0,4945,"/bin/bcab"
+```
+
+Extracting the contents of inode **4945** (`/bin/bcab`) reveals a Base64 string.
+```
+> icat partition4.img 4945
+NzFtMzExbjNfMHU3MTEzcl9oM3JfNDNhMmU3YWYK
+```
+
+After decoding it, we obtain the flag.
+```
+> icat partition4.img 4945 | base64 -d
+71m311n3_0u7113r_h3r_43a2e7af
+```
+
+## 🚩 Flag
+> `picoCTF{71m311n3_0u7113r_h3r_43a2e7af}`
+

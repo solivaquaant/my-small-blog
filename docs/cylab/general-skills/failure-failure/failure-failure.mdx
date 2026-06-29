@@ -1,0 +1,63 @@
+---
+tags: [web]
+---
+# Failure Failure
+
+- **Description:** Welcome to Failure Failure - a high-available system. 
+This challenge simulates a real-world failover scenario where one server is prioritized over the other. 
+A load balancer stands between you and the truth - and it won't hand over the flag until you force its hand.
+
+## 🔎 Solution
+By analyzing the provided web application source code, several important observations can be made:
+- The real flag is stored in the environment variable `FLAG`, and it is only displayed when the environment variable `IS_BACKUP` is set to `yes`:
+```
+def home():
+    print("value:", os.getenv("IS_BACKUP"))
+    if os.getenv("IS_BACKUP") == "yes":
+        flag = os.getenv("FLAG")
+    else:
+        flag = "No flag in this service"
+    return render_template("index.html", flag=flag)
+```
+
+- Otherwise, the application simply returns `"No flag in this service"`:
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./no.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+- The application also enforces a rate limit of 300 requests per minute. 
+If this limit is exceeded, the server responds with a `503` status code:
+```
+limiter = Limiter(
+    key_func=global_rate_limit_key,
+    app=app,
+    default_limits=["300 per minute"]
+)
+
+@app.errorhandler(429)
+def ratelimit_exceeded(e):
+    return "Service Unavailable: Rate limit exceeded", 503
+```
+
+In addition, the HAProxy configuration reveals two backend servers:
+- Server 1 runs on port 8000 and is checked every 2 seconds. If it fails twice consecutively, it is considered down.
+- Server 2 runs on port 9000 and only receives traffic when Server 1 is down.
+```
+server s1 *:8000 check inter 2s fall 2 rise 3
+server s2 *:9000 check backup inter 2s fall 2 rise 3
+```
+
+The goal, therefore, is to bring down Server 1 by exhausting its rate limit. 
+This can be achieved by sending more than 300 requests to it:
+```
+ab -n 350 -c 10 <URL>
+```
+
+After that, refreshing the page will redirect the request to Server 2, where the flag is revealed:
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩 Flag
+> `picoCTF{f41l0v3r_f0r_7h3_w1n_3c135c27}`
+

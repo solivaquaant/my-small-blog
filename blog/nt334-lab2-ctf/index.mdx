@@ -35,7 +35,7 @@ This signature was located at **offset `0x1D62C78`**.
 To extract the embedded MP4 file, I first converted the offset to decimal: 0x1D62C78 = 30813300.  
 
 Then, using the `dd` command in a Unix-like environment, I extracted the hidden file:
-```bash
+```
 dd if=video-challenge.mp4 of=output.mp4 bs=1 skip=30813300
 ```
 Opening the extracted `output.mp4` revealed the flag for the challenge.

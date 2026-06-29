@@ -1,0 +1,39 @@
+---
+tags: [network, forensics]
+---
+# Access Denied
+
+- **Description:** An application was accessed by an unauthorized user. We captured network traffic during the incident. Can you recover the attacker's credentials?
+- **Difficulty:** Easy
+- **Link:** [Access Denied](https://hackforge.com/challenges/access-denied)
+
+## 🔎 Solution
+The challenge provides a single `.pcap` file for analysis. 
+Opening it in Wireshark, we can quickly identify a TCP connection initiated from the client `10.10.10.50` to the server `10.10.200.10`.
+
+Following TCP stream 0, the client sends a `GET /admin` request. 
+However, the server responds with a `401 Unauthorized` status code, indicating that authentication is required.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./tcp0.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Moving on to TCP stream 2, the client retries the request and now includes an `Authorization` header with the value `Basic YWRtaW46YWRtaW4=`, which decodes to the credential pair `admin:admin`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./tcp2.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+In TCP stream 4, the credentials are updated to `admin:password123`, suggesting the client is attempting different login combinations.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./tcp4.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Finally, in TCP stream 6, the `Authorization` header is set to `YWRtaW46SGFja0Zvcmdle0I0czFjX0F1dGhfMXNfTjB0X1M0ZjN9`. 
+The initial response is `301 Moved Permanently`, followed by a successful `200 OK`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Decoding this value reveals the final credential pair, which also contains the flag: `admin:HackForge{B4s1c_Auth_1s_N0t_S4f3}`.
+
+## 🚩 Flag
+> `HackForge{B4s1c_Auth_1s_N0t_S4f3}`

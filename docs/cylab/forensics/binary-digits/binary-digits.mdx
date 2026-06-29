@@ -1,0 +1,43 @@
+---
+tags: [forensics, steganography]
+---
+# Binary Digits
+
+- **Description:** This file doesn't look like much... just a bunch of 1s and 0s. 
+But maybe it's not just random noise. 
+Can you recover anything meaningful from this?
+
+## 🔎 Solution
+The provided file is a regular text file:
+```
+> file digits.bin                                                                                               
+digits.bin: ASCII text, with very long lines (65536), with no line terminators
+```
+
+Viewing the file content reveals that it contains a long binary string. 
+After decoding this binary sequence, the string `JFIF` appears. 
+This is the **JPEG File Interchange Format**, which is a strong indicator that the data represents a JPEG image.
+<div style={{ width: '80%', margin: '0 auto' }}>
+	<img src={require("./decode.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+To recover the original image, the binary string needs to be converted from bits into byte data and then written to a file. 
+The following script performs that conversion:
+```
+with open('digits.bin', 'r') as f:
+    binary_string = f.read().strip().replace(" ", "")
+
+byte_data = int(binary_string, 2).to_bytes((len(binary_string) + 7) // 8, byteorder='big')
+
+with open('flag.jpg', 'wb') as f:
+    f.write(byte_data)
+```
+
+Opening the generated image file reveals the flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩 Flag
+> `picoCTF{h1dd3n_1n_th3_b1n4ry_cc2099d3}`
+

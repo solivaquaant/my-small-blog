@@ -1,0 +1,8 @@
+{
+  "label": "Machines",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Hack The Box Machines write-ups."
+  }
+}

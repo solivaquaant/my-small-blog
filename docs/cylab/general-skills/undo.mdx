@@ -1,0 +1,73 @@
+---
+tags: [cryptography]
+---
+# Undo
+
+- **Description:** Can you reverse a series of Linux text transformations to recover the original flag?
+
+## 🔎 Solution
+This challenge requires recovering the original string from the encoded value below. 
+You can either follow the step-by-step transformations provided by the system or decode it manually on your own.
+```
+KW5xOW45OG43LWZhMDFnQHplMHNmYTRlRy1nazNnLXRhMWZlcmlyRShTR1BicHZj
+```
+
+If you choose to follow the system's guided steps, you need to supply the appropriate Linux command at each stage based on the given hint. 
+In step 1, the string is Base64-encoded, so we use the `base64 -d` command to decode it.
+```
+--- Step 1 ---
+Current flag: KW5xOW45OG43LWZhMDFnQHplMHNmYTRlRy1nazNnLXRhMWZlcmlyRShTR1BicHZj
+Hint: Base64 encoded the string.
+Enter the Linux command to reverse it: base64 -d
+Correct!
+```
+
+In step 2, the decoded string is reversed. 
+We can restore it using the `rev` command.
+```
+--- Step 2 ---
+Current flag: )nq9n98n7-fa01g@ze0sfa4eG-gk3g-ta1ferirE(SGPbpvc
+Hint: Reversed the text.
+Enter the Linux command to reverse it: rev
+Correct!
+```
+
+In step 3, the transformation involves replacing `-` characters with `_`. 
+This can be reversed using `tr '-' '_'`.
+```
+--- Step 3 ---
+Current flag: cvpbPGS(Eriref1at-g3kg-Ge4afs0ez@g10af-7n89n9qn)
+Hint: Replaced underscores with dashes.
+Enter the Linux command to reverse it: tr '-' '_'
+Correct!
+```
+
+In step 4, parentheses `()` are used instead of curly braces `{}`. 
+We fix this using `tr '()' '{}'`.
+```
+--- Step 4 ---
+Current flag: cvpbPGS(Eriref1at_g3kg_Ge4afs0ez@g10af_7n89n9qn)
+Hint: Replaced curly braces with parentheses.
+Enter the Linux command to reverse it: tr '()' '{}'
+Correct!
+```
+
+Finally, step 5 applies a ROT13 transformation. 
+We reverse it using `tr 'A-Za-z' 'N-ZA-Mn-za-m'`.
+```
+--- Step 5 ---
+Current flag: cvpbPGS{Eriref1at_g3kg_Ge4afs0ez@g10af_7n89n9qn}
+Hint: Applied ROT13 to letters.
+Enter the Linux command to reverse it: tr 'A-Za-z' 'N-ZA-Mn-za-m'
+Correct!
+```
+
+After completing all transformations, we recover the original flag:
+```
+Congratulations! You've recovered the original flag:
+>>> picoCTF{Revers1ng_t3xt_Tr4nsf0rm@t10ns_7a89a9da}
+```
+
+## 🚩 Flag
+> `picoCTF{Revers1ng_t3xt_Tr4nsf0rm@t10ns_7a89a9da}`
+

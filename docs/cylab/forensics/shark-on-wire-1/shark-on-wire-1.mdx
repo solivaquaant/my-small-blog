@@ -1,0 +1,28 @@
+---
+tags: [network]
+---
+# shark on wire 1
+
+- **Description:** We found this packet capture. Recover the flag.
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+I started by opening the pcap file in Wireshark.
+My initial approach was to examine the TCP streams, but they didn't reveal any useful information.
+
+Shifting focus to the UDP streams, I began to notice meaningful data.
+In the fifth UDP stream, the string **picopicopico** appeared.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./pico.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Finally, by following the sixth UDP stream, I was able to extract the challenge flag.
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{StaT31355_636f6e6e}`
+

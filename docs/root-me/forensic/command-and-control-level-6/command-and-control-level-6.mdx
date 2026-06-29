@@ -15,7 +15,7 @@ The validation password is a fully qualified domain name : hote.domaine.tld
 From the **Command & Control - Level 3** challenge, we identified the **iexplore.exe** process as a strong candidate for containing malicious code.
 To analyze it further, we used `procdump` plugin to extract the process into an executable file sample. 
 This gave us a standalone .exe file for deeper inspection.
-```bash                                                                                                                              
+```                                                                                                                              
 > ./vol2/volatility2 -f ch2.dmp --profile=Win7SP0x86 procdump -p 2772 --dump-dir=./root-me           
 Volatility Foundation Volatility Framework 2.6
 Process(V) ImageBase  Name                 Result

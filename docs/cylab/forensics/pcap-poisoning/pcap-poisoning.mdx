@@ -1,0 +1,20 @@
+---
+tags: [network]
+---
+# PcapPoisoning
+
+- **Description:** How about some hide and seek heh?
+- **Difficulty:** Medium
+
+---
+
+## 🔎 Solution
+After opening the pcap file in Wireshark and considering the hint **hide and seek**, I searched for the flag using the filter `tcp contains "picoCTF"`.
+As a result, the flag was found in packet number 507.
+
+<div style={{ width: '100%', margin: '0 auto' }}>
+  <img src={require("./flag.png").default} style={{ width: '100%', height: 'auto' }} />
+</div>
+
+## 🚩Flag
+> `picoCTF{P64P_4N4L7S1S_SU55355FUL_5b6a6061}`
